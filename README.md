@@ -52,4 +52,4 @@ exit;
 
 [1]: https://pip.pypa.io/en/latest/installing/
 [2]: https://docs.python.org/3/using/scripts.html
-[2]: http://dev.mysql.com/doc/refman/5.7/en/installing.html
+[3]: http://dev.mysql.com/doc/refman/5.7/en/installing.html
