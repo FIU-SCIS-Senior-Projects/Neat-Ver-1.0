@@ -15,7 +15,7 @@ Then from the root of the project run:
 
 1. `pyvenv venv` - Create a virtual environment in the venv folder
 2. `source venv/bin/activate` - Load the environment
-3. `pip install -r djangoBackend/Requirements.txt` - Install dependencies
+3. `pip install -r neatBackend/Requirements.txt` - Install dependencies
 4. `deactivate` - Unloads the environment
 
 #### Usage
