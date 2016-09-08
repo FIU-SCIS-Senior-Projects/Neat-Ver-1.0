@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+
+  server:
+    restart: always
+    build: ./nginx
+    links:
+      - backend
+    volumes_from:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+
+  backend:
+    restart: always
+    build: .
+    env_file: ENV.txt
+    links:
+      - db
+    ports:
+      - "8000:8000"
+    volumes:
+      - staticfiles:/static
+
+  db:
+    restart: always
+    image: mysql:latest
+    env_file: ENV.txt
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+volumes:
+
+  postgres:
+    driver: local
+
+  staticfiles:
+    driver: local

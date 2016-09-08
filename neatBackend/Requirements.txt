@@ -7,11 +7,12 @@ django-crispy-forms==1.6.0
 django-filter==0.13.0
 django-rest-auth==0.8.1
 djangorestframework==3.4.1
+gunicorn==19.6.0
 itypes==1.1.0
 Markdown==2.6.6
 oauthlib==1.1.2
 openapi-codec==1.0.0
-psycopg2==2.6.2
+PyMySQL==0.7.9
 python3-openid==3.0.10
 requests==2.11.1
 requests-oauthlib==0.6.2

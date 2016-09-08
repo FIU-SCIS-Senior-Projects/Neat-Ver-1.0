@@ -2,6 +2,12 @@
 
 Django  and Django REST Framework For Neat
 
+## Quickstart
+
+* `python manage.py createsuperuser` - add yourself to the database as an admin so that you can login to the REST API
+* `python manage.py migrate` - apply model changes
+* `python manage.py runserver` - run test server default is http://localhost:8000
+
 ## Commands
 
 Here are some useful commands you might need

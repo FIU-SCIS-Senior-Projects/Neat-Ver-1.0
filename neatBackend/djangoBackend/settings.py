@@ -23,9 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'k89de2&$7uczx#f%^zr0w@#9ivp#6=yqy359eqn63k)qf**mcx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# This is false if a developer is running it on localhost to serve the static files
+# otherwise it's true in production, in order to let the web server handle the static
+# files
+DEBUG = True if (os.environ.get('DEBUG', True) != 'False') else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'rest_framework',
+    'rest_framework',
+    'djangoBackend',
+    'restAPI',
 ]
 
 REST_FRAMEWORK = {
@@ -80,13 +85,16 @@ WSGI_APPLICATION = 'djangoBackend.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'neatdb',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': '',
+# Here i set the environments for the database to be os specific or whatever is defined
+# by the user. The second option is the default in case nothing is found. This also helps
+# with docker, as i've set the Environmental variables in the container already
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_DB', 'neatdb'),
+        'USER': os.environ.get('DB_USER', 'admin'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'admin'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', 3306),
     }
 }
 
@@ -128,3 +136,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/static/'
