@@ -14,7 +14,7 @@ First install python3+ on your machine and then download and install [pip][1].
 Then from the root of the project run:
 
 1. `pyvenv venv` - Create a virtual environment in the venv folder
-2. `source venv/bin/activate` - Load the environment (On Windows: scripts and executables go in env\Scripts\ instead of env/bin/ and libraries go in env\Lib\ rather than env/lib/)
+2. `source venv/bin/activate` - Load the environment (On Windows: scripts and executables go in `env\Scripts\` instead of `env/bin/` and libraries go in `env\Lib\` rather than `env/lib/`)
 3. `pip install -r neatBackend/Requirements.txt` - Install dependencies
 4. `deactivate` - Unloads the environment
 
