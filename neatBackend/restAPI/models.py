@@ -14,17 +14,18 @@ if such a decision arises.
 # TODO : since we may not want to delete any/some entries when a user opts out we may want to add a field to check if user opted out instead of cascading deletes.
 # TODO : should ClassRoster also have year?
 
-class School(models.model):
+
+class School(models.Model):
     schoolName = models.CharField(max_length=255)
     schoolID = models.CharField(max_length=255) # TODO: What does a school ID actually look like? Is it unique even across school districts?
 
 
-class SchoolRoster(models.model):
+class SchoolRoster(models.Model):
     schoolYear = models.PositiveSmallIntegerField(default = timezone.now().year) # TODO: how do we want to define school year?
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
 
-class UserInfo(models.model):
+class UserInfo(models.Model):
     grade = models.PositiveSmallIntegerField()
     age = models.PositiveSmallIntegerField()
     gender = models.CharField(max_length=50)
@@ -36,23 +37,27 @@ class UserInfo(models.model):
                + "\nUser: " + str(self.user)
 
 
-class Class(models.model):
+class Class(models.Model):
     className = models.CharField(max_length=255)
     classID = models.CharField(max_length=255) # TODO: What does a class ID look like? This can have great variance, so charfield was chosen.
     school = models.ForeignKey(School, on_delete=models.CASCADE)
 
 
-class ClassRoster(models.model):
-    class_ = models.ForeignKey(Class, on_delete=models.CASCADE)
+class ClassRoster(models.Model):
+    classFK = models.ForeignKey(Class, on_delete=models.CASCADE)
     userInfo = models.ManyToManyField(UserInfo)
 
 
-class Assignment(models.model):
+class Assignment(models.Model):
     assignmentName = models.CharField(max_length=255)
-    class_ = models.ForeignKey(Class, on_delete=models.CASCADE)
+    duedate = models.DateField()
+    classFK = models.ForeignKey(Class, on_delete=models.CASCADE)
     userInfo = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
 
-class Task(models.model):
+
+class Task(models.Model):
     taskName = models.CharField(max_length=255)
     isDone = models.BooleanField(default=False)
+    startDate = models.DateField(auto_now_add=True) # Start date is set to day of creation
+    endDate = models.DateField()
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
