@@ -26,14 +26,13 @@ services:
 
   db:
     restart: always
-    image: mysql:latest
+    build: ./mysql
     env_file: ENV.txt
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - mysql:/var/lib/mysql
 
 volumes:
-
-  postgres:
+  mysql:
     driver: local
 
   staticfiles:
