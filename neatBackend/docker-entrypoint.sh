@@ -1,11 +1,14 @@
 #!/bin/bash
 
 # Give time for the DB to start
-sleep 10
+nginx/wait-for-it.sh -t 50 db:3306
 
-python manage.py makemigrations djangoBackend  # making the migrations
+python manage.py makemigrations 
 python manage.py migrate                  # Apply database migrations
 python manage.py collectstatic --noinput  # Collect static files
+
+# Create a superuser
+echo "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'pass')" | python manage.py shell
 
 # Start Gunicorn processes
 echo Starting Gunicorn.
