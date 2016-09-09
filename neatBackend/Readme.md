@@ -43,8 +43,18 @@ this time).
 Finally, to start the app:
 `docker-compose up -d --build`
 
+#### Possible Database error
+After the previous step, let the app build in the container and start. Once the app 
+has started, if you get a cannot connect error "Host is not allowed", then the database
+did not get created correctly(mysql issue). To fix this, I've included a script inside
+the container itself. run the command `docker exec -it neatbackend_db_1 bash -l` to enter
+the database container(this must be done while the container is running). From that 
+point execute the script with the following command `./docker-entrypoint-initdb.d/script.sh` 
+and it should create all the files you need. Stop the running instance docker-compose and 
+return the commmand `docker-compose up -d --build`.
+
 This wills start the application with all dependencies installed, as well as a
-small webserver to server the static files. You can then reach the running 
+small webserver to serve the static files. You can then reach the running 
 application by visiting the ip address of your docker-machine
 
 [1]: https://www.docker.com/products/docker-toolbox

@@ -27,6 +27,10 @@ services:
   db:
     restart: always
     build: ./mysql
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+      - MYSQL_DATABASE=neatdb
     env_file: ENV.txt
     volumes:
       - mysql:/var/lib/mysql
