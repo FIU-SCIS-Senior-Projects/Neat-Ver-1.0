@@ -1,4 +1,6 @@
 import datetime
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -13,6 +15,19 @@ if such a decision arises.
 """
 # TODO : since we may not want to delete any/some entries when a user opts out we may want to add a field to check if user opted out instead of cascading deletes.
 # TODO : should ClassRoster also have year?
+
+
+def is_before_today(value):
+    if value == datetime.date.today():
+        return False
+    elif value < datetime.date.today():
+        return True
+    else:  # value greater than and not equal to
+        return False
+
+
+def date_error_string(value):
+        return "Inputted date of {!s} cannot be before today's date of {!s}".format(value, datetime.date.today())
 
 
 class School(models.Model):
@@ -50,14 +65,38 @@ class ClassRoster(models.Model):
 
 class Assignment(models.Model):
     assignmentName = models.CharField(max_length=255)
-    duedate = models.DateField()
+    startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
+    dueDate = models.DateField(validators=[is_before_today], null=True)
     classFK = models.ForeignKey(Class, on_delete=models.CASCADE)
     userInfo = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+
+    def clean(self):
+        errors = {}
+        if is_before_today(self.dueDate):
+            errors['dueDate'] = ValidationError(date_error_string(self.dueDate))
+            self.dueDate = None  # If not a valid date, sets to None
+        if is_before_today(self.startDate):
+            errors['startDate'] = ValidationError(date_error_string(self.startDate))
+            self.startDate = None  # If not a valid date, sets to None
+        if errors:
+            raise ValidationError(errors)
 
 
 class Task(models.Model):
     taskName = models.CharField(max_length=255)
     isDone = models.BooleanField(default=False)
-    startDate = models.DateField(auto_now_add=True) # Start date is set to day of creation
-    endDate = models.DateField()
+    startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
+    endDate = models.DateField(validators=[is_before_today], null=True)
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
+
+    def clean(self):
+        errors = {}
+        if is_before_today(self.endDate):
+            errors['endDate'] = ValidationError(date_error_string(self.endDate))
+            self.endDate = None  # If not a valid date, sets to None
+        if is_before_today(self.startDate):
+            errors['startDate'] = ValidationError(date_error_string(self.startDate))
+            self.startDate = None  # If not a valid date, sets to None
+        if errors:
+            raise ValidationError(errors)
+
