@@ -9,6 +9,9 @@ from django.utils import timezone
 Models are based off Database UML diagram found in the documentation
 Users, Permissions and Groups are predefined Django authorization models
 
+IMPORTANT: when inputting into database programmer should run a ClassName.clean() on the model.
+to do data validation.
+
 for CharFields max_length was often chosen as 255 because these fields do not need to go beyond that. Although, the
 current database allows for longer fields, if in the future a change occurs this decision defends against problems
 if such a decision arises.
@@ -38,6 +41,11 @@ class School(models.Model):
 class SchoolRoster(models.Model):
     schoolYear = models.PositiveSmallIntegerField(default = timezone.now().year) # TODO: how do we want to define school year?
     school = models.ForeignKey(School, on_delete=models.CASCADE)
+
+    def clean(self):
+        if self.schoolYear < 2016:  # start year of the app
+            self.schoolYear = timezone.now().year
+            raise ValidationError("School Roster year set too early. Changed to this year")
 
 
 class UserInfo(models.Model):
@@ -85,6 +93,8 @@ class Assignment(models.Model):
 class Task(models.Model):
     taskName = models.CharField(max_length=255)
     isDone = models.BooleanField(default=False)
+    hoursPlanned = models.PositiveSmallIntegerField(null=True)
+    hoursCompleted = models.PositiveSmallIntegerField(null=True)
     startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
     endDate = models.DateField(validators=[is_before_today], null=True)
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
@@ -97,6 +107,12 @@ class Task(models.Model):
         if is_before_today(self.startDate):
             errors['startDate'] = ValidationError(date_error_string(self.startDate))
             self.startDate = None  # If not a valid date, sets to None
+        if self.hoursPlanned is not None and self.hoursPlanned <= 0:
+            errors['hoursPlanned'] = ValidationError("hoursPlanned cannot be non-positive. Set to 1")
+            self.hoursPlanned = 1
+        if self.hoursCompleted is not None and self.hoursCompleted <= 0:
+            errors['hoursCompleted'] = ValidationError("hoursCompleted cannot be non-positive. Set to 1")
+            self.hoursCompleted = 1
         if errors:
             raise ValidationError(errors)
 

@@ -30,6 +30,7 @@ DEBUG = True if (os.environ.get('DEBUG', True) != 'False') else False
 
 ALLOWED_HOSTS = ['*']
 
+SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # Application definition
 
@@ -117,6 +118,32 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(SITE_ROOT, "debug.log"),
+            'backupCount': 2,
+            'formatter': 'standard',
+        },
+    },
+    'loggers': {
+        'restAPI': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
