@@ -3,17 +3,7 @@
 Django and Django REST Framework For Neat
 
 # Rest API Documentation
-
-1. /restapi/users
-  * Methods: GET, POST
-  * Functionality: View and edit user table
-  * Input:
-  * Return:
-2. /restapi/**user**/**password**
-  * Methods: GET
-  * Functionality: Authenticate user
-  * Input: URL vars
-  * Return: user object
+For an in depth documentation go to /restapi/docs
 
 #Usage
 

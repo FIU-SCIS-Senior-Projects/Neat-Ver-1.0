@@ -1,2 +1,5 @@
 .DS_Store
+djangoBackend/__pycache__/
+restAPI/__pycache__/
+
 

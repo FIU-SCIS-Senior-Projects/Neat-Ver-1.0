@@ -9,5 +9,6 @@ router.register(r'users', views.UserViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'^docs/', include('rest_framework_docs.urls')),
     url(r'^auth/(?P<usr>[a-z0-9]+)/(?P<pw>[a-z0-9]+)/$', views.AuthView.as_view())
 ]
