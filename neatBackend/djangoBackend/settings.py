@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework_docs',
     'djangoBackend',
     'restAPI',
+    'rest_framework.authtoken'
 ]
 
 REST_FRAMEWORK = {
