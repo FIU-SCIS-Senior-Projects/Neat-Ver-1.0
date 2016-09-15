@@ -40,7 +40,7 @@ class School(models.Model):
 
 class SchoolRoster(models.Model):
     schoolYear = models.PositiveSmallIntegerField(default = timezone.now().year) # TODO: how do we want to define school year?
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='schoolRosters')
 
     def clean(self):
         if self.schoolYear < 2016:  # start year of the app
@@ -52,7 +52,7 @@ class UserInfo(models.Model):
     grade = models.PositiveSmallIntegerField()
     age = models.PositiveSmallIntegerField()
     gender = models.CharField(max_length=50)
-    schoolRoster = models.ForeignKey(SchoolRoster, on_delete=models.PROTECT) # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
+    schoolRoster = models.ForeignKey(SchoolRoster, on_delete=models.PROTECT, related_name='userInfos') # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
     user = models.OneToOneField(User, on_delete=models.PROTECT) # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
 
     def __str__(self):
@@ -63,11 +63,14 @@ class UserInfo(models.Model):
 class Class(models.Model):
     className = models.CharField(max_length=255)
     classID = models.CharField(max_length=255) # TODO: What does a class ID look like? This can have great variance, so charfield was chosen.
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
+
+    def __unicode__(self):
+        return self.className + " at " + self.school
 
 
 class ClassRoster(models.Model):
-    classFK = models.ForeignKey(Class, on_delete=models.CASCADE)
+    classFK = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='classRosters')
     userInfo = models.ManyToManyField(UserInfo)
 
 
@@ -97,7 +100,7 @@ class Task(models.Model):
     hoursCompleted = models.PositiveSmallIntegerField(null=True)
     startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
     endDate = models.DateField(validators=[is_before_today], null=True)
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='tasks')
 
     def clean(self):
         errors = {}

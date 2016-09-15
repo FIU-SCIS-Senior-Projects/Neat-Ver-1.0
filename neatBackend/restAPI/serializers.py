@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
+from models import *
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -13,7 +15,67 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ('url', 'name')
 
+
 class AuthSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username')
+
+
+class SchoolSerializer(serializers.HyperlinkedModelSerializer):
+    schoolRosters = serializers.StringRelatedField(many=True)
+    classes = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = School
+        fields = {'url', 'schoolName', 'schoolID', 'schoolRosters', 'classes'}
+
+
+class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
+    userInfos = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = SchoolRoster
+        fields = {'url', 'schoolYear', "school", "userInfos"}
+
+
+class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.CharField(source='user.url')
+    username = serializers.CharField(source='user.username')
+    email = serializers.CharField(source='user.email')
+
+    class Meta:
+        model = UserInfo
+        fields = ('grade', 'age', 'gender',
+                  'url', 'username', 'email')
+
+
+class ClassSerializer(serializers.HyperlinkedModelSerializer):
+    classRosters = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Class
+        fields = {'url','className', 'classID', 'school', 'classRosters'}
+
+
+class ClassRosterSeriazlier(serializers.HyperlinkedModelSerializer):
+
+ userinfos = UserInfoSerializer(many=True, read_only=True)
+
+ class Meta:
+     model = ClassRoster
+     fields = {'url'}
+
+
+class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
+    tasks = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Assignment
+        fields = {'url', 'startDate', 'dueDate', 'classFK', 'userInfo'}
+
+
+class TaskSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Task
+        fields = {'url', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment'}
