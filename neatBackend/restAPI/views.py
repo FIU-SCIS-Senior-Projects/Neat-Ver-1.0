@@ -1,8 +1,9 @@
 #models
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from rest_framework import viewsets
 #serializers
-from .serializers import UserSerializer, GroupSerializer, AuthSerializer
+from .serializers import RegisterSerializer, UserSerializer
 #viewsets
 from rest_framework import viewsets
 #classviews
@@ -20,6 +21,10 @@ from rest_framework.filters import DjangoFilterBackend
 from django.utils import timezone
 import datetime
 
+"""
+/users/
+list of users
+"""
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -28,33 +33,19 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-
 """
-/myapp/auth/usr/pw
-Given usr and pw, authenticate and return user object.
-ie: /myapp/auth/andresgalban/hollywood (if user is created), otherwise 404
-For reference also see: AuthSerializer in serializes.py, url that corresponds to
+/register/
+create users
 """
-class AuthView(APIView):
-    #my own method that authenticates based on input from URL
-    def get_object(self, usr, pw):
-        user = authenticate(username=usr, password=pw)
-        if user is not None:
-            # the password verified for the user
-            return User.objects.get(username=usr)
-        else:
-            # the authentication system was unable to verify the username and password
-            raise Http404
+class RegisterView(APIView):
 
-    def get(self, request, usr, pw, format=None):
-        user = self.get_object(usr, pw)
-        serializer = AuthSerializer(user)
-        return Response(serializer.data)
+    def put(self, request, format=None):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            #create user
+            usr = serializer.create(serializer.validated_data)
+            #create token
+            #Token.objects.get_or_create(user=usr)
+            #return Response(serializer.data)
+            return Response("user created")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
