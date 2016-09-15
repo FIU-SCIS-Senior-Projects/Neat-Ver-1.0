@@ -1,8 +1,9 @@
 #models
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
+from restAPI.models import School
 #serializers
-from .serializers import UserSerializer, GroupSerializer, AuthSerializer
+from restAPI.serializers import UserSerializer, GroupSerializer, SchoolSerializer, AuthSerializer
 #viewsets
 from rest_framework import viewsets
 #classviews
@@ -37,6 +38,12 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
+class SchoolViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows Schoo to be viewed or edited.
+    """
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
 """
 /myapp/auth/usr/pw
 Given usr and pw, authenticate and return user object.

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
-from models import *
+from restAPI.models import School, SchoolRoster, Class, UserInfo, ClassRoster, Assignment, Task
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -28,7 +28,7 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = School
-        fields = {'url', 'schoolName', 'schoolID', 'schoolRosters', 'classes'}
+        fields = ('url', 'schoolName', 'schoolID', 'schoolRosters', 'classes',)
 
 
 class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
