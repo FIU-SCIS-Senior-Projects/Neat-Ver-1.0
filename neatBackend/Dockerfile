@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -r Requirements.txt
 COPY . /usr/src/app
 
 EXPOSE 8000
-ENTRYPOINT ["/bin/bash", "docker-entrypoint.sh"]
+CMD ["/bin/bash", "docker-entrypoint.sh"]

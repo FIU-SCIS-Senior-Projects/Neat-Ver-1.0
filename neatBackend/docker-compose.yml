@@ -19,8 +19,6 @@ services:
     env_file: ENV.txt
     links:
       - db
-    ports:
-      - "8000:8000"
     volumes:
       - staticfiles:/static
 
