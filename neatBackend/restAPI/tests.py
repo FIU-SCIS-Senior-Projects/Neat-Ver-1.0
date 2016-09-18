@@ -9,6 +9,7 @@ from restAPI.models import Assignment, Task, SchoolRoster
 
 logger = logging.getLogger(__name__)
 
+
 class DateFieldModelValidation(TestCase):
     today = date.today()
     beforeToday = today + timedelta(days=-3)
