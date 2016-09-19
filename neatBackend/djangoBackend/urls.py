@@ -19,6 +19,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 urlpatterns = [
+    url(r'^docs/', include('rest_framework_docs.urls')),
     url(r'^restapi/', include('restAPI.urls')),
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls)
 ]

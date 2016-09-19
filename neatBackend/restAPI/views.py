@@ -40,7 +40,7 @@ create users
 """
 class RegisterView(APIView):
 
-    def put(self, request, format=None):
+    def post(self, request, format=None):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             #create user

@@ -3,8 +3,7 @@
 Django and Django REST Framework For Neat
 
 # Rest API Documentation
-For an in depth documentation go to /restapi/docs
-
+For an in depth documentation go to [http://localhost/docs][5] or the official docs at [http://52.87.176.128/docs][6]
 #Usage
 
 ### Python Virtual Machine (Unix)
@@ -131,3 +130,5 @@ application by visiting the ip address of your docker-machine
 [2]: https://docs.python.org/3/using/scripts.html
 [3]: http://dev.mysql.com/doc/refman/5.7/en/installing.html
 [4]: https://www.docker.com/products/docker-toolbox
+[5]: http://localhost/docs
+[6]: http://52.87.176.128/docs
