@@ -36,9 +36,9 @@ class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = SchoolRoster
-        fields = {'url', 'schoolYear', "school", "userInfos"}
+        fields = ('url', 'schoolYear', "school", "userInfos",)
 
-
+# TODO: Check the url for user, how to get the user to connect to userinfo
 class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.CharField(source='user.url')
     username = serializers.CharField(source='user.username')
@@ -47,7 +47,7 @@ class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = UserInfo
         fields = ('grade', 'age', 'gender',
-                  'url', 'username', 'email')
+                  'url', 'username', 'email',)
 
 
 class ClassSerializer(serializers.HyperlinkedModelSerializer):
@@ -55,7 +55,7 @@ class ClassSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Class
-        fields = {'url','className', 'classID', 'school', 'classRosters'}
+        fields = ('url','className', 'classID', 'school', 'classRosters',)
 
 
 class ClassRosterSeriazlier(serializers.HyperlinkedModelSerializer):
@@ -64,7 +64,7 @@ class ClassRosterSeriazlier(serializers.HyperlinkedModelSerializer):
 
  class Meta:
      model = ClassRoster
-     fields = {'url'}
+     fields = ('url', 'classFK', 'userinfos',)
 
 
 class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -72,10 +72,10 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Assignment
-        fields = {'url', 'startDate', 'dueDate', 'classFK', 'userInfo'}
+        fields = ('url', 'startDate', 'dueDate', 'classFK', 'userInfo', 'tasks')
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Task
-        fields = {'url', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment'}
+        fields = ('url', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment',)
