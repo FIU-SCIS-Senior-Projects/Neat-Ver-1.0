@@ -6,12 +6,12 @@ from rest_framework.authtoken import views as authviews
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
-router.register(r'school', views.SchoolViewSet)
-router.register(r'schoolroster', views.SchoolRosterViewSet)
-router.register(r'userinfo', views.UserInfoViewSet)
-router.register(r'class', views.ClassViewSet)
-router.register(r'classroster', views.ClassRosterViewSet)
-router.register(r'assginment', views.AssignmentViewSet)
+router.register(r'schools', views.SchoolViewSet)
+router.register(r'schoolrosters', views.SchoolRosterViewSet)
+router.register(r'userinfos', views.UserInfoViewSet)
+router.register(r'classes', views.ClassViewSet)
+router.register(r'classrosters', views.ClassRosterViewSet)
+router.register(r'assignments', views.AssignmentViewSet)
 router.register(r'task', views.TaskViewSet)
 
 # Wire up our API using automatic URL routing.

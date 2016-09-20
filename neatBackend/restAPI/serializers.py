@@ -7,18 +7,18 @@ from restAPI.models import School, SchoolRoster, Class, UserInfo, ClassRoster, A
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'password')
+        fields = ('url', 'username', 'email', 'password',)
 
-
+#TODO: add schoolRoster such that it doesn't mess with register
 class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserInfo
-        fields = ('grade', 'age', 'gender',)
+        fields = ('url', 'grade', 'age', 'gender', 'schoolRoster')
 
 
 class RegisterSerializer(serializers.HyperlinkedModelSerializer):
-    #nested object
+    # Nested userInfo object
     userInfo = UserInfoSerializer()
 
     class Meta:
@@ -62,11 +62,11 @@ class ClassSerializer(serializers.HyperlinkedModelSerializer):
 
 class ClassRosterSeriazlier(serializers.HyperlinkedModelSerializer):
 
- userinfos = UserInfoSerializer(many=True, read_only=True)
+ userInfos = UserInfoSerializer(many=True, read_only=True, source='userInfo')
 
  class Meta:
      model = ClassRoster
-     fields = ('url', 'classFK', 'userinfos',)
+     fields = ('url', 'classFK', 'userInfos',)
 
 
 class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -74,7 +74,7 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Assignment
-        fields = ('url', 'startDate', 'dueDate', 'classFK', 'userInfo', 'tasks')
+        fields = ('url', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'userInfo', 'tasks')
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):

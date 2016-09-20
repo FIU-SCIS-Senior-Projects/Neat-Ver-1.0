@@ -1,7 +1,6 @@
 #models
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from rest_framework import viewsets
 from restAPI.models import *
 #serializers
 from restAPI.serializers import *
@@ -60,7 +59,7 @@ class SchoolViewSet(viewsets.ModelViewSet):
     serializer_class = SchoolSerializer
 
 #TODO : Figure out how to set foreign keys in django admin
-#TODO : Figure out how to allow editing of model fields
+#TODO : Figure out how to allow updating of model fields
 class SchoolRosterViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows SchoolRosters to be viewed

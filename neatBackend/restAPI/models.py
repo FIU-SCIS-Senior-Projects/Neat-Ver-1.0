@@ -37,6 +37,9 @@ class School(models.Model):
     schoolName = models.CharField(max_length=255)
     schoolID = models.CharField(max_length=255) # TODO: What does a school ID actually look like? Is it unique even across school districts?
 
+    def __str__(self):
+        return self.schoolName
+
 
 class SchoolRoster(models.Model):
     schoolYear = models.PositiveSmallIntegerField(default = timezone.now().year) # TODO: how do we want to define school year?
@@ -46,6 +49,9 @@ class SchoolRoster(models.Model):
         if self.schoolYear < 2016:  # start year of the app
             self.schoolYear = timezone.now().year
             raise ValidationError("School Roster year set too early. Changed to this year")
+
+    def __str__(self):
+        return str(self.school) + " year " + str(self.schoolYear)
 
 
 class UserInfo(models.Model):
@@ -57,7 +63,7 @@ class UserInfo(models.Model):
 
     def __str__(self):
         return "User Info: \nGrade:"  + str(self.grade) + "\nAge: " + str(self.age) + "\nGender: " + self.gender \
-               + "\nUser: " + str(self.user)
+               + "\nUser: " + "" if self.user is None else str(self.user)
 
 
 class Class(models.Model):
@@ -65,8 +71,8 @@ class Class(models.Model):
     classID = models.CharField(max_length=255) # TODO: What does a class ID look like? This can have great variance, so charfield was chosen.
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
 
-    def __unicode__(self):
-        return self.className + " at " + self.school
+    def __str__(self):
+        return self.className + " at " + str(self.school)
 
 
 class ClassRoster(models.Model):
@@ -91,6 +97,9 @@ class Assignment(models.Model):
             self.startDate = None  # If not a valid date, sets to None
         if errors:
             raise ValidationError(errors)
+
+    def __str__(self):
+        return self.assignmentName
 
 
 class Task(models.Model):
@@ -118,4 +127,7 @@ class Task(models.Model):
             self.hoursCompleted = 1
         if errors:
             raise ValidationError(errors)
+
+    def __str__(self):
+        return self.taskName
 
