@@ -9,16 +9,29 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('url', 'username', 'email', 'password')
 
+
+class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = UserInfo
+        fields = ('grade', 'age', 'gender',)
+
+
 class RegisterSerializer(serializers.HyperlinkedModelSerializer):
+    #nested object
+    userInfo = UserInfoSerializer()
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ('username', 'email', 'password', 'userInfo',)
 
     def create(self, validated_data):
         usr = validated_data.get('username')
         eml = validated_data.get('email')
         psw = validated_data.get('password')
+        userInfoData = validated_data.pop('userInfo')
         user = User.objects.create_user(username=usr, email=eml, password=psw)
+        UserInfo.objects.create(user = user, **userInfoData)
         return user
 
 
@@ -37,17 +50,6 @@ class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SchoolRoster
         fields = ('url', 'schoolYear', "school", "userInfos",)
-
-# TODO: Check the url for user, how to get the user to connect to userinfo
-class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.CharField(source='user.url')
-    username = serializers.CharField(source='user.username')
-    email = serializers.CharField(source='user.email')
-
-    class Meta:
-        model = UserInfo
-        fields = ('grade', 'age', 'gender',
-                  'url', 'username', 'email',)
 
 
 class ClassSerializer(serializers.HyperlinkedModelSerializer):

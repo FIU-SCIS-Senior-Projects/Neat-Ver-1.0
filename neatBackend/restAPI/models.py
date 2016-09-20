@@ -51,8 +51,8 @@ class SchoolRoster(models.Model):
 class UserInfo(models.Model):
     grade = models.PositiveSmallIntegerField()
     age = models.PositiveSmallIntegerField()
-    gender = models.CharField(max_length=50)
-    schoolRoster = models.ForeignKey(SchoolRoster, on_delete=models.PROTECT, related_name='userInfos') # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
+    gender = models.CharField(max_length=50, null=True)
+    schoolRoster = models.ForeignKey(SchoolRoster, on_delete=models.PROTECT, related_name='userInfos', null=True) # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
     user = models.OneToOneField(User, on_delete=models.PROTECT) # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
 
     def __str__(self):
