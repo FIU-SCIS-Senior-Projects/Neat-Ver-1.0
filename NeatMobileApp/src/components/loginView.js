@@ -47,20 +47,9 @@ class loginView extends Component{
         <Text style={styles.heading}>
           NEAT
         </Text>
-
-        {/* <TextInput
-          onChangeText={(val) => this.setState({email: val})}
-          style={styles.input}
-          placeholder="Email"
-        />
-        <TextInput
-          onChangeText={(val) => this.setState({password: val})}
-          style={styles.input} placeholder="Password"
-          secureTextEntry={true}
-        /> */}
         <View style={styles.inputs}>
           <View style={styles.inputContainer}>
-              <Image style={styles.inputUsername} source={require('image!ic_perm_identity')}/>
+              <Image style={styles.inputIcon} source={require('image!ic_perm_identity')}/>
               <TextInput
                   style={[styles.input, styles.greyFont]}
                   placeholder="Username"
@@ -68,7 +57,7 @@ class loginView extends Component{
               />
           </View>
           <View style={styles.inputContainer}>
-              <Image style={styles.inputPassword} source={require('image!ic_lock_outline')}/>
+              <Image style={styles.inputIcon} source={require('image!ic_lock_outline')}/>
               <TextInput
                   password={true}
                   style={[styles.input, styles.greyFont]}
@@ -77,13 +66,7 @@ class loginView extends Component{
               />
           </View>
 
-          <View style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginTop: 20,
-                  marginBottom: 20
-              }}>
+          <View style={styles.registerForgotContainer}>
               <View style={styles.registerContainer}>
                   <Text style={styles.greyFont}>Register</Text>
               </View>
@@ -97,12 +80,6 @@ class loginView extends Component{
             Sign In
           </Text>
         </TouchableHighlight>
-
-        {/* <TouchableHighlight style = {styles.button} onPress={(this.onRegisterPressed.bind(this))} >
-          <Text style = {styles.buttonText}>
-            register
-          </Text>
-        </TouchableHighlight> */}
       </View>
     )
   }
@@ -111,34 +88,36 @@ class loginView extends Component{
 const styles = StyleSheet.create({
   container: {
       backgroundColor: '#FFF',
-      padding: 20,
-      alignItems: 'center',
+      padding: 35,
       flex: 1,
     },
     logo: {
-      width: 150,
-      height: 150,
+      alignSelf: 'center',
+      width: 175,
+      height: 175,
     },
     heading: {
-      fontSize: 60,
-      fontWeight: '300'
+      fontSize: 65,
+      fontWeight: '300',
+      alignSelf: 'center',
     },
     button: {
       height: 50,
       backgroundColor: '#FFF',
       borderColor: '#599D95',
-      alignSelf: 'stretch',
+      alignSelf: 'center',
+      width: 275,
       marginTop: 10,
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 20,
-      borderWidth: 3
+      borderWidth: 2
     },
     textButton:{
       color: 'white'
     },
     buttonText:{
-      fontSize: 18,
+      fontSize: 16,
       color: 'grey',
       alignSelf: 'center',
       fontWeight: '100'
@@ -154,25 +133,17 @@ const styles = StyleSheet.create({
       color: '#48BBEC',
   },
     inputs: {
-        // marginTop: 10,
-        // marginBottom: 10,
-        // flex: .25
+        flexDirection: 'column',
+        alignItems: 'stretch'
     },
-    inputPassword: {
+    inputIcon: {
         marginLeft: 15,
-        width: 20,
+        width: 21,
         height: 21
-    },
-    inputUsername: {
-      marginLeft: 15,
-      width: 20,
-      height: 20
     },
     inputContainer: {
         padding: 10,
-        // borderWidth: 1,
-        // borderBottomColor: '#CCC',
-        // borderColor: 'transparent'
+        alignItems: 'stretch',
     },
     input: {
         position: 'absolute',
@@ -180,7 +151,15 @@ const styles = StyleSheet.create({
         top: 12,
         right: 0,
         height: 20,
-        fontSize: 14
+        fontSize: 16,
+        paddingLeft: 10
+    },
+    registerForgotContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingLeft: 20,
+      paddingRight: 20,
     },
     registerContainer: {
       alignItems: 'flex-start',
