@@ -1,6 +1,8 @@
 #models
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from rest_framework.viewsets import ViewSet
+
 from restAPI.models import *
 #serializers
 from restAPI.serializers import *
@@ -22,7 +24,7 @@ from django.utils import timezone
 import datetime
 
 """
-/users/
+/usersmodels/
 list of users
 """
 
@@ -37,9 +39,9 @@ class UserViewSet(viewsets.ModelViewSet):
 /register/
 create users
 """
-class RegisterView(APIView):
+class RegisterViewSet(ViewSet):
 
-    def post(self, request, format=None):
+    def create(self, request, format=None):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             #create user
@@ -49,6 +51,18 @@ class RegisterView(APIView):
             #return Response(serializer.data)
             return Response("user created")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+"""
+/users/
+view users
+"""
+class UsersViewSet(ViewSet):
+
+    def list(self, request, format=None):
+        queryset = User.objects.all()
+        serializer = RegisterSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class SchoolViewSet(viewsets.ModelViewSet):

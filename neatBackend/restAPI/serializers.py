@@ -1,13 +1,14 @@
+import logging
+
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from rest_framework import serializers
 
 from restAPI.models import School, SchoolRoster, Class, UserInfo, ClassRoster, Assignment, Task
 
+logger = logging.getLogger(__name__)
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'password',)
+
 
 #TODO: add schoolRoster such that it doesn't mess with register
 class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
@@ -16,6 +17,11 @@ class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
         model = UserInfo
         fields = ('url', 'grade', 'age', 'gender', 'schoolRoster')
 
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url', 'username', 'email', 'password', 'userInfos')
 
 class RegisterSerializer(serializers.HyperlinkedModelSerializer):
     # Nested userInfo object
