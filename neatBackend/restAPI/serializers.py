@@ -21,7 +21,7 @@ class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'password', 'userInfos')
+        fields = ('url', 'username', 'email', 'password', 'userInfo')
 
 class RegisterSerializer(serializers.HyperlinkedModelSerializer):
     # Nested userInfo object
