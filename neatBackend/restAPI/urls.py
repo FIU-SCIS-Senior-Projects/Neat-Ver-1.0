@@ -7,7 +7,6 @@ from rest_framework.authtoken import views as authviews
 router = routers.DefaultRouter()
 router.register(r'schools', views.SchoolViewSet)
 router.register(r'schoolrosters', views.SchoolRosterViewSet)
-
 router.register(r'userinfos', views.UserInfoViewSet)
 router.register(r'classes', views.ClassViewSet)
 router.register(r'classrosters', views.ClassRosterViewSet)

@@ -42,8 +42,8 @@ class RegisterSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SchoolSerializer(serializers.HyperlinkedModelSerializer):
-    schoolRosters = serializers.StringRelatedField(many=True)
-    classes = serializers.StringRelatedField(many=True)
+    schoolRosters = serializers.StringRelatedField(many=True, required=False)
+    classes = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = School
