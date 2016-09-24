@@ -68,10 +68,12 @@ class loginView extends Component{
 
           <View style={styles.registerForgotContainer}>
               <View style={styles.registerContainer}>
-                  <Text style={styles.greyFont}>Register</Text>
+                  <Text style={styles.greyFont} onPress={(this.onRegisterPressed.bind(this))}>
+                    Register
+                  </Text>
               </View>
               <View style={styles.forgotContainer}>
-                  <Text style={styles.greyFont}>Forgot?</Text>
+                  <Text style={styles.greyFont} >Forgot?</Text>
               </View>
           </View>
         </View>
