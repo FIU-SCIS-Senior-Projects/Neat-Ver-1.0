@@ -1,3 +1,4 @@
+'use strict'
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -5,14 +6,12 @@
  */
 
 import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  TouchableHighlight,
-  TextInput
-} from 'react-native';
+import { AppRegistry,StyleSheet,Text,View,TouchableHighlight,TouchableOpacity,
+         TextInput,Image } from 'react-native';
+import styles from './styles';
+import Icon from '../../../node_modules/react-native-vector-icons/FontAwesome';
+import Logo from './../../assets/img/Logo_Neat.png';
+//const userIcon = (<Icon name="fa-user" size={25} color ={'#900'}/>)
 
 
 class Register extends Component {
@@ -105,42 +104,63 @@ async onPUTPressed(){
     }
     this.setState({errors: errorsArray});
   }
-
 }
 
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableHighlight style = {styles.button} onPress={(this.onGetPressed.bind(this))} >
-          <Text style = {styles.buttonText}>
-            Get
-          </Text>
-        </TouchableHighlight>
+      <View style={styles.appContainer}>
 
-          <TextInput
-          onChangeText={(val) => this.setState({email: val})}
-          style={styles.input} placeholder="Email"
-          />
-          <TextInput
-          onChangeText={(val) => this.setState({username: val})}
-          style={styles.input} placeholder="Username"
-          />
-          <TextInput
-          onChangeText={(val) => this.setState({password: val})}
-          style={styles.input} placeholder="Password"
-          secureTextEntry={true}
-          />
-          <TextInput
-          onChangeText={(val) => this.setState({password_confirmation: val})}
-          style={styles.input} placeholder="Confirm Password"
-          secureTextEntry={true}
-          />
-          <TouchableHighlight style = {styles.button} onPress={(this.onPUTPressed.bind(this))} >
-            <Text style = {styles.buttonText}>
-              Register
-            </Text>
-          </TouchableHighlight>
+          <View style ={styles.titleView}>
+              <Text style = {styles.titleText}>
+                Registration
+              </Text>
+          </View>
 
+          <View style={styles.inputContainer}>
+
+              <Text style={styles.texInputImage}> @ </Text>
+              <TextInput style={styles.input}
+                  onChangeText={(val) => this.setState({email: val})}
+                  placeholder="Email"
+              />
+          </View>
+
+          <View style={styles.inputContainer}>
+              <Image style={styles.texInputImage}
+               source={require('image!ic_perm_identity')}/>
+              <TextInput style={styles.input}
+              onChangeText={(val) => this.setState({username: val})}
+              placeholder="Username"
+              />
+          </View>
+
+          <View style={styles.inputContainer}>
+              <Image style={styles.texInputImage}
+               source={require('image!ic_lock_outline')}/>
+              <TextInput style={styles.input}
+              onChangeText={(val) => this.setState({password: val})}
+              placeholder="Password"
+              secureTextEntry={true}
+              />
+          </View>
+
+          <View style={styles.inputContainer}>
+              <Image style={styles.texInputImage}
+               source={require('image!ic_lock_outline')}/>
+              <TextInput style={styles.input}
+              onChangeText={(val) => this.setState({password_confirmation: val})}
+              placeholder="Confirm Password"
+              secureTextEntry={true}
+              />
+          </View>
+
+          <View>
+              <TouchableOpacity style = {styles.btnContainer}
+                onPress={(this.onPUTPressed.bind(this))} >
+                <Image source={Logo} style={styles.logo}/>
+                <Text style = {styles.buttonText}>Register</Text>
+              </TouchableOpacity>
+          </View>
 
           <Errors errors = {this.state.errors}/>
 
@@ -159,45 +179,5 @@ const Errors = (props) => {
 }
 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-    padding: 10,
-    paddingTop: 80
-  },
-  input:{
-    height: 50,
-    marginTop: 10,
-    padding: 4,
-    fontSize: 18,
-    borderWidth: 1,
-    borderColor: '#48bbec'
-  },
-  button: {
-    height: 50,
-    backgroundColor: '#48BBEC',
-    alignSelf: 'stretch',
-    marginTop: 10,
-    justifyContent: 'center'
-  },
-  buttonText:{
-    fontSize:22,
-    color: '#FFF',
-    alignSelf: 'center'
-  },
-  heading: {
-    fontSize: 30,
-  },
-  error: {
-    color: 'red',
-    paddingTop: 10
-  },
-  loader: {
-    marginTop: 20
-  }
-  });
 
   export default Register
