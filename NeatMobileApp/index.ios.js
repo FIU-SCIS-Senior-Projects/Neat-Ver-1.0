@@ -10,6 +10,8 @@ import { AppRegistry, Text, StyleSheet, View,Image,Navigator} from 'react-native
 const Login = require('./src/components/loginView')
 const StudentDashboard = require('./src/components/StudentDashboardView')
 const AddNewClass = require('./src/components/newClassView')
+const AssignmentsDash = require('./src/components/Assignments')
+const AssignmentForm = require('./src/components/AssignmentForm');
 
 import Register from './src/components/registration/register';
 import Splash from './src/components/neatsplash';
@@ -46,6 +48,10 @@ class NeatMobileApp extends Component {
         return(<StudentDashboard navigator = {navigator} title = 'StudentDashboard'/>)
       case 'AddNewClass':
         return(<AddNewClass navigator = {navigator} title = 'AddNewClass'/>)
+      case 'AssignmentsDash':
+          return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
+      case 'AssignmentForm':
+          return(<AssignmentForm navigator = {navigator} title = 'AssignmentForm'/>)
     }
   }
 
