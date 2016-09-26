@@ -18,6 +18,7 @@ if such a decision arises.
 """
 # TODO : since we may not want to delete any/some entries when a user opts out we may want to add a field to check if user opted out instead of cascading deletes.
 # TODO : should ClassRoster also have year?
+# TODO : test_models run validations, but endpoints do not
 
 
 def is_before_today(value):

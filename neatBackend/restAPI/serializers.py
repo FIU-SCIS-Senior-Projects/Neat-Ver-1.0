@@ -23,6 +23,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('url', 'username', 'email', 'password', 'userInfo')
 
+
 class RegisterSerializer(serializers.HyperlinkedModelSerializer):
     # Nested userInfo object
     userInfo = UserInfoSerializer()
@@ -51,7 +52,7 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
-    userInfos = serializers.StringRelatedField(many=True)
+    userInfos = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = SchoolRoster
@@ -59,7 +60,7 @@ class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ClassSerializer(serializers.HyperlinkedModelSerializer):
-    classRosters = serializers.StringRelatedField(many=True)
+    classRosters = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = Class
@@ -68,7 +69,7 @@ class ClassSerializer(serializers.HyperlinkedModelSerializer):
 
 class ClassRosterSeriazlier(serializers.HyperlinkedModelSerializer):
 
- userInfos = UserInfoSerializer(many=True, read_only=True, source='userInfo')
+ userInfos = UserInfoSerializer(many=True, read_only=True, source='userInfo', required=False)
 
  class Meta:
      model = ClassRoster
@@ -76,7 +77,7 @@ class ClassRosterSeriazlier(serializers.HyperlinkedModelSerializer):
 
 
 class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
-    tasks = serializers.StringRelatedField(many=True)
+    tasks = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = Assignment

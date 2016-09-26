@@ -1,4 +1,6 @@
 #models
+from collections import OrderedDict
+
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework.viewsets import ViewSet
@@ -49,7 +51,8 @@ class RegisterViewSet(ViewSet):
             #create token
             #Token.objects.get_or_create(user=usr)
             #return Response(serializer.data)
-            return Response("user created")
+            returnDict = OrderedDict(ResponseString= "user created", userPK=usr.pk)
+            return Response(returnDict) # TODO: should this return the created url for user?
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
