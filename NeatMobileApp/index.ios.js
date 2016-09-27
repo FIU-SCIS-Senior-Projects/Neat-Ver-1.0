@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { AppRegistry, Text, StyleSheet, View,Image,Navigator} from 'react-native';
+import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator,} from 'react-native';
 
 const Login = require('./src/components/loginView')
 const StudentDashboard = require('./src/components/StudentDashboardView')
@@ -14,25 +14,64 @@ const AddNewClass = require('./src/components/newClassView')
 import Register from './src/components/registration/register';
 import Splash from './src/components/neatsplash';
 
+var AuthService = require('./src/utilities/AuthService');
+
 
 class NeatMobileApp extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isLoggedIn: false,
+      checkingAuth: true
+    }
+  }
+  componentDidMount(){
+    AuthService.getAuthInfo((err, authInfo)=> {
+      this.setState({
+        checkingAuth: false,
+        isLoggedIn: authInfo != null
+      })
+    });
+  }
+  onLogin(){
+    this.setState({isLoggedIn: true});
+  }
   render() {
-    return (
+    if(this.state.isLoggedIn) {
+      return (
+        <Splash duration={3000} backgroundColor={styles.splashContainer}>
+          <View style ={styles.container}>
 
-      <Splash duration={3000} backgroundColor={styles.splashContainer}>
-        <View style ={styles.container}>
+            <Navigator
+              initialRoute = {{
+                id: 'StudentDashboard'
+              }}
+              renderScene = {
+                this.navigatorRenderScene
+              }
+              onLogin={this.onLogin.bind(this)}
+            />
+          </View>
+        </Splash>
+      );
+    }
+    else {
+      return (
+        <Splash duration={3000} backgroundColor={styles.splashContainer}>
+          <View style ={styles.container}>
 
-          <Navigator
-            initialRoute = {{
-              id: 'Login'
-            }}
-            renderScene = {
-              this.navigatorRenderScene
-            }
-          />
-        </View>
-      </Splash>
-    );
+            <Navigator
+              initialRoute = {{
+                id: 'Login'
+              }}
+              renderScene = {
+                this.navigatorRenderScene
+              }
+            />
+          </View>
+        </Splash>
+      );
+    }
   }
 
   navigatorRenderScene(route,navigator){
@@ -48,7 +87,9 @@ class NeatMobileApp extends Component {
         return(<AddNewClass navigator = {navigator} title = 'AddNewClass'/>)
     }
   }
-
+  onLogin() {
+    this.setState({isLoggedIn: true})
+  }
 }
 
 const styles = StyleSheet.create({

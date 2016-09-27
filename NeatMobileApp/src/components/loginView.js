@@ -22,14 +22,34 @@ class loginView extends Component{
       email: "",
       password: "",
       errors: [],
+      showProgress: false,
     }
   }
 
   onLoginPressed(){
+    console.log('login pressed');
+    this.setState({showProgess: true});
+    var authService = require('../utilities/AuthService');
+    authService.login({
+        username: this.state.username,
+        password: this.state.password
+    }, (results)=> {
+        this.setState(Object.assign({
+            showProgress: false
+        }, results));
+
+        console.log('printing results from auth login' + results);
+        if(results.success){
+            this.onLogin();
+        }
+    });
+  }
+
+  onLogin() {
     this.props.navigator.push({
       id: 'StudentDashboard'
     });
-    console.log('you have push the login button')
+    console.log('you have logged in')
   }
 
   onRegisterPressed(){
@@ -52,8 +72,8 @@ class loginView extends Component{
               <Image style={styles.inputIcon} source={require('image!ic_perm_identity')}/>
               <TextInput
                   style={[styles.input, styles.greyFont]}
-                  placeholder="Username"
-                  value={this.state.username}
+                  placeholder='Username'
+                  onChangeText={(text)=> this.setState({username: text})}
               />
           </View>
           <View style={styles.inputContainer}>
@@ -61,8 +81,8 @@ class loginView extends Component{
               <TextInput
                   password={true}
                   style={[styles.input, styles.greyFont]}
-                  placeholder="Pasword"
-                  value={this.state.password}
+                  placeholder='Password'
+                  onChangeText={(text)=> this.setState({password: text})}
               />
           </View>
 
@@ -77,7 +97,7 @@ class loginView extends Component{
               </View>
           </View>
         </View>
-        <TouchableHighlight style = {styles.button} onPress={(this.onLoginPressed.bind(this))} >
+        <TouchableHighlight style = {styles.button} onPress={this.onLoginPressed.bind(this)} >
           <Text style = {styles.buttonText}>
             Sign In
           </Text>
