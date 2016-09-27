@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import Logo from './../assets/img/Logo_Neat.png';
+var authService = require('../utilities/AuthService');
 
 
 class loginView extends Component{
@@ -27,9 +28,8 @@ class loginView extends Component{
   }
 
   onLoginPressed(){
-    console.log('login pressed');
     this.setState({showProgess: true});
-    var authService = require('../utilities/AuthService');
+
     authService.login({
         username: this.state.username,
         password: this.state.password
@@ -37,8 +37,6 @@ class loginView extends Component{
         this.setState(Object.assign({
             showProgress: false
         }, results));
-
-        console.log('printing results from auth login' + results);
         if(results.success){
             this.onLogin();
         }
@@ -56,7 +54,7 @@ class loginView extends Component{
     this.props.navigator.push({
       id: 'Register'
     });
-    console.log('you have push the register button')
+    console.log('you have push the register button');
   }
 
   render(){

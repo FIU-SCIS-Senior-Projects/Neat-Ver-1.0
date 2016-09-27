@@ -17,6 +17,7 @@ class AuthService {
         return cb();
       }
       var zippedObj = _.fromPairs(val);
+      console.log('zippedObj ' + JSON.stringify(zippedObj));
       if(!zippedObj[authKey]) {
         return cb();
       }
@@ -32,9 +33,11 @@ class AuthService {
     });
   }
   login(creds, cb){
-    // var b = new buffer.Buffer(creds.username +
-    //             ':' + creds.password);
-    // var encodedAuth = b.toString('base64');
+    var b = new buffer.Buffer(creds.username +
+                ':' + creds.password);
+    var encodedAuth = b.toString('base64');
+    console.log('username: ', creds.username, 'password: ', creds.password, 'encodedAuth:', encodedAuth);
+
 
     fetch('http://52.87.176.128/login/',{
       method: 'POST',
@@ -47,7 +50,6 @@ class AuthService {
       })
     })
     .then((response)=> {
-      console.log(response);
         if(response.status >= 200 && response.status < 300){
             return response;
         }
@@ -61,17 +63,18 @@ class AuthService {
         return response.json();
     })
     .then((results)=> {
+      console.log('before multiset' + JSON.stringify(results.token));
       AsyncStorage.multiSet([
-              // [authKey, encodedAuth],
-              // [authKey, this.creds.username] //creds is null at this point
-              [userKey, JSON.stringify(results)]
+              // [authKey, encodedAuth] //creds is null at this point
+              [userKey, JSON.stringify(results.token)]
           ], (err)=> {
               if(err){
                   throw err;
               }
-
               return cb({success: true});
-          })
+      })
+      // AsyncStorage.getItem(userKey, (err, result) => {
+      // });
     })
     .catch((err)=> {
         return cb(err);

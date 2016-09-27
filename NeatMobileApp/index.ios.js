@@ -26,7 +26,9 @@ class NeatMobileApp extends Component {
     }
   }
   componentDidMount(){
+    console.log('componentDidMount was called');
     AuthService.getAuthInfo((err, authInfo)=> {
+      console.log('splash screen stuff ' + JSON.stringify(authInfo));
       this.setState({
         checkingAuth: false,
         isLoggedIn: authInfo != null
@@ -34,10 +36,13 @@ class NeatMobileApp extends Component {
     });
   }
   onLogin(){
+    console.log('onLogin was called from index');
     this.setState({isLoggedIn: true});
   }
   render() {
+    console.log('state: ' + JSON.stringify(this.state));
     if(this.state.isLoggedIn) {
+      this.onLogin();
       return (
         <Splash duration={3000} backgroundColor={styles.splashContainer}>
           <View style ={styles.container}>
@@ -49,7 +54,7 @@ class NeatMobileApp extends Component {
               renderScene = {
                 this.navigatorRenderScene
               }
-              onLogin={this.onLogin.bind(this)}
+              // onLogin={this.onLogin.bind(this)}
             />
           </View>
         </Splash>

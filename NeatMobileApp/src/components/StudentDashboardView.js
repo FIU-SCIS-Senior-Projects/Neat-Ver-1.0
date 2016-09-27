@@ -1,7 +1,7 @@
 'use strict'
 
 import React, { Component } from 'react';
-import {View, Text, StyleSheet, TouchableHighlight} from 'react-native';
+import {View, Text, StyleSheet, TouchableHighlight, AsyncStorage } from 'react-native';
 
 
 class StudentDashboardView extends Component{
