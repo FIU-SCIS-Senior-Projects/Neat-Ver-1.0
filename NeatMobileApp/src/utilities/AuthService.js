@@ -63,7 +63,7 @@ class AuthService {
     .then((results)=> {
       AsyncStorage.multiSet([
               // [authKey, encodedAuth],
-              // [authKey, this.creds.username]
+              // [authKey, this.creds.username] //creds is null at this point
               [userKey, JSON.stringify(results)]
           ], (err)=> {
               if(err){
