@@ -4,6 +4,18 @@ Django and Django REST Framework For Neat
 
 # Rest API Documentation
 For an in depth documentation go to [http://localhost/docs][5] or the official docs at [http://52.87.176.128/docs][6]
+
+##Recent Endpoints - examples
+
+####Get user info from token
+`curl -X GET http://127.0.0.1:8000/api/user/ -H 'Authorization: Token c1dd50210dac88a09773474f96b74c5de8c8447c'`
+
+####Register
+`curl -H "Content-Type: application/json" -X POST -d '{"username":"adein232z22","email":"fasds@dsa.com","password":"password123","userInfo":{"grade":"12","age":"23","gender":"male"}}' http://127.0.0.1:8000/api/register/`
+
+####Login
+`curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"password123"}' http://52.87.176.128/api/login/`
+
 #Usage
 
 ### Python Virtual Machine (Unix)
