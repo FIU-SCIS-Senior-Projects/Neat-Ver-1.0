@@ -1,6 +1,7 @@
 import { AsyncStorage } from 'react-native';
-var _ = require('lodash');
-var buffer = require('buffer');
+var _ = require('lodash'),
+    buffer = require('buffer'),
+    config = require('../config.js');
 
 
 const authKey = 'auth';
@@ -32,21 +33,41 @@ class AuthService {
       return cb(null, authInfo);
     });
   }
+
+  getLoginToken(cb) {
+    AsyncStorage.getItem(userKey, (err, val) => {
+      console.log('inside getLoginToken userkey', userKey, 'err:', err, 'val:', val);
+      if(err) {
+        return cb(err);
+      }
+      if(!val) {
+        return cb();
+      }
+      var authInfo = {
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/json'
+        },
+        token: val
+      }
+      return cb(null, authInfo);
+    });
+  }
+
   login(creds, cb){
     var b = new buffer.Buffer(creds.username +
                 ':' + creds.password);
     var encodedAuth = b.toString('base64');
     console.log('username: ', creds.username, 'password: ', creds.password, 'encodedAuth:', encodedAuth);
 
-
-    fetch('http://52.87.176.128/login/',{
+    fetch(config.server.host + 'login/',{
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         "username": creds.username,
-        "password": creds.password
+        "password": creds.password,
       })
     })
     .then((response)=> {
@@ -64,17 +85,21 @@ class AuthService {
     })
     .then((results)=> {
       console.log('before multiset' + JSON.stringify(results.token));
-      AsyncStorage.multiSet([
-              // [authKey, encodedAuth] //creds is null at this point
-              [userKey, JSON.stringify(results.token)]
-          ], (err)=> {
-              if(err){
-                  throw err;
-              }
-              return cb({success: true});
+      // AsyncStorage.multiSet([
+      //         [authKey, encodedAuth] //creds is null at this point
+      //         [userKey, JSON.stringify(results.token)]
+      //     ], (err)=> {
+      //         if(err){
+      //             throw err;
+      //         }
+      //         return cb({success: true});
+      // })
+      AsyncStorage.setItem(userKey, JSON.stringify(results.token), (err)=> {
+          if(err){
+              throw err;
+          }
+          return cb({success: true});
       })
-      // AsyncStorage.getItem(userKey, (err, result) => {
-      // });
     })
     .catch((err)=> {
         return cb(err);
