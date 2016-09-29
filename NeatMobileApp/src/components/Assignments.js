@@ -9,6 +9,8 @@ import {
   ListView
 } from 'react-native';
 
+import * as Progress from 'react-native-progress';
+
 var AssignmentForm = require('./AssignmentForm');
 
 class Assignments extends Component{
@@ -18,28 +20,40 @@ class Assignments extends Component{
         this.state = {
           dataSource: ds.cloneWithRows([
             'Chapter 1', 'Chapter 2', 'Chapter 3', 'Chapter 4'
-          ])
+          ]),
+
+          progress: 0.20,
+          indeterminate: false,
         };
       }
 
     render(){
         return(
-        <View>
+            <View>
+                <ListView style={{ paddingBottom: 150}}
+                    dataSource={this.state.dataSource}
+                    renderRow={
+                        (rowData) =>
+                            <View style={styles.circles}>
+                            <Text style={styles.List}>{rowData}</Text>
+                            <Progress.Circle
+                                style={styles.progress}
+                                progress={this.state.progress}
+                                indeterminate={this.state.indeterminate}
+                                direction="counter-clockwise"
+                            />
+                        </View>
+                    }
+                />
 
-            <ListView style={{ paddingBottom: 150}}
-              dataSource={this.state.dataSource}
-              renderRow={(rowData) => <Text style={styles.List}>{rowData}</Text>}
-            />
-
-            <TouchableHighlight
-                onPress={this.onAddPressed.bind(this)}
-                  style={styles.button}
-                  >
+                <TouchableHighlight
+                    onPress={this.onAddPressed.bind(this)}
+                    style={styles.button}>
                     <Text style={{ color: '#ffffff' }}>
-                        Add Assignment
+                            Add Assignment
                     </Text>
-            </TouchableHighlight>
-          </View>
+                </TouchableHighlight>
+            </View>
         );
     }
 
@@ -67,6 +81,13 @@ const styles = StyleSheet.create({
         height: 50,
         textAlign: 'center',
         padding: 10
-    }
+    },
+    progress: {
+        margin: 10,
+    },
+    circles: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
 });
 module.exports = Assignments;
