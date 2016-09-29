@@ -1,15 +1,14 @@
-#models
+#python
 from collections import OrderedDict
-
+#models
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from rest_framework.viewsets import ViewSet
-
 from restAPI.models import *
 #serializers
 from restAPI.serializers import *
 #viewsets
 from rest_framework import viewsets
+from rest_framework.viewsets import ViewSet
 #classviews
 from django.http import Http404
 from rest_framework.views import APIView
@@ -19,28 +18,31 @@ from rest_framework import status
 from rest_framework import generics
 #authentication
 from django.contrib.auth import authenticate
+from rest_framework.authentication import TokenAuthentication
+#permissions
+from rest_framework import permissions
+from .permissions import *
 #filters
 from rest_framework.filters import DjangoFilterBackend
-#datees
+#dates
 from django.utils import timezone
 import datetime
 
-"""
-/usersmodels/
-list of users
-"""
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
+class UsersViewSet(viewsets.ModelViewSet):
+    #permission_classes = (permissions.IsAdminUser,)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
-"""
-/register/
-create users
-"""
+class UserView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    #permission_classes = (permissions.IsAdminUser,)
+
+    def get(self, request, format=None):
+        """
+        Return user info given a token
+        """
+        return Response(UserSerializer(request.user, context={'request': request}).data)
+
 class RegisterViewSet(ViewSet):
 
     def create(self, request, format=None):
@@ -48,23 +50,17 @@ class RegisterViewSet(ViewSet):
         if serializer.is_valid():
             #create user
             usr = serializer.create(serializer.validated_data)
-            #create token
-            #Token.objects.get_or_create(user=usr)
-            #return Response(serializer.data)
             returnDict = OrderedDict(ResponseString= "user created", userPK=usr.pk)
             return Response(returnDict) # TODO: should this return the created url for user?
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-"""
-/users/
-view users
-"""
-class UsersViewSet(ViewSet):
+
+class UserDataViewSet(ViewSet):
 
     def list(self, request, format=None):
         queryset = User.objects.all()
-        serializer = RegisterSerializer(queryset, many=True)
+        serializer = UserDataSerializer(queryset, many=True)
         return Response(serializer.data)
 
 

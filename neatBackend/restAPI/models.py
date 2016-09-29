@@ -61,6 +61,10 @@ class UserInfo(models.Model):
     gender = models.CharField(max_length=50, null=True)
     schoolRoster = models.ForeignKey(SchoolRoster, on_delete=models.PROTECT, related_name='userInfos', null=True) # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
     user = models.OneToOneField(User, on_delete=models.PROTECT, related_name='userInfo') # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
+    #email verification
+    activated = models.BooleanField(default=False)
+    activationKey = models.CharField(max_length=40, null=True)
+    keyExpiration = models.DateTimeField(null=True)
 
     def __str__(self):
         return "User Info: \nGrade:"  + str(self.grade) + "\nAge: " + str(self.age) + "\nGender: " + self.gender \
@@ -71,6 +75,9 @@ class Class(models.Model):
     className = models.CharField(max_length=255)
     classID = models.CharField(max_length=255) # TODO: What does a class ID look like? This can have great variance, so charfield was chosen.
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
+    #permissions
+    #owner = teacher, for now. Alternatively, owner will be school admin, and we'll add a teacher field
+    owner = models.ForeignKey('auth.User', related_name='classes', null=True)
 
     def __str__(self):
         return self.className + " at " + str(self.school)
@@ -86,7 +93,9 @@ class Assignment(models.Model):
     startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
     dueDate = models.DateField(validators=[is_before_today], null=True)
     classFK = models.ForeignKey(Class, on_delete=models.CASCADE)
-    userInfo = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+    #permissions
+    #userInfo = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+    owner = models.ForeignKey('auth.User', related_name='assignments', null=True)
 
     def clean(self):
         errors = {}
@@ -111,6 +120,8 @@ class Task(models.Model):
     startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
     endDate = models.DateField(validators=[is_before_today], null=True)
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='tasks')
+    #permissions
+    owner = models.ForeignKey('auth.User', related_name='tasks', null=True)
 
     def clean(self):
         errors = {}

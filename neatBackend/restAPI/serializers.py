@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from rest_framework import serializers
 
-from restAPI.models import School, SchoolRoster, Class, UserInfo, ClassRoster, Assignment, Task
+from .models import *
 
 logger = logging.getLogger(__name__)
 
@@ -15,13 +15,15 @@ class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserInfo
-        fields = ('url', 'grade', 'age', 'gender', 'schoolRoster')
+        fields = ('url', 'grade', 'age', 'gender')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    userInfo = UserInfoSerializer()
+
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'password', 'userInfo')
+        fields = ('url', 'pk', 'username', 'first_name', 'last_name', 'email', 'groups', 'userInfo')
 
 
 class RegisterSerializer(serializers.HyperlinkedModelSerializer):
@@ -52,11 +54,11 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
-    userInfos = serializers.StringRelatedField(many=True, required=False)
+    #userInfos = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = SchoolRoster
-        fields = ('url', 'schoolYear', "school", "userInfos",)
+        fields = ('url', 'schoolYear', "school")
 
 
 class ClassSerializer(serializers.HyperlinkedModelSerializer):
@@ -64,16 +66,16 @@ class ClassSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Class
-        fields = ('url','className', 'classID', 'school', 'classRosters',)
+        fields = ('url', 'owner', 'className', 'classID', 'school', 'classRosters',)
 
 
 class ClassRosterSeriazlier(serializers.HyperlinkedModelSerializer):
 
- userInfos = UserInfoSerializer(many=True, read_only=True, source='userInfo', required=False)
+    #userInfos = UserInfoSerializer(many=True, read_only=True, source='userInfo', required=False)
 
- class Meta:
-     model = ClassRoster
-     fields = ('url', 'classFK', 'userInfos',)
+    class Meta:
+        model = ClassRoster
+        fields = ('url', 'classFK')
 
 
 class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -81,10 +83,10 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Assignment
-        fields = ('url', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'userInfo', 'tasks')
+        fields = ('url', 'owner', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Task
-        fields = ('url', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment',)
+        fields = ('url', 'owner', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment',)
