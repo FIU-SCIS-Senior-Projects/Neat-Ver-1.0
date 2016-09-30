@@ -55,15 +55,6 @@ class RegisterViewSet(ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-class UserDataViewSet(ViewSet):
-
-    def list(self, request, format=None):
-        queryset = User.objects.all()
-        serializer = UserDataSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-
 class SchoolViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows School to be viewed or posted.
@@ -84,6 +75,7 @@ class SchoolRosterViewSet(viewsets.ModelViewSet):
 class UserInfoViewSet(viewsets.ModelViewSet):
     queryset = UserInfo.objects.all()
     serializer_class = UserInfoSerializer
+
 
 
 class ClassViewSet(viewsets.ModelViewSet):

@@ -19,7 +19,7 @@ class UserInfoSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    userInfo = UserInfoSerializer()
+    userInfo = UserInfoSerializer(read_only=True)
 
     class Meta:
         model = User
@@ -45,37 +45,33 @@ class RegisterSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SchoolSerializer(serializers.HyperlinkedModelSerializer):
-    schoolRosters = serializers.StringRelatedField(many=True, required=False)
+    roster = serializers.StringRelatedField(many=True, required=False)
     classes = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = School
-        fields = ('url', 'schoolName', 'schoolID', 'schoolRosters', 'classes',)
+        fields = ('url', 'schoolName', 'schoolID', 'classes', 'roster', 'owner')
 
 
 class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
-    #userInfos = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = SchoolRoster
-        fields = ('url', 'schoolYear', "school")
-
+        fields = ('url', 'schoolYear', 'school', 'user')
 
 class ClassSerializer(serializers.HyperlinkedModelSerializer):
-    classRosters = serializers.StringRelatedField(many=True, required=False)
+    roster = serializers.StringRelatedField(many=True, required=False)
 
     class Meta:
         model = Class
-        fields = ('url', 'owner', 'className', 'classID', 'school', 'classRosters',)
+        fields = ('url', 'className', 'classID', 'school', 'roster', 'owner')
 
 
 class ClassRosterSeriazlier(serializers.HyperlinkedModelSerializer):
 
-    #userInfos = UserInfoSerializer(many=True, read_only=True, source='userInfo', required=False)
-
     class Meta:
         model = ClassRoster
-        fields = ('url', 'classFK')
+        fields = ('url', 'classFK', 'user')
 
 
 class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -83,10 +79,11 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Assignment
-        fields = ('url', 'owner', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
+        fields = ('url', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks', 'owner')
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = Task
-        fields = ('url', 'owner', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment',)
+        fields = ('url', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment', 'owner')
