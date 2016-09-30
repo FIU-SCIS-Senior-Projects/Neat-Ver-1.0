@@ -1,8 +1,9 @@
 from django.conf.urls import url, include
 from rest_framework import routers
-from restAPI import views
+#from restAPI import views
 from . import views
 from rest_framework.authtoken import views as authviews
+from rest_framework.urlpatterns import format_suffix_patterns
 
 router = routers.DefaultRouter()
 router.register(r'schools', views.SchoolViewSet)
@@ -13,13 +14,15 @@ router.register(r'classrosters', views.ClassRosterViewSet)
 router.register(r'assignments', views.AssignmentViewSet)
 router.register(r'task', views.TaskViewSet)
 router.register(r'register', views.RegisterViewSet, base_name='register')
-router.register(r'users', views.UserViewSet)
+router.register(r'users', views.UsersViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    url(r'^restapi/', include(router.urls)),
+    url(r'^', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^login/', authviews.obtain_auth_token),
     # url(r'^auth/(?P<usr>[a-z0-9]+)/(?P<pw>[a-z0-9]+)/$', views.AuthView.as_view()),
-    # url(r'^register/', views.RegisterView.as_view()),
+    # url(r'^register/', views.RegisterView.as_view())
+    url(r'^user/', views.UserView.as_view())
 ]
