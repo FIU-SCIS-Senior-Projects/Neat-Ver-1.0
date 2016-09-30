@@ -42,6 +42,7 @@ class Assignments extends Component{
                                 indeterminate={this.state.indeterminate}
                                 direction="counter-clockwise"
                             />
+
                         </View>
                     }
                 />
