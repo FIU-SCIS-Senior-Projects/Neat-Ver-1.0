@@ -10,8 +10,8 @@ import { AppRegistry, Text, StyleSheet, View,Image,Navigator} from 'react-native
 const Login = require('./src/components/loginView')
 const StudentDashboard = require('./src/components/StudentDashboardView')
 const AddNewClass = require('./src/components/newClassView')
-const AssignmentsDash = require('./src/components/Assignments')
-const AssignmentForm = require('./src/components/AssignmentForm');
+const AssignmentsDash = require('./src/components/assignments/Assignments')
+const AssignmentForm = require('./src/components/assignments/AssignmentForm');
 
 import Register from './src/components/registration/register';
 import Splash from './src/components/neatsplash';

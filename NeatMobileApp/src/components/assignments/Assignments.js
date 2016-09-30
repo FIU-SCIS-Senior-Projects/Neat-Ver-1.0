@@ -9,6 +9,7 @@ import {
   ListView
 } from 'react-native';
 
+import styles from './styles';
 import * as Progress from 'react-native-progress';
 
 var AssignmentForm = require('./AssignmentForm');
@@ -65,30 +66,5 @@ class Assignments extends Component{
     }
 }
 
-const styles = StyleSheet.create({
-    button: {
-          height: 50,
-          backgroundColor: '#48BBEC',
-          borderColor: '#48BBEC',
-          alignSelf: 'stretch',
-          marginTop: 100,
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 5,
-        },
-    List: {
-        borderColor: '#48BBEC',
-        borderWidth: 1,
-        height: 50,
-        textAlign: 'center',
-        padding: 10
-    },
-    progress: {
-        margin: 10,
-    },
-    circles: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-});
+
 module.exports = Assignments;

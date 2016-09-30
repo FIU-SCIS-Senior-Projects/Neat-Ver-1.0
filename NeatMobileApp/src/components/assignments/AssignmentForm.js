@@ -9,6 +9,8 @@ import {
   TextInput
 } from 'react-native';
 
+import styles from './styles';
+
 class AssignmentForm extends Component{
 
     render(){
@@ -37,30 +39,6 @@ class AssignmentForm extends Component{
         );
     }
 }
-
-const styles = StyleSheet.create({
-    input: {
-            height: 50,
-            padding: 4,
-            fontSize: 18,
-            borderWidth: 1,
-            borderColor: '#48bbec',
-            borderRadius: 0,
-            color: '#48BBEC',
-
-        },
-        button: {
-                  height: 50,
-                  backgroundColor: '#48BBEC',
-                  borderColor: '#48BBEC',
-                  alignSelf: 'stretch',
-                  marginTop: 100,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 5,
-        },
-});
-
 
 module.exports = AssignmentForm;
 
