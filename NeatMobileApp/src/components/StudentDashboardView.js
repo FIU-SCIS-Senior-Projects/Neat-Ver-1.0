@@ -21,7 +21,7 @@ class StudentDashboardView extends Component{
 
   render(){
     return(
-      <View>
+      <View style={styles.container}>
         <Text style = {styles.smallText}>
         Welcome to your Dashboard!
         </Text>
@@ -48,8 +48,13 @@ class StudentDashboardView extends Component{
 }
 
 const styles = StyleSheet.create({
+  container: {
+      backgroundColor: '#FFF',
+      padding: 25,
+      flex: 1,
+  },
   smallText:{
-    fontSize: 10,
+    fontSize: 16,
     alignSelf: 'center',
     marginTop: 20
   },
@@ -58,7 +63,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#48BBEC',
     alignSelf: 'stretch',
     marginTop: 10,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    borderRadius: 20,
   },
   buttonText:{
     fontSize:22,

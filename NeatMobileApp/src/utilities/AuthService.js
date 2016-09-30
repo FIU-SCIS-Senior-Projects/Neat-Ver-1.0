@@ -58,7 +58,6 @@ class AuthService {
     var b = new buffer.Buffer(creds.username +
                 ':' + creds.password);
     var encodedAuth = b.toString('base64');
-    console.log('username: ', creds.username, 'password: ', creds.password, 'encodedAuth:', encodedAuth);
 
     fetch(config.server.host + 'login/',{
       method: 'POST',
@@ -84,7 +83,6 @@ class AuthService {
         return response.json();
     })
     .then((results)=> {
-      console.log('before multiset' + JSON.stringify(results.token));
       // AsyncStorage.multiSet([
       //         [authKey, encodedAuth] //creds is null at this point
       //         [userKey, JSON.stringify(results.token)]
