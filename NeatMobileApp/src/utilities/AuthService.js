@@ -54,6 +54,57 @@ class AuthService {
     });
   }
 
+  register(creds, cb){
+    var b = new buffer.Buffer(creds.username +
+                ':' + creds.password);
+    var encodedAuth = b.toString('base64');
+
+    fetch(config.server.host + 'register/',{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "username": creds.username,
+        "email": creds.email,
+        "password": creds.password,
+        // "userInfo": {
+        //   "grade": creds.grade,
+        //   "age": creds.age,
+        //   "gender": creds.gender
+        // }
+      })
+    })
+    .then((response)=> {
+        if(response.status >= 200 && response.status < 300){
+            return response;
+        }
+
+        throw {
+            badCredentials: response.status == 400,
+            unknownError: response.status != 401
+        }
+    })
+    .then((response)=> {
+        return response.json();
+    })
+    .then((results)=> {
+      return cb({success: true});
+    })
+    .catch((err)=> {
+        return cb(err);
+    });
+  }
+
+  logout(cb){
+    AsyncStorage.removeItem(userKey, (err) => {
+      if(err) {
+        return cb(err);
+      }
+      return null;
+    })
+  }
+
   login(creds, cb){
     var b = new buffer.Buffer(creds.username +
                 ':' + creds.password);
@@ -102,15 +153,6 @@ class AuthService {
     .catch((err)=> {
         return cb(err);
     });
-  }
-
-  logout(cb){
-    AsyncStorage.removeItem(userKey, (err) => {
-      if(err) {
-        return cb(err);
-      }
-      return null;
-    })
   }
 
 }

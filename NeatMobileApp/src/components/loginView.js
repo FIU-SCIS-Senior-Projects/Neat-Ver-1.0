@@ -16,7 +16,7 @@ var authService = require('../utilities/AuthService');
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
-var Person = t.struct({
+var LoginForm = t.struct({
   username: t.String,
   password: t.String,
   rememberMe: t.Boolean
@@ -90,7 +90,7 @@ class loginView extends Component{
         <View style={styles.inputs, styles.inputContainer}>
           <Form
             ref="form"
-            type={Person}
+            type={LoginForm}
             options={options}
             value={this.state.value}
             onChange={(value) => this.setState({value})}
@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       width: 275,
       marginTop: 10,
+      marginBottom: 10,
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 20,
