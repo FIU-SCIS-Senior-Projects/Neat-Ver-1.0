@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import {View, Text, StyleSheet, TouchableHighlight, AsyncStorage } from 'react-native';
 
+var authService = require('../utilities/AuthService');
+
 
 class StudentDashboardView extends Component{
 
@@ -17,6 +19,11 @@ class StudentDashboardView extends Component{
   }
   onAccountPressed(){
     console.log('Account button pressed')
+  }
+  onLogoutPressed(){
+    authService.logout(err => console.log(err));
+    this.props.navigator.pop();
+    console.log('Logout button pressed');
   }
 
   render(){
@@ -40,6 +47,11 @@ class StudentDashboardView extends Component{
         <TouchableHighlight style = {styles.button} onPress={(this.onAccountPressed.bind(this))} >
           <Text style = {styles.buttonText}>
             My Account
+          </Text>
+        </TouchableHighlight>
+        <TouchableHighlight style = {styles.button} onPress={() => this.onLogoutPressed()} >
+          <Text style = {styles.buttonText}>
+            Logout
           </Text>
         </TouchableHighlight>
       </View>

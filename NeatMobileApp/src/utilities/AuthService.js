@@ -103,6 +103,16 @@ class AuthService {
         return cb(err);
     });
   }
+
+  logout(cb){
+    AsyncStorage.removeItem(userKey, (err) => {
+      if(err) {
+        return cb(err);
+      }
+      return null;
+    })
+  }
+
 }
 
 module.exports = new AuthService();

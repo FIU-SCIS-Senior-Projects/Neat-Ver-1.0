@@ -13,13 +13,36 @@ import {
 
 import Logo from './../assets/img/Logo_Neat.png';
 var authService = require('../utilities/AuthService');
+var t = require('tcomb-form-native');
+var Form = t.form.Form;
 
+var Person = t.struct({
+  username: t.String,
+  password: t.String,
+  rememberMe: t.Boolean
+});
+
+var options = {
+  auto: 'placeholders',
+  fields: {
+    username: {
+      autoCapitalize: 'none',
+      error: 'Enter username'
+    },
+    password: {
+      secureTextEntry: true,
+      error: 'Enter password'
+    },
+  }
+}
 
 class loginView extends Component{
   constructor(){
     super();
 
     this.state = {
+      value: {
+      },
       email: "",
       password: "",
       errors: [],
@@ -29,25 +52,24 @@ class loginView extends Component{
 
   onLoginPressed(){
     this.setState({showProgess: true});
+    var value = this.refs.form.getValue();
+    console.log('username and password: ', this.state.value.username, this.state.value.password);
 
     authService.login({
-        username: this.state.username,
-        password: this.state.password
+        username: this.state.value.username,
+        password: this.state.value.password
     }, (results)=> {
         this.setState(Object.assign({
             showProgress: false
         }, results));
         if(results.success){
-            this.onLogin();
+          this.props.navigator.push({
+            id: 'StudentDashboard'
+          });
+          console.log('you have logged in');
+          this.setState({value: null})
         }
     });
-  }
-
-  onLogin() {
-    this.props.navigator.push({
-      id: 'StudentDashboard'
-    });
-    console.log('you have logged in')
   }
 
   onRegisterPressed(){
@@ -65,7 +87,17 @@ class loginView extends Component{
         <Text style={styles.heading}>
           NEAT
         </Text>
-        <View style={styles.inputs}>
+        <View style={styles.inputs, styles.inputContainer}>
+          <Form
+            ref="form"
+            type={Person}
+            options={options}
+            value={this.state.value}
+            onChange={(value) => this.setState({value})}
+          />
+        </View>
+
+        {/* <View style={styles.inputs}>
           <View style={styles.inputContainer}>
               <Image style={styles.inputIcon} source={require('image!ic_perm_identity')}/>
               <TextInput
@@ -82,7 +114,7 @@ class loginView extends Component{
                   placeholder='Password'
                   onChangeText={(text)=> this.setState({password: text})}
               />
-          </View>
+          </View> */}
 
           <View style={styles.registerForgotContainer}>
               <View style={styles.registerContainer}>
@@ -94,7 +126,6 @@ class loginView extends Component{
                   <Text style={styles.greyFont} >Forgot?</Text>
               </View>
           </View>
-        </View>
         <TouchableHighlight style = {styles.button} onPress={this.onLoginPressed.bind(this)} >
           <Text style = {styles.buttonText}>
             Sign In
