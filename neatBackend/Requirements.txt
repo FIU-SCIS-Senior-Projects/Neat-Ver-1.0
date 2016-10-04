@@ -5,6 +5,7 @@ django-allauth==0.26.1
 django-cors-headers==1.1.0
 django-crispy-forms==1.6.0
 django-filter==0.13.0
+django-guardian==1.4.6
 django-rest-auth==0.8.1
 djangorestframework==3.4.1
 drfdocs==0.0.11
