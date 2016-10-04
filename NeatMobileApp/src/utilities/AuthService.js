@@ -54,46 +54,20 @@ class AuthService {
     });
   }
 
-  register(creds, cb){
-    var b = new buffer.Buffer(creds.username +
-                ':' + creds.password);
+  register(creds, cb) {
+    var b           = new buffer.Buffer(creds.username + ':' + creds.password);
     var encodedAuth = b.toString('base64');
 
-    fetch(config.server.host + 'register/',{
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "username": creds.username,
-        "email": creds.email,
-        "password": creds.password,
-        // "userInfo": {
-        //   "grade": creds.grade,
-        //   "age": creds.age,
-        //   "gender": creds.gender
-        // }
-      })
+    this.doPost(config.server.host + 'register/', {
+      username : creds.username,
+      email    : creds.email,
+      password : creds.password,
     })
-    .then((response)=> {
-        if(response.status >= 200 && response.status < 300){
-            return response;
-        }
+    .then(this.handleResponse)
+    .then(response => response.json())
+    .then(results  => cb({success: true}))
+    .catch(err     => cb(err));
 
-        throw {
-            badCredentials: response.status == 400,
-            unknownError: response.status != 401
-        }
-    })
-    .then((response)=> {
-        return response.json();
-    })
-    .then((results)=> {
-      return cb({success: true});
-    })
-    .catch((err)=> {
-        return cb(err);
-    });
   }
 
   logout(cb){
@@ -105,34 +79,36 @@ class AuthService {
     })
   }
 
-  login(creds, cb){
-    var b = new buffer.Buffer(creds.username +
-                ':' + creds.password);
-    var encodedAuth = b.toString('base64');
+  handleResponse(response) {
+    if(response.status >= 200 && response.status < 300){
+        return response;
+    }
+    else throw {
+        badCredentials : response.status == 400,
+        unknownError   : response.status != 401
+    }
+  }
 
-    fetch(config.server.host + 'login/',{
+  doPost(url, params) {
+    return fetch(url, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
+      body: JSON.stringify(params)
+    });
+  }
+
+  login(creds, cb){
+    var b           = new buffer.Buffer(creds.username + ':' + creds.password);
+    var encodedAuth = b.toString('base64');
+
+    this.doPost(config.server.host + 'login/',{
         "username": creds.username,
         "password": creds.password,
       })
-    })
-    .then((response)=> {
-        if(response.status >= 200 && response.status < 300){
-            return response;
-        }
-
-        throw {
-            badCredentials: response.status == 400,
-            unknownError: response.status != 401
-        }
-    })
-    .then((response)=> {
-        return response.json();
-    })
+    .then(this.handleResponse)
+    .then(response => response.json())
     .then((results)=> {
       // AsyncStorage.multiSet([
       //         [authKey, encodedAuth] //creds is null at this point
@@ -150,11 +126,8 @@ class AuthService {
           return cb({success: true});
       })
     })
-    .catch((err)=> {
-        return cb(err);
-    });
+    .catch(err => cb(err));
   }
-
 }
 
 module.exports = new AuthService();
