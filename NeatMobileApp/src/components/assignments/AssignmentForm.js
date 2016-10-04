@@ -7,49 +7,52 @@ import {
   TouchableHighlight,
   NavigatorIOS,
   TextInput,
-  DatePickerIOS
+  DatePickerIOS,
+  TouchableOpacity
 } from 'react-native';
 
 import styles from './styles';
+
+/* TODO make classFK not hard coded
+   TODO add tasks here maybe(?)
+*/
+
+var moment = require('moment');
 
 class AssignmentForm extends Component{
   constructor(){
     super();
 
     this.state = {
-      taskName: "",
-      assignment:"",
+      assignmentName:"",
       date: new Date(),
+      classFK: 'http://127.0.0.1:8000/api/classes/1/',
+      showDatePicker: false,
       errors: [],
 
     }
   }
+  //POSTS to the api
     async onDonePressed(){
         try {
-            let response = await fetch('http://52.87.176.128/restapi/assginment/',{
+            let response = await fetch('http://127.0.0.1:8000/api/assignments/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
                   'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                  taskName: this.state.taskName,
-                  assignment: this.state.assignment,
-
+                  assignmentName: this.state.assignmentName,
+                  classFK: this.state.classFK,
+                  dueDate: this.state.date,
                 })
             });
 
             let responseJson = await response.text();
 
-            /*
-              The above information is all we need to touch our api with a PUT requests
 
-              and tht is all the rest of the code is just to identify if we have
-              a success or failure; in that case log the error and present it to the
-              user.
-            */
 
-            //verify if our operation was a success
+            //verify if our operation was a success or failure
             if(response.status >= 200 && response.status < 300){
                 console.log("response succes is:" + responseJson);
                 this.props.navigator.push({
@@ -87,23 +90,34 @@ class AssignmentForm extends Component{
 
 
     render(){
+
+        // TODO add start date and due date
+        var showDatePicker = this.state.showDatePicker ?
+                    <DatePickerIOS
+                        style={{ height: 150 }}
+                        date={this.state.date} onDateChange={(date)=>this.setState({date})}
+                        mode="date"/> : <View />
+
         return(
         <View style={{ marginTop: 65 }}>
 
             <TextInput
-                    //onChangeText={(text)=> this.setState({text})}
                     style={styles.input}
-                    onChangeText={(val) => this.setState({taskName: val})}
-                    placeholder="taskName">
+                    onChangeText={(val) => this.setState({assignmentName: val})}
+                    placeholder="Assignment Name">
             </TextInput>
 
-            <DatePickerIOS
-                      date={this.state.date}
-                      mode="date"
-                      timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
-                      onDateChange={this.onDateChange}
-                />
 
+
+                <TouchableOpacity
+                    style={styles.input}
+                    onPress={() => this.setState({showDatePicker: !this.state.showDatePicker})}
+                >
+
+                    <Text>{moment(this.state.date).format('DD/MM/YYYY')}</Text>
+
+                </TouchableOpacity>
+                {showDatePicker}
 
             <TouchableHighlight
                 onPress={this.onDonePressed.bind(this)}
@@ -127,3 +141,14 @@ const Errors = (props) => {
 
 module.exports = AssignmentForm;
 
+
+/*
+this cod should be added later
+
+            <DatePickerIOS
+                      date={this.state.date}
+                      mode="date"
+                      timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
+                      onDateChange={this.onDateChange}
+                />
+*/

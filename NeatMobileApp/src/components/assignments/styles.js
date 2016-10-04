@@ -16,16 +16,17 @@ const styles = StyleSheet.create({
     List: {
         borderColor: '#48BBEC',
         borderWidth: 1,
-        height: 50,
-        textAlign: 'center',
-        padding: 10
+        height: 70,
+        //textAlign: 'center',
+        paddingLeft: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     progress: {
         margin: 10,
     },
     circles: {
-        flexDirection: 'row',
-        alignItems: 'center',
+
     },
      input: {
         height: 50,
