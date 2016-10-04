@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
           backgroundColor: '#48BBEC',
           borderColor: '#48BBEC',
           alignSelf: 'stretch',
-          marginTop: 100,
+          marginTop: 30,
           justifyContent: 'center',
           alignItems: 'center',
           borderRadius: 5,

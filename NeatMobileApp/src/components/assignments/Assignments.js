@@ -13,6 +13,7 @@ import styles from './styles';
 import * as Progress from 'react-native-progress';
 
 var AssignmentForm = require('./AssignmentForm');
+var moment = require('moment');
 
 class Assignments extends Component{
     constructor(props) {
@@ -53,7 +54,8 @@ class Assignments extends Component{
             <View style={styles.List}>
 
                 <Text>{rowData.assignmentName}</Text>
-                <Text style={{ paddingLeft: 20 }}>{rowData.startDate}</Text>
+                <Text style={{paddingLeft: 20}}>Due {moment(rowData.dueDate).from(rowData.startDate)}</Text>
+
 
                 <Progress.Circle
                     style={styles.progress}
@@ -70,7 +72,7 @@ class Assignments extends Component{
         return(
             <View>
                 <Text style={{ padding: 10, justifyContent: 'center'}}>Assignment Dashboard</Text>
-                <ListView style={{ paddingBottom: 150}}
+                <ListView
                     dataSource={this.state.dataSource}
                     renderRow={this.renderRow.bind(this)}
                 />

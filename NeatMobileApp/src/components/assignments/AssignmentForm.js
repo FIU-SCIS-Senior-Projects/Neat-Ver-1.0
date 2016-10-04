@@ -25,7 +25,7 @@ class AssignmentForm extends Component{
 
     this.state = {
       assignmentName:"",
-      date: new Date(),
+      dueDate: new Date(),
       classFK: 'http://127.0.0.1:8000/api/classes/1/',
       showDatePicker: false,
       errors: [],
@@ -44,7 +44,7 @@ class AssignmentForm extends Component{
                 body: JSON.stringify({
                   assignmentName: this.state.assignmentName,
                   classFK: this.state.classFK,
-                  dueDate: this.state.date,
+                  dueDate: moment(this.state.dueDate).format('YYYY-MM-DD')
                 })
             });
 
@@ -85,17 +85,17 @@ class AssignmentForm extends Component{
     }
 
      onDateChange = (date) => {
-        this.setState({date: date});
+        this.setState({dueDate: date});
       };
 
 
     render(){
 
-        // TODO add start date and due date
+        // TODO add start date
         var showDatePicker = this.state.showDatePicker ?
                     <DatePickerIOS
                         style={{ height: 150 }}
-                        date={this.state.date} onDateChange={(date)=>this.setState({date})}
+                        date={this.state.dueDate} onDateChange={this.onDateChange}
                         mode="date"/> : <View />
 
         return(
@@ -106,15 +106,11 @@ class AssignmentForm extends Component{
                     onChangeText={(val) => this.setState({assignmentName: val})}
                     placeholder="Assignment Name">
             </TextInput>
+                <Text style={{paddingTop: 20}}>Due Date</Text>
+                <TouchableOpacity style={styles.input}
+                    onPress={() => this.setState({showDatePicker: !this.state.showDatePicker})}>
 
-
-
-                <TouchableOpacity
-                    style={styles.input}
-                    onPress={() => this.setState({showDatePicker: !this.state.showDatePicker})}
-                >
-
-                    <Text>{moment(this.state.date).format('DD/MM/YYYY')}</Text>
+                    <Text>{moment(this.state.dueDate).format('DD/MM/YYYY')}</Text>
 
                 </TouchableOpacity>
                 {showDatePicker}
