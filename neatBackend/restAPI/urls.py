@@ -13,8 +13,8 @@ router.register(r'classes', views.ClassViewSet)
 router.register(r'classrosters', views.ClassRosterViewSet)
 router.register(r'assignments', views.AssignmentViewSet)
 router.register(r'task', views.TaskViewSet)
-router.register(r'register', views.RegisterViewSet, base_name='register')
-router.register(r'users', views.UsersViewSet)
+router.register(r'user', views.UserViewSet)
+router.register(r'group', views.GroupViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -23,6 +23,4 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^login/', authviews.obtain_auth_token),
     # url(r'^auth/(?P<usr>[a-z0-9]+)/(?P<pw>[a-z0-9]+)/$', views.AuthView.as_view()),
-    # url(r'^register/', views.RegisterView.as_view())
-    url(r'^user/', views.UserView.as_view())
 ]
