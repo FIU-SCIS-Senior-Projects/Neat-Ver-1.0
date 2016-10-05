@@ -45,12 +45,20 @@ INSTALLED_APPS = [
     'rest_framework_docs',
     'djangoBackend',
     'restAPI',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'guardian',
+    'crispy_forms',
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
+
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
     #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
-    'PAGE_SIZE': 10
+    #'PAGE_SIZE': 10
 }
 
 MIDDLEWARE = [

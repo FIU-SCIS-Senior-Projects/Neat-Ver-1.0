@@ -8,7 +8,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 router = routers.DefaultRouter()
 router.register(r'schools', views.SchoolViewSet)
 router.register(r'schoolrosters', views.SchoolRosterViewSet)
-router.register(r'userinfos', views.UserInfoViewSet)
+router.register(r'profile', views.ProfileViewSet)
 router.register(r'classes', views.ClassViewSet)
 router.register(r'classrosters', views.ClassRosterViewSet)
 router.register(r'assignments', views.AssignmentViewSet)
