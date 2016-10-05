@@ -7,45 +7,50 @@ from .models import *
 
 logger = logging.getLogger(__name__)
 
-#TODO: add schoolRoster such that it doesn't mess with register
+
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
         fields = ('url', 'grade', 'age', 'gender')
 
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Group
+        fields = ('url', 'name')
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    profile = ProfileSerializer(read_only=True)
+    profile = ProfileSerializer(required=False)
+    username = serializers.CharField(required=False)
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('url', 'pk', 'username', 'first_name', 'last_name', 'email', 'groups', 'profile')
-
-    def update(self, instance, validated_data):
-        instance.email = validated_data.get('email', instance.email)
-        instance.content = validated_data.get('content', instance.content)
-        instance.created = validated_data.get('created', instance.created)
-        instance.save()
-        return instance
-
-
-class RegisterSerializer(serializers.HyperlinkedModelSerializer):
-    profile = ProfileSerializer()
-
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password', 'profile',)
+        fields = ('url', 'pk', 'username', 'password', 'first_name', 'last_name', 'email', 'groups', 'profile')
 
     def create(self, validated_data):
-        usr = validated_data.get('username')
-        eml = validated_data.get('email')
-        psw = validated_data.get('password')
-        profileData = validated_data.pop('profile')
-        user = User.objects.create_user(username=usr, email=eml, password=psw)
-        Profile.objects.create(user = user, **profileData)
+        
+        un = validated_data.pop('username')
+        em = validated_data.pop('email')
+        pw = validated_data.pop('password')
+        fn = validated_data.pop('first_name')
+        ln = validated_data.pop('last_name')
+        gr = validated_data.get('groups')
+        profile_data = validated_data.pop('profile')
+        user = User.objects.create_user(un, em, pw)
+        user.first_name = fn
+        user.last_name = ln
+        user.group = gr
+        user.save()
+        Profile.objects.create(user=user, **profile_data)
         return user
 
+    def update(self, instance, validated_data):
+        pw = validated_data.get('password')
+        instance.set_password(pw)
+        instance.save()
+        return instance
 
 class SchoolSerializer(serializers.HyperlinkedModelSerializer):
     #roster = serializers.StringRelatedField(many=True, required=False)

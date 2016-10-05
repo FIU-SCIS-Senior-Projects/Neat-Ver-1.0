@@ -7,11 +7,17 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 
 ##Recent Endpoints - examples
 
-####Get user info from token
-`curl -X GET http://127.0.0.1:8000/api/user/ -H 'Authorization: Token c1dd50210dac88a09773474f96b74c5de8c8447c'`
+####Get specific user info (use pk)
+`curl -X GET http://127.0.0.1:8000/api/user/11/ -H 'Authorization: Token 9ea643724cda31626f11a67e6309855d470748a0'`
 
-####Register (note "profile" name change)
-`curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","email":"fasds@dsa.com","password":"password123","profile":{"grade":"12","age":"23","gender":"male"}}' http://127.0.0.1:8000/api/register/`
+####Does a user exist?
+`curl -X GET http://127.0.0.1:8000/api/user/?username=admin -H 'Authorization: Token 9ea643724cda31626f11a67e6309855d470748a0'`
+
+####Change password (use pk)
+`curl -H "Content-Type: application/json" -X PUT -d '{"password":"newpassword"}' http://127.0.0.1:8000/api/user/11/ -H 'Authorization: Token d9ef2ef45498f4c8346aa46889e3b14a361ac6f3'`
+
+####Register
+`curl -H "Content-Type: application/json" -X POST -d '{"username":"user1321","email":"fasds@dsa.com","password":"password123","first_name":"John","last_name":"Smith","profile":{"grade":"12","age":"23","gender":"male"}}' http://127.0.0.1:8000/api/user/`
 
 ####Login
 `curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"password123"}' http://52.87.176.128/api/login/`
