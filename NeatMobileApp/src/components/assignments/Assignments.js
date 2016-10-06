@@ -38,7 +38,7 @@ class Assignments extends Component{
         return fetch('http://127.0.0.1:8000/api/assignments/?format=json')
               .then((response) => response.json())
               .then((responseJson) => {
-                var assignmentList = responseJson.results;
+                var assignmentList = responseJson
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(assignmentList)
                 })
