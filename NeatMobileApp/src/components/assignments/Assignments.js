@@ -25,7 +25,7 @@ class Assignments extends Component{
 
         this.state = {
           dataSource: ds,
-          progress: 0.20,
+          progress: 0.58,
           indeterminate: false,
         };
       }
@@ -48,6 +48,19 @@ class Assignments extends Component{
               });
 
       }
+      changeColor(progress){
+      var color = ''
+        if(progress < 0.33){
+           color='F44336'
+        }
+        else if(progress >= 0.33 && progress < 0.66){
+            color='#ffcc00'
+        }
+        else{
+            color='#009688'
+        }
+        return color;
+      }
 
       renderRow(rowData){
         return(
@@ -61,6 +74,8 @@ class Assignments extends Component{
                     style={styles.progress}
                     progress={this.state.progress}
                     indeterminate={this.state.indeterminate}
+                    showsText="true"
+                    color={this.changeColor(this.state.progress)}
                     direction="counter-clockwise"
                 />
 

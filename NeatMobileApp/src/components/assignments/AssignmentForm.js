@@ -15,6 +15,8 @@ import styles from './styles';
 
 /* TODO make classFK not hard coded
    TODO add tasks here maybe(?)
+
+   NOTE: you must create a class and a school before being able to add an assignment
 */
 
 var moment = require('moment');
