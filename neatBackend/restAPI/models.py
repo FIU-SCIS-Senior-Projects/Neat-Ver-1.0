@@ -39,7 +39,13 @@ class School(models.Model):
     schoolID = models.CharField(max_length=255) # TODO: What does a school ID actually look like? Is it unique even across school districts?
 
     #permissions
-    owner = models.ForeignKey(User, related_name='ownedSchools', null=True)
+    class Meta:
+        unique_together = ('schoolName', 'schoolID',)
+
+        #add, change, delete already exist by default
+        permissions = (
+            ('view_school', 'View school'),
+        )
 
     def __str__(self):
         return self.schoolName
@@ -71,7 +77,14 @@ class Class(models.Model):
     classID = models.CharField(max_length=255) # TODO: What does a class ID look like? This can have great variance, so charfield was chosen.
 
     #permissions
-    owner = models.ForeignKey(User, related_name='ownedClasses', null=True)
+    #permissions
+    class Meta:
+        unique_together = ('school', 'classID',)
+
+        #add, change, delete already exist by default
+        permissions = (
+            ('view_class', 'View classes'),
+        )
 
     def __str__(self):
         return self.className + " at " + str(self.school)
@@ -93,7 +106,12 @@ class Assignment(models.Model):
     dueDate = models.DateField(validators=[is_before_today], null=True)
     
     #permissions
-    owner = models.ForeignKey('auth.User', related_name='ownedAssignments', null=True)
+    class Meta:
+
+        #add, change, delete already exist by default
+        permissions = (
+            ('view_assignment', 'View assignments'),
+        )
 
     def clean(self):
         errors = {}
@@ -123,7 +141,12 @@ class Task(models.Model):
     endDate = models.DateField(validators=[is_before_today], null=True)
     
     #permissions
-    owner = models.ForeignKey(User, related_name='ownedTasks', null=True)
+    class Meta:
+
+        #add, change, delete already exist by default
+        permissions = (
+            ('view_task', 'View tasks'),
+        )
 
     def clean(self):
         errors = {}
@@ -145,9 +168,9 @@ class Task(models.Model):
     def __str__(self):
         return self.taskName
 
-class UserInfo(models.Model):
+class Profile(models.Model):
     #FK
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userInfo')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     school = models.ForeignKey(School, on_delete=models.PROTECT, related_name='users', null=True) # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
 
     #fields
