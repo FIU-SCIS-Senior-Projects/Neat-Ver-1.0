@@ -37,13 +37,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fn = validated_data.pop('first_name')
         ln = validated_data.pop('last_name')
         gr = validated_data.get('groups')
-        profile_data = validated_data.pop('profile')
+        profile_data = validated_data.get('profile')
         user = User.objects.create_user(un, em, pw)
         user.first_name = fn
         user.last_name = ln
         user.group = gr
         user.save()
-        Profile.objects.create(user=user, **profile_data)
+        if (profile_data is not None):
+            Profile.objects.create(user=user, **profile_data)
+        else:
+            Profile.objects.create(user=user)
         return user
 
     def update(self, instance, validated_data):

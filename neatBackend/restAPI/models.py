@@ -174,8 +174,8 @@ class Profile(models.Model):
     school = models.ForeignKey(School, on_delete=models.PROTECT, related_name='users', null=True) # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
 
     #fields
-    grade = models.PositiveSmallIntegerField()
-    age = models.PositiveSmallIntegerField()
+    grade = models.PositiveSmallIntegerField(null=True)
+    age = models.PositiveSmallIntegerField(null=True)
     gender = models.CharField(max_length=50, null=True)
     
     #email verification
