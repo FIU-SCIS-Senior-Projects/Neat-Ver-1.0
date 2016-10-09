@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator,} from 'react-native';
 
-const Login = require('./components/loginView')
-const StudentDashboard = require('./components/StudentDashboardView')
-const AddNewClass = require('./components/newClassView')
+const Login = require('./components/loginView');
+const StudentDashboard = require('./components/StudentDashboardView');
+const AddNewClass = require('./components/newClassView');
+const AssignmentsDash = require('./components/assignments/Assignments');
+const AssignmentForm = require('./components/assignments/AssignmentForm');
 
 import Register from './components/registration/register';
 import Splash from './components/neatsplash';
@@ -28,7 +30,6 @@ class NeatMobileApp extends Component {
   }
 
   onLogin(){
-    console.log('onLogin was called from index');
     this.setState({isLoggedIn: true});
   }
   render() {
@@ -75,11 +76,15 @@ class NeatMobileApp extends Component {
       case 'Login':
         return(<Login navigator = {navigator} title = 'Login'/>)
       case 'Register':
-        return(<Register navigator = {navigator} title = 'Register'/>)
+        return(<Register navigator = {navigator} title = 'Register' />)
       case 'StudentDashboard':
-        return(<StudentDashboard navigator = {navigator} title = 'StudentDashboard'/>)
+        return(<StudentDashboard navigator = {navigator} title = 'StudentDashboard' />)
       case 'AddNewClass':
         return(<AddNewClass navigator = {navigator} title = 'AddNewClass'/>)
+      case 'AssignmentsDash':
+        return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
+      case 'AssignmentForm':
+        return(<AssignmentForm navigator = {navigator} title = 'AssignmentForm'/>)
     }
   }
 }

@@ -14,6 +14,7 @@ import Logo from './../../assets/img/Logo_Neat.png';
 //const userIcon = (<Icon name="fa-user" size={25} color ={'#900'}/>)
 
 var authService = require('../../utilities/AuthService');
+var Header = require('./../Header');
 
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
@@ -49,12 +50,11 @@ var options = {
 
 
 class Register extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
 
     this.state = {
       value: {
-
       },
       username: [],
       email: "",
@@ -144,13 +144,13 @@ async onPUTPressed(){
 }
 
 onRegisterPressed(){
-  this.setState({showProgess: true});
+  this.setState({showProgress: true});
   var value = this.refs.form.getValue();
 
   authService.register(value, (results)=> {
-      // this.setState(Object.assign({
-      //     showProgress: false
-      // }, results));
+      this.setState(Object.assign({
+          showProgress: false
+      }, results));
       if(results.success){
         this.props.navigator.pop();
         console.log('you have register in');
@@ -159,13 +159,17 @@ onRegisterPressed(){
   });
 }
 
+onHaveAccountPressed(){
+  this.props.navigator.pop();
+  console.log('you have push the have account button');
+}
+
   render() {
     return (
       <View style={styles.container}>
-        <Image source={Logo} style={styles.logo}/>
-        <Text style={styles.heading}>
-          NEAT
-        </Text>
+        <Header
+          showProgress={false}
+        />
         <View style={styles.inputs, styles.inputContainer}>
           <Form
             ref="form"
@@ -174,6 +178,18 @@ onRegisterPressed(){
             value={this.state.value}
             onChange={(value) => this.setState({value})}
           />
+        </View>
+        <View style={styles.registerForgotContainer}>
+          <View style={styles.registerContainer}>
+            <Text
+              style={styles.greyFont}
+              onPress={() => this.props.navigator.pop()}>
+              Already have an account
+            </Text>
+          </View>
+          <TouchableHighlight style={styles.forgotContainer}>
+            <Text style={styles.greyFont} >Forgot?</Text>
+          </TouchableHighlight>
         </View>
         <TouchableHighlight style = {styles.button} onPress={this.onRegisterPressed.bind(this)} >
           <Text style = {styles.buttonText}>

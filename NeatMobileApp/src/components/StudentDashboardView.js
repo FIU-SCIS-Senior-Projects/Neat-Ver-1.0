@@ -7,6 +7,9 @@ var authService = require('../utilities/AuthService');
 
 
 class StudentDashboardView extends Component{
+  constructor(props){
+    super(props);
+  }
 
   onClassesPressed(){
     this.props.navigator.push({
@@ -15,7 +18,9 @@ class StudentDashboardView extends Component{
     console.log('Classes button pressed!')
   }
   onAssignmentsPressed(){
-    console.log('Assignments button pressed!')
+    this.props.navigator.push({
+      id: 'AssignmentsDash'
+    });
   }
   onAccountPressed(){
     console.log('Account button pressed')

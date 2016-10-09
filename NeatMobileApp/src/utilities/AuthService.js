@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native';
 var _ = require('lodash'),
     buffer = require('buffer'),
-    config = require('../config.js');
+    CONFIG = require('../config.js');
 
 
 const authKey = 'auth';
@@ -55,13 +55,20 @@ class AuthService {
   }
 
   register(creds, cb) {
+    if(!creds){
+      return;
+    }
     var b           = new buffer.Buffer(creds.username + ':' + creds.password);
     var encodedAuth = b.toString('base64');
 
-    this.doPost(config.server.host + 'register/', {
+    this.doPost(CONFIG.server.host + 'api/register/', {
       username : creds.username,
       email    : creds.email,
       password : creds.password,
+      profile: {
+        grade : '',
+        age   : ''
+      },
     })
     .then(this.handleResponse)
     .then(response => response.json())
@@ -80,36 +87,37 @@ class AuthService {
   }
 
   handleResponse(response) {
+    console.log('status: ', response.status);
     if(response.status >= 200 && response.status < 300){
         return response;
     }
     else throw {
         badCredentials : response.status == 400,
-        unknownError   : response.status != 401
+        unknownError   : response.status != 400
     }
   }
 
   doPost(url, params) {
     return fetch(url, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(params)
+      method  : 'POST',
+      headers : { 'Content-Type' : 'application/json' },
+      body    : JSON.stringify(params)
     });
   }
 
   login(creds, cb){
     var b           = new buffer.Buffer(creds.username + ':' + creds.password);
     var encodedAuth = b.toString('base64');
+    console.log('creds from login AuthService', creds);
 
-    this.doPost(config.server.host + 'login/',{
+    this.doPost(CONFIG.server.host + 'api/login/',{
         "username": creds.username,
         "password": creds.password,
       })
     .then(this.handleResponse)
     .then(response => response.json())
     .then((results)=> {
+      console.log('after handleResponse');
       // AsyncStorage.multiSet([
       //         [authKey, encodedAuth] //creds is null at this point
       //         [userKey, JSON.stringify(results.token)]
@@ -123,6 +131,7 @@ class AuthService {
           if(err){
               throw err;
           }
+          console.log('i got in');
           return cb({success: true});
       })
     })

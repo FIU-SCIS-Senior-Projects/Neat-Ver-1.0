@@ -3,6 +3,6 @@
 module.exports = {
   'server' : {
     'host' : 'http://52.87.176.128/'
-    // 'host': 'http://localhost'
+    // 'host': 'http://localhost:8000'
   }
 };
