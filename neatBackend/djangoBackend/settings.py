@@ -70,10 +70,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '611258811726-hcflpr40gmgbcpmee0reugjhta6jgohb.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'xSyg0nJeE1gqXWu5lg3aDPgG'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('GOOGLE_SECRET')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email']
-REST_SOCIAL_OAUTH_ABSOLUTE_REDIRECT_URI ='http://pachevjoseph.com/contact/'
+REST_SOCIAL_OAUTH_ABSOLUTE_REDIRECT_URI ='http://neat.pachevjoseph.com/oauth/code/'
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
