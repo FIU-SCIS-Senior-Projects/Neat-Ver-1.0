@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.conf.urls import url, include
 from django.contrib import admin
+from restAPI import views
 
 urlpatterns = [
     url(r'^docs/', include('rest_framework_docs.urls')),
@@ -27,6 +28,7 @@ urlpatterns = [
 
     # Endpoint for social Authentication
     url(r'^oauth/', include('rest_social_auth.urls_token')),
+    url(r'^oauth/code', views.oauth_code),
     url(r'^auth/', include('rest_framework_social_oauth2.urls')),
     url(r'^admin/', include(admin.site.urls))
 ]
