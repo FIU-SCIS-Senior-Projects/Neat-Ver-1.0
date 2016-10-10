@@ -21,5 +21,12 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^docs/', include('rest_framework_docs.urls')),
     url(r'^api/', include('restAPI.urls')),
-    url(r'^admin/', admin.site.urls)
+
+    # Needed for the Python social oAuth
+    url(r'^social/', include('social.apps.django_app.urls', namespace='social')),
+
+    # Endpoint for social Authentication
+    url(r'^oauth/', include('rest_social_auth.urls_token')),
+    url(r'^auth/', include('rest_framework_social_oauth2.urls')),
+    url(r'^admin/', include(admin.site.urls))
 ]
