@@ -6,6 +6,7 @@ from restAPI.models import *
 from restAPI.serializers import *
 #viewsets
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from rest_framework.viewsets import ViewSet
 #classviews
 from django.http import Http404
@@ -77,6 +78,9 @@ class VerifyEmailView(APIView):
             return Response({'status': 'user verified'})
         else:
             return Response({'status': 'wrong key provided'})
+
+#For converting google oAuth code
+from rest_framework_social_oauth2.views import ConvertTokenView
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -154,3 +158,8 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
+
+@api_view(['GET'])
+def oauth_code(request):
+   g_code = request.GET['code']
+   return Response(g_code)
