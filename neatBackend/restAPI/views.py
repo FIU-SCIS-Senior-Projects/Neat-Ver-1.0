@@ -12,6 +12,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import detail_route, list_route
 #generic classes
 from rest_framework import generics
 #authentication
@@ -26,6 +27,56 @@ from rest_framework import filters
 #dates
 from django.utils import timezone
 import datetime
+#email
+from django.core.mail import send_mail
+import hashlib, random
+
+class SendEmailView(APIView):
+
+    authentication_classes = (TokenAuthentication,)
+    #permission_classes = (permissions.IsAdminUser,)
+
+    #Create a new key and send an e-mail to the user
+    def get(self, request, format=None):
+        user = request.user
+        profile = user.profile
+        profile.verificationKey = self.genKey(user.username)
+        profile.save()
+
+        subject = 'Verification e-mail'
+        body = 'Here is your key: ' + profile.verificationKey
+        fromEmail = 'gfern022@fiu.edu'
+        send_mail(
+            subject,
+            body,
+            fromEmail,
+            [request.user.email],
+            fail_silently=False,
+        )
+
+        return Response({'status': 'e-mail sent'})
+
+    def genKey(self, username):
+        salt = hashlib.sha256()
+        salt.update(str(random.random()).encode('utf-8')[:5])
+        salt.update(username.encode('utf-8'))
+        return salt.hexdigest()[:5]
+
+class VerifyEmailView(APIView):
+
+    authentication_classes = (TokenAuthentication,)
+    #permission_classes = (permissions.IsAdminUser,)
+
+    #verify the user's e-mail given a key
+    def post(self, request, key, format=None):
+        user = request.user
+        profile = user.profile
+        if key == profile.verificationKey:
+            profile.verified = True
+            profile.save()
+            return Response({'status': 'user verified'})
+        else:
+            return Response({'status': 'wrong key provided'})
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -62,6 +113,20 @@ class SchoolRosterViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
+    @list_route(methods=['get'], authentication_classes = [TokenAuthentication])
+    def send_email(self, request):
+        user = request.user
+        fromEmail = 'gfern022@fiu.edu'
+        send_mail(
+            'Subject here',
+            'Here is the message.',
+            fromEmail,
+            [user.email],
+            fail_silently=False,
+        )
+
+        return Response({'status': 'e-mail sent'})
 
 
 

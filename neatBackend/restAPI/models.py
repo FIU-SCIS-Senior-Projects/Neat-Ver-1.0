@@ -179,9 +179,9 @@ class Profile(models.Model):
     gender = models.CharField(max_length=50, null=True)
     
     #email verification
-    activated = models.BooleanField(default=False)
-    activationKey = models.CharField(max_length=40, null=True)
-    keyExpiration = models.DateTimeField(null=True)
+    verified = models.BooleanField(default=False)
+    verificationKey = models.CharField(max_length=40, null=True)
+    #keyExpiration = models.DateTimeField(null=True)
 
     class Meta:
         unique_together = ('user', 'school',)

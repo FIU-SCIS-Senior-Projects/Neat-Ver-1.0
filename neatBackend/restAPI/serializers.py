@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from rest_framework import serializers
 from guardian.shortcuts import assign_perm
 from .models import *
+#email verification
+import hashlib, random
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +14,16 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('url', 'grade', 'age', 'gender')
+        fields = ('url', 'grade', 'age', 'gender', 'verified', 'verificationKey')
+
+"""
+    def create(self, validated_data):
+        usr = validated_data.pop('user')
+        grd = validated_data.get('grade')
+        age = validated_data.get('age')
+        gnd = validated_data.get('gender')
+        key = genKey(usr.get('username'))
+"""
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -38,7 +49,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         ln = validated_data.pop('last_name')
         gr = validated_data.get('groups')
         profile_data = validated_data.get('profile')
-        user = User.objects.create_user(un, em, pw)
+        user = User.objects.create_user(username=un, email=em, password=pw)
         user.first_name = fn
         user.last_name = ln
         user.group = gr
