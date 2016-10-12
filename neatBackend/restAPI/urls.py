@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^login/', authviews.obtain_auth_token),
-    url(r'^send_email/', views.SendEmailView.as_view()),
-    url(r'^verify_email/(?P<key>[a-z0-9]+)/$', views.VerifyEmailView.as_view()),
+    url(r'^sendEmail/(?P<field>[a-z0-9]+)/', views.SendEmailView.as_view()),
+    url(r'^verify/(?P<field>[a-z0-9]+)/(?P<code>[a-z0-9]+)/', views.VerifyView.as_view()),
     # url(r'^auth/(?P<usr>[a-z0-9]+)/(?P<pw>[a-z0-9]+)/$', views.AuthView.as_view()),
 ]

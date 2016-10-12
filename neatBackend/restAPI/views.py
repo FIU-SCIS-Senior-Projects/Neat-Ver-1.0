@@ -37,47 +37,63 @@ class SendEmailView(APIView):
     authentication_classes = (TokenAuthentication,)
     #permission_classes = (permissions.IsAdminUser,)
 
-    #Create a new key and send an e-mail to the user
-    def get(self, request, format=None):
-        user = request.user
-        profile = user.profile
-        profile.verificationKey = self.genKey(user.username)
-        profile.save()
+    #Create a new code and send an e-mail to the user
+    def post(self, request, field, format=None):
+        if field not in ['email', 'password']:
+            return Response({'error': 'wrong field'},status=status.HTTP_404_NOT_FOUND)
+        else:
+            user = request.user
+            profile = user.profile
+            code = self.genCode(user.username)
+            if field == 'email':
+                profile.emailCode = code
+            else:
+                profile.passwordCode = code
+            profile.save()
 
-        subject = 'Verification e-mail'
-        body = 'Here is your key: ' + profile.verificationKey
-        fromEmail = 'gfern022@fiu.edu'
-        send_mail(
-            subject,
-            body,
-            fromEmail,
-            [request.user.email],
-            fail_silently=False,
-        )
+            subject = 'Verification e-mail'
+            body = 'Here is your code: ' + code
+            fromEmail = 'gfern022@fiu.edu'
+            send_mail(
+                subject,
+                body,
+                fromEmail,
+                [request.user.email],
+                fail_silently=False,
+            )
 
-        return Response({'status': 'e-mail sent'})
+            return Response({'status': 'e-mail sent'})
 
-    def genKey(self, username):
+    def genCode(self, username):
         salt = hashlib.sha256()
         salt.update(str(random.random()).encode('utf-8')[:5])
         salt.update(username.encode('utf-8'))
         return salt.hexdigest()[:5]
 
-class VerifyEmailView(APIView):
+class VerifyView(APIView):
 
     authentication_classes = (TokenAuthentication,)
     #permission_classes = (permissions.IsAdminUser,)
 
-    #verify the user's e-mail given a key
-    def post(self, request, key, format=None):
-        user = request.user
-        profile = user.profile
-        if key == profile.verificationKey:
-            profile.verified = True
-            profile.save()
-            return Response({'status': 'user verified'})
+    #verify the user's e-mail or password given a code
+    def post(self, request, field, code, format=None):
+        if field not in ['email', 'password']:
+            return Response({'error': 'wrong field'},status=status.HTTP_404_NOT_FOUND)
         else:
-            return Response({'status': 'wrong key provided'})
+            user = request.user
+            profile = user.profile
+            if field == 'email':
+                if code == profile.emailCode:
+                    profile.verified = True
+                    profile.save()
+                    return Response({'status': user.email + ' verified'})
+                else:
+                    return Response({'status': 'wrong code provided'})
+            else:
+                if code == profile.passwordCode:
+                    return Response({'status': 'code ' + code + ' matches'})
+                else:
+                    return Response({'status': 'wrong code provided'})
 
 #For converting google oAuth code
 from rest_framework_social_oauth2.views import ConvertTokenView
@@ -117,22 +133,7 @@ class SchoolRosterViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-
-    @list_route(methods=['get'], authentication_classes = [TokenAuthentication])
-    def send_email(self, request):
-        user = request.user
-        fromEmail = 'gfern022@fiu.edu'
-        send_mail(
-            'Subject here',
-            'Here is the message.',
-            fromEmail,
-            [user.email],
-            fail_silently=False,
-        )
-
-        return Response({'status': 'e-mail sent'})
-
-
+    
 
 class ClassViewSet(viewsets.ModelViewSet):
     permission_classes = (IsOwnerCanEditAnyCanCreate,)

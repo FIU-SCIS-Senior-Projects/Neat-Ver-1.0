@@ -7,11 +7,11 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 
 ##Recent Endpoints - examples
 
-####Send verification e-mail
-`curl -X GET http://127.0.0.1:8000/api/send_email/ -H 'Authorization: Token 5d391e012eba363e0323e9e53ba9ed594e80a564'`
+####Send verification e-mail (arg: password, email)
+`curl -X GET http://127.0.0.1:8000/api/sendEmail/password/ -H 'Authorization: Token 5d391e012eba363e0323e9e53ba9ed594e80a564'`
 
-####Verify user with code
-`curl -X POST http://127.0.0.1:8000/api/verify_email/b2886/ -H 'Authorization: Token 5d391e012eba363e0323e9e53ba9ed594e80a564'`
+####Verify user with code (arg1: password, email) (arg2: code)
+`curl -X POST http://127.0.0.1:8000/api/verify/email/b2886/ -H 'Authorization: Token 5d391e012eba363e0323e9e53ba9ed594e80a564'`
 
 ####Get specific user info (use pk)
 `curl -X GET http://127.0.0.1:8000/api/user/11/ -H 'Authorization: Token 9ea643724cda31626f11a67e6309855d470748a0'`

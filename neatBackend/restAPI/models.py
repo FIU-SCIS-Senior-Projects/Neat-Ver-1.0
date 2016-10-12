@@ -180,8 +180,10 @@ class Profile(models.Model):
     
     #email verification
     verified = models.BooleanField(default=False)
-    verificationKey = models.CharField(max_length=40, null=True)
+    emailCode = models.CharField(max_length=40, null=True)
     #keyExpiration = models.DateTimeField(null=True)
+
+    passwordCode = models.CharField(max_length=40, null=True)
 
     class Meta:
         unique_together = ('user', 'school',)
