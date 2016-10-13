@@ -29,16 +29,21 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('url', 'name')
+        fields = ('url', 'pk', 'name')
+        extra_kwargs = {
+            'name': {'validators': []}
+        }
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    groups = GroupSerializer(required=False)
     profile = ProfileSerializer(required=False)
     username = serializers.CharField(required=False)
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('url', 'pk', 'username', 'password', 'first_name', 'last_name', 'email', 'groups', 'profile')
+        fields = ('url', 'pk', 'username', 'password', 'email', 'groups',  'first_name', 'last_name', 'profile')
 
     def create(self, validated_data):
         
@@ -47,13 +52,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         pw = validated_data.pop('password')
         fn = validated_data.pop('first_name')
         ln = validated_data.pop('last_name')
-        gr = validated_data.get('groups')
+        gr = validated_data.pop('groups')
         profile_data = validated_data.get('profile')
         user = User.objects.create_user(username=un, email=em, password=pw)
         user.first_name = fn
         user.last_name = ln
-        user.group = gr
         user.save()
+        group = Group.objects.get(name = gr['name'])
+        group.user_set.add(user)
         if (profile_data is not None):
             Profile.objects.create(user=user, **profile_data)
         else:

@@ -8,6 +8,28 @@ from rest_framework.reverse import reverse, reverse_lazy
 
 from rest_framework.test import APIClient, APITestCase
 
+class LoginTests(APITestCase):
+   #@classmethod
+   # def setUpTestData(cls):
+   #     cls.client = APIClient()
+   #     cls.user = User.objects.create_superuser('Bruce', 'bruce@wayne.com', 'batman')
+   #     cls.token = Token.objects.get(user__username='Bruce')
+   #     cls.client.login(username='bruce', password='batman')
+   def test_create_account(self):
+       """
+       Ensure we can create a new account object.
+       """
+       User.objects.create_user(username="user1", email="sda@sdam", password="password123")
+       url = reverse("login")
+       data = {"username" : "user1", "password": "password123"}
+       response = self.client.post(url, data, format='json')
+       self.assertEqual(response.status_code, status.HTTP_200_CREATED)
+       self.assertEqual(User.objects.count(), 1)
+       self.assertEqual(User.objects.get().username, 'user1')
+
+
+
+
 """
 setUpTestData makes it so that initial data is created once and run for class. This is not supported on DB's without
  transaction support. MySQL is one, but it's left here in case this changes in the future.
