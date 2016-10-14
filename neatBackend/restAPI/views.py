@@ -88,12 +88,12 @@ class VerifyView(APIView):
                     profile.save()
                     return Response({'status': user.email + ' verified'})
                 else:
-                    return Response({'status': 'wrong code provided'})
+                    return Response({'status': 'wrong code provided'},status=status.HTTP_400_BAD_REQUEST)
             else:
                 if code == profile.passwordCode:
                     return Response({'status': 'code ' + code + ' matches'})
                 else:
-                    return Response({'status': 'wrong code provided'})
+                    return Response({'status': 'wrong code provided'},status=status.HTTP_400_BAD_REQUEST)
 
 #For converting google oAuth code
 from rest_framework_social_oauth2.views import ConvertTokenView

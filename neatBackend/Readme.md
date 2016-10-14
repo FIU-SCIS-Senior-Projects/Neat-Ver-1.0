@@ -8,25 +8,25 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 ##Recent Endpoints - examples
 
 ####Send verification e-mail (arg: password, email)
-`curl -X GET http://127.0.0.1:8000/api/sendEmail/password/ -H 'Authorization: Token 5d391e012eba363e0323e9e53ba9ed594e80a564'`
+`http POST http://127.0.0.1:8000/api/sendEmail/password/ 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
 ####Verify user with code (arg1: password, email) (arg2: code)
-`curl -X POST http://127.0.0.1:8000/api/verify/email/b2886/ -H 'Authorization: Token 5d391e012eba363e0323e9e53ba9ed594e80a564'`
+`http POST http://127.0.0.1:8000/api/verify/email/d303a/ 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
 ####Get specific user info (use pk)
-`curl -X GET http://127.0.0.1:8000/api/user/11/ -H 'Authorization: Token 9ea643724cda31626f11a67e6309855d470748a0'`
+`http GET http://127.0.0.1:8000/api/user/11/ 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
 ####Does a user exist?
-`curl -X GET http://127.0.0.1:8000/api/user/?username=admin -H 'Authorization: Token 9ea643724cda31626f11a67e6309855d470748a0'`
+`http GET http://127.0.0.1:8000/api/user/?username=admin 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
 ####Change password (use pk)
-`curl -H "Content-Type: application/json" -X PUT -d '{"password":"newpassword"}' http://127.0.0.1:8000/api/user/11/ -H 'Authorization: Token d9ef2ef45498f4c8346aa46889e3b14a361ac6f3'`
+`http PUT http://127.0.0.1:8000/api/user/2/ password=password123 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
-####Register
-`http POST http://127.0.0.1:8000/api/user/ username=user2 email=user1@email.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
+####Register (hard-code student group, username removed)
+`http POST http://127.0.0.1:8000/api/user/ email=finalarcadia@gmail.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
 
 ####Login
-`curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"password123"}' http://52.87.176.128/api/login/`
+`http POST http://127.0.0.1:8000/api/login/ username=admin password=password123`
 
 #Usage
 

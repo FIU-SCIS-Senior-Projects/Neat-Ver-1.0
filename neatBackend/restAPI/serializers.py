@@ -30,42 +30,48 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ('url', 'name')
+        #Remove name validator so that UserSerializer works
         extra_kwargs = {
             'name': {'validators': []}
         }
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    groups = GroupSerializer(many=True)
+    groups = GroupSerializer(many=True, required=False)
     profile = ProfileSerializer(required=False)
-    username = serializers.CharField(required=False)
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('url', 'username', 'password', 'email', 'groups',  'first_name', 'last_name', 'profile')
+        fields = ('url', 'email', 'password', 'first_name', 'last_name', 'groups', 'profile')
 
     def create(self, validated_data):
         
-        un = validated_data.pop('username')
+        #grab data
         em = validated_data.pop('email')
         pw = validated_data.pop('password')
         fn = validated_data.pop('first_name')
         ln = validated_data.pop('last_name')
-        gr = validated_data.pop('groups')
+        group_data = validated_data.pop('groups')
         profile_data = validated_data.get('profile')
-        user = User.objects.create_user(username=un, email=em, password=pw)
+
+        #create new user
+        user = User.objects.create_user(username=em, email=em, password=pw)
         user.first_name = fn
         user.last_name = ln
         user.save()
-        group_data = validated_data.pop('groups')
-        user = user.objects.get(username=un)
-        group = Group.objects.get(name = gr['name'])
-        group.user_set.add(user)
+
+        #assign groups to user
+        for group in group_data:
+            g = Group.objects.get(name = group['name'])
+            g.user_set.add(user)
+
+        #link new profile to user
         if (profile_data is not None):
             Profile.objects.create(user=user, **profile_data)
         else:
             Profile.objects.create(user=user)
+
         return user
 
     def update(self, instance, validated_data):
