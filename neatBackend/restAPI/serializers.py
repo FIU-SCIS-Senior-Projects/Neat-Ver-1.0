@@ -29,21 +29,21 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('url', 'pk', 'name')
+        fields = ('url', 'name')
         extra_kwargs = {
             'name': {'validators': []}
         }
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    groups = GroupSerializer(required=False)
+    groups = GroupSerializer(many=True)
     profile = ProfileSerializer(required=False)
     username = serializers.CharField(required=False)
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('url', 'pk', 'username', 'password', 'email', 'groups',  'first_name', 'last_name', 'profile')
+        fields = ('url', 'username', 'password', 'email', 'groups',  'first_name', 'last_name', 'profile')
 
     def create(self, validated_data):
         
@@ -58,6 +58,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user.first_name = fn
         user.last_name = ln
         user.save()
+        group_data = validated_data.pop('groups')
+        user = user.objects.get(username=un)
         group = Group.objects.get(name = gr['name'])
         group.user_set.add(user)
         if (profile_data is not None):

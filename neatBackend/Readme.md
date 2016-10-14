@@ -23,7 +23,7 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 `curl -H "Content-Type: application/json" -X PUT -d '{"password":"newpassword"}' http://127.0.0.1:8000/api/user/11/ -H 'Authorization: Token d9ef2ef45498f4c8346aa46889e3b14a361ac6f3'`
 
 ####Register
-`curl -H "Content-Type: application/json" -X POST -d '{"username":"user1321","email":"fasds@dsa.com","password":"password123","first_name":"John","last_name":"Smith","profile":{"grade":"12","age":"23","gender":"male"}}' http://127.0.0.1:8000/api/user/`
+`http POST http://127.0.0.1:8000/api/user/ username=user2 email=user1@email.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
 
 ####Login
 `curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"password123"}' http://52.87.176.128/api/login/`
