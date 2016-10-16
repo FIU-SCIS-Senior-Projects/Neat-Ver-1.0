@@ -185,11 +185,11 @@ LOGGING = {
 # E-mail
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'in-v3.mailjet.com'
-EMAIL_HOST_USER = '4eb17829cb05fa8401f593d901d1e7e4'
-EMAIL_HOST_PASSWORD = 'd73bc27c8b3b6f202c167f41c00a9272'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'dev.neat@gmail.com'
+EMAIL_HOST_PASSWORD = 'devteam123'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
 EMAIL_TIMEOUT = 2
 
 # Internationalization

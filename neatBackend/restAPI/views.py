@@ -104,10 +104,42 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     #authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('username',)
+    filter_fields = ('email',)
     #permission_classes = (CustomObjectPermissions,)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+"""
+    def list(self, request):
+        pass
+
+    def create(self, request):
+        pass
+
+    def retrieve(self, request, pk=None):
+        pass
+
+    def update(self, request, pk=None):
+        pass
+
+    def partial_update(self, request, pk=None):
+        pass
+
+    def destroy(self, request, pk=None):
+        pass
+
+    @detail_route(methods=['post'])
+    def set_password(self, request, pk=None):
+        user = self.get_object()
+        serializer = PasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user.set_password(serializer.data['password'])
+            user.save()
+            return Response({'status': 'password set'})
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+"""
 
 
 class SchoolViewSet(viewsets.ModelViewSet):
