@@ -4,64 +4,12 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from rest_framework import serializers
 from guardian.shortcuts import assign_perm
 from .models import *
+#email verification
+import hashlib, random
 
 logger = logging.getLogger(__name__)
 
-
-class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = Profile
-        fields = ('url', 'grade', 'age', 'gender')
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = Group
-        fields = ('url', 'name')
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    profile = ProfileSerializer(required=False)
-    username = serializers.CharField(required=False)
-    password = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = User
-        fields = ('url', 'pk', 'username', 'password', 'first_name', 'last_name', 'email', 'groups', 'profile')
-
-    def create(self, validated_data):
-        
-        un = validated_data.pop('username')
-        em = validated_data.pop('email')
-        pw = validated_data.pop('password')
-        fn = validated_data.pop('first_name')
-        ln = validated_data.pop('last_name')
-        gr = validated_data.get('groups')
-        profile_data = validated_data.pop('profile')
-        user = User.objects.create_user(un, em, pw)
-        user.first_name = fn
-        user.last_name = ln
-        user.group = gr
-        user.save()
-        Profile.objects.create(user=user, **profile_data)
-        return user
-
-    def update(self, instance, validated_data):
-        pw = validated_data.get('password')
-        instance.set_password(pw)
-        instance.save()
-        return instance
-
 class SchoolSerializer(serializers.HyperlinkedModelSerializer):
-    #roster = serializers.StringRelatedField(many=True, required=False)
-    #classes = serializers.StringRelatedField(many=True, required=False)
-    """
-    owner = serializers.HyperlinkedRelatedField(
-        many=False,
-        read_only=True,
-        view_name='user-detail'
-    )
-    """
 
     class Meta:
         model = School
@@ -76,6 +24,67 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
         assign_perm('change_school', usr, school)
         assign_perm('delete_school', usr, school)
         return school
+
+class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Profile
+        fields = ('url', 'pk', 'user', 'grade', 'age', 'gender', 'verified', 'emailCode', 'passwordCode')
+
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Group
+        fields = ('url', 'name')
+        #Remove name validator so that UserSerializer works
+        extra_kwargs = {
+            'name': {'validators': []}
+        }
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    groups = GroupSerializer(many=True, required=False)
+    profile = ProfileSerializer(required=False)
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('url', 'email', 'password', 'first_name', 'last_name', 'groups', 'profile')
+
+    def create(self, validated_data):
+        
+        #grab data
+        em = validated_data.pop('email')
+        pw = validated_data.pop('password')
+        fn = validated_data.pop('first_name')
+        ln = validated_data.pop('last_name')
+        group_data = validated_data.pop('groups')
+        profile_data = validated_data.get('profile')
+
+        #create new user
+        user = User.objects.create_user(username=em, email=em, password=pw)
+        user.first_name = fn
+        user.last_name = ln
+        user.save()
+
+        #assign groups to user
+        for group in group_data:
+            g = Group.objects.get(name = group['name'])
+            g.user_set.add(user)
+
+        #link new profile to user
+        if (profile_data is not None):
+            Profile.objects.create(user=user, **profile_data)
+        else:
+            Profile.objects.create(user=user)
+
+        return user
+
+    def update(self, instance, validated_data):
+        pw = validated_data.get('password')
+        instance.set_password(pw)
+        instance.save()
+        return instance
 
 class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -103,7 +112,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('url', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment')
+        fields = ('url', 'assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate')
 
 class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
     tasks = TaskSerializer(many=True, required=False, read_only=True)
