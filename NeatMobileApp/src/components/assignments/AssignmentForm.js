@@ -5,7 +5,7 @@ import {
   View,
   StyleSheet,
   TouchableHighlight,
-  NavigatorIOS,
+  Navigator,
   TextInput,
   DatePickerIOS,
   TouchableOpacity
@@ -92,8 +92,6 @@ class AssignmentForm extends Component{
 
 
     render(){
-
-        // TODO add start date
         var showDatePicker = this.state.showDatePicker ?
                     <DatePickerIOS
                         style={{ height: 150 }}
@@ -120,7 +118,7 @@ class AssignmentForm extends Component{
             <TouchableHighlight
                 onPress={this.onDonePressed.bind(this)}
                 style={styles.button}>
-                    <Text style={{ color: '#ffffff' }}>
+                    <Text style={styles.buttonText}>
                         Done
                     </Text>
             </TouchableHighlight>
@@ -138,15 +136,3 @@ const Errors = (props) => {
 }
 
 module.exports = AssignmentForm;
-
-
-/*
-this cod should be added later
-
-            <DatePickerIOS
-                      date={this.state.date}
-                      mode="date"
-                      timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
-                      onDateChange={this.onDateChange}
-                />
-*/

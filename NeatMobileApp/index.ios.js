@@ -12,6 +12,7 @@ const StudentDashboard = require('./src/components/StudentDashboardView')
 const AddNewClass = require('./src/components/newClassView')
 const AssignmentsDash = require('./src/components/assignments/Assignments')
 const AssignmentForm = require('./src/components/assignments/AssignmentForm');
+const AssignmentView = require('./src/components/assignments/AssignmentView');
 
 import Register from './src/components/registration/register';
 import Splash from './src/components/neatsplash';
@@ -52,6 +53,8 @@ class NeatMobileApp extends Component {
           return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
       case 'AssignmentForm':
           return(<AssignmentForm navigator = {navigator} title = 'AssignmentForm'/>)
+      case 'AssignmentView':
+          return(< AssignmentView navigator = {navigator}  {...route.passProps} title = 'AssignmentView'/>)
     }
   }
 
