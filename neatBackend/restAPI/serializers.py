@@ -9,21 +9,27 @@ import hashlib, random
 
 logger = logging.getLogger(__name__)
 
+class SchoolSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = School
+        fields = ('url', 'schoolName', 'schoolID',)
+
+    def create(self, validated_data):
+        name = validated_data.get('schoolName')
+        sID = validated_data.get('schoolID')
+        usr = self.context['request'].user
+        school = School.objects.create(schoolName=name, schoolID=sID)
+        assign_perm('view_school', usr, school)
+        assign_perm('change_school', usr, school)
+        assign_perm('delete_school', usr, school)
+        return school
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('url', 'grade', 'age', 'gender', 'verified', 'emailCode', 'passwordCode')
-
-"""
-    def create(self, validated_data):
-        usr = validated_data.pop('user')
-        grd = validated_data.get('grade')
-        age = validated_data.get('age')
-        gnd = validated_data.get('gender')
-        key = genKey(usr.get('username'))
-"""
+        fields = ('url', 'pk', 'user', 'grade', 'age', 'gender', 'verified', 'emailCode', 'passwordCode')
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -80,31 +86,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         instance.save()
         return instance
 
-class SchoolSerializer(serializers.HyperlinkedModelSerializer):
-    #roster = serializers.StringRelatedField(many=True, required=False)
-    #classes = serializers.StringRelatedField(many=True, required=False)
-    """
-    owner = serializers.HyperlinkedRelatedField(
-        many=False,
-        read_only=True,
-        view_name='user-detail'
-    )
-    """
-
-    class Meta:
-        model = School
-        fields = ('url', 'schoolName', 'schoolID',)
-
-    def create(self, validated_data):
-        name = validated_data.get('schoolName')
-        sID = validated_data.get('schoolID')
-        usr = self.context['request'].user
-        school = School.objects.create(schoolName=name, schoolID=sID)
-        assign_perm('view_school', usr, school)
-        assign_perm('change_school', usr, school)
-        assign_perm('delete_school', usr, school)
-        return school
-
 class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
@@ -138,4 +119,4 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('url', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment')
+        fields = ('url', 'assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate')

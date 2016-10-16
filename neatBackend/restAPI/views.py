@@ -114,9 +114,9 @@ class SchoolViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows School to be viewed or posted.
     """
-    authentication_classes = (TokenAuthentication,)
+    #authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoObjectPermissionsFilter,)
-    permission_classes = (CustomObjectPermissions,)
+    #permission_classes = (CustomObjectPermissions,)
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
 
@@ -126,6 +126,7 @@ class SchoolRosterViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows SchoolRosters to be viewed
     """
+    authentication_classes = (TokenAuthentication,)
     queryset = SchoolRoster.objects.all()
     serializer_class = SchoolRosterSerializer
 
@@ -136,7 +137,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     
 
 class ClassViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsOwnerCanEditAnyCanCreate,)
+    #permission_classes = (IsOwnerCanEditAnyCanCreate,)
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
