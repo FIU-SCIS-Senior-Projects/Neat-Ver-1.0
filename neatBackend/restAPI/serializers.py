@@ -98,16 +98,17 @@ class ClassRosterSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'classFK', 'user')
 
 
-class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
-    tasks = serializers.StringRelatedField(many=True, required=False)
-
-    class Meta:
-        model = Assignment
-        fields = ('url', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
-
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
         fields = ('url', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'assignment')
+
+class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
+    tasks = TaskSerializer(many=True, required=False, read_only=True)
+
+    class Meta:
+        model = Assignment
+        fields = ('url', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
+
