@@ -68,9 +68,8 @@ class AssignmentView extends Component{
         });
     }
     pressDashboard(){
-         this.props.navigator.pop({
-            id: 'Assignments'
-
+         this.props.navigator.push({
+            id: 'AssignmentsDash'
         });
     }
 
