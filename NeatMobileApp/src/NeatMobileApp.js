@@ -8,6 +8,8 @@ const AssignmentsDash = require('./components/assignments/Assignments');
 const AssignmentForm = require('./components/assignments/AssignmentForm');
 
 import Register from './components/registration/register';
+import ResetPassword from './components/credentials/reset';
+import UpdatePassword from './components/credentials/updatePassword';
 import Splash from './components/neatsplash';
 
 var AuthService = require('./utilities/AuthService');
@@ -77,6 +79,10 @@ class NeatMobileApp extends Component {
         return(<Login navigator = {navigator} title = 'Login'/>)
       case 'Register':
         return(<Register navigator = {navigator} title = 'Register' />)
+      case 'ResetPassword':
+        return(<ResetPassword navigator = {navigator} title = 'ResetPassword'/>)
+      case 'UpdatePassword':
+        return(<UpdatePassword navigator = {navigator} title = 'UpdatePassword'/>)
       case 'StudentDashboard':
         return(<StudentDashboard navigator = {navigator} title = 'StudentDashboard' />)
       case 'AddNewClass':
