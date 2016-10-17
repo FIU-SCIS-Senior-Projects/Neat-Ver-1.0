@@ -102,3 +102,6 @@ env/
 
 # Rope project settings
 .ropeproject
+
+# Mac Specific igonore
+.DS_Store
