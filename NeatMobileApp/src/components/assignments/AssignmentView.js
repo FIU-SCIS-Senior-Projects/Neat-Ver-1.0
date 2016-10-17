@@ -45,8 +45,7 @@ class AssignmentView extends Component{
                 var display = [];
                 var j = 0
                 for(var i = 0; i < taskList.length; i++){
-                    console.log(taskList[i].user ===  'http://127.0.0.1:8000/api/user/1/');
-                    if(taskList[i].user ===  'http://127.0.0.1:8000/api/user/1/'){
+                    if(taskList[i].user ===  'http://127.0.0.1:8000/api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
                         display[j] = taskList[i];
                         j++;
                     }
