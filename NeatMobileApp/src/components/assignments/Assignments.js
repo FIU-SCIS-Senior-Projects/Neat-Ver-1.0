@@ -61,7 +61,7 @@ class Assignments extends Component{
         this.props.navigator.push({
             id: 'AssignmentView',
             passProps: {
-                assignment: rowData
+                assignmentUrl: rowData.url
             }
         });
       }
