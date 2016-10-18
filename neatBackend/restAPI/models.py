@@ -133,6 +133,13 @@ class Assignment(models.Model):
     def __str__(self):
         return self.assignmentName
 
+class AssignmentRoster(models.Model):
+    #FK
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='roster')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assignments')
+
+    class Meta:
+        unique_together = ('assignment', 'user',)
 
 class Task(models.Model):
     #FK
@@ -147,9 +154,9 @@ class Task(models.Model):
     startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
     endDate = models.DateField(validators=[is_before_today], null=True)
     
-    #permissions
     class Meta:
 
+        unique_together = ('assignment', 'user', 'taskName')
         #add, change, delete already exist by default
         permissions = (
             ('view_task', 'View tasks'),

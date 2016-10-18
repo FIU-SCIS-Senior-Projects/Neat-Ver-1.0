@@ -118,6 +118,16 @@ def genCode(username):
     salt.update(username.encode('utf-8'))
     return salt.hexdigest()[:5]
 
+@api_view(['post'])
+@authentication_classes([TokenAuthentication])
+def CollabView(request, pk):
+    assig = Assignment.objects.filter(pk=pk)
+    if assig.count() is 0:
+        return Response({'error': 'assignment provided not in database'},status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({'status': 'aok'})
+        assig = assig[0]
+
 
 #For converting google oAuth code
 from rest_framework_social_oauth2.views import ConvertTokenView
@@ -180,6 +190,12 @@ class ClassRosterViewSet(viewsets.ModelViewSet):
     queryset = ClassRoster.objects.all()
     serializer_class = ClassRosterSerializer
 
+class AssignmentRosterViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('assignment', 'user')
+    queryset = AssignmentRoster.objects.all()
+    serializer_class = AssignmentRosterSerializer
 
 class AssignmentViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -187,7 +203,6 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     filter_fields = ('assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
-
 
 class TaskViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
@@ -199,7 +214,6 @@ class TaskViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-
 
 @api_view(['GET'])
 def oauth_code(request):
