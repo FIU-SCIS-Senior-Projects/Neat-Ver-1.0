@@ -42,7 +42,7 @@ class AssignmentForm extends Component{
     async onDonePressed(){
     
         try {
-            let response = await fetch('http://52.87.176.128/api/assignments/',{
+            let response = await fetch('http://localhost:8000/api/assignments/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
@@ -98,6 +98,11 @@ class AssignmentForm extends Component{
         this.setState({dueDate: date});
       };
 
+      onBackPressed() {
+         this.props.navigator.pop()
+
+      }
+
 
     render(){
         var showDatePicker = this.state.showDatePicker ?
@@ -128,6 +133,13 @@ class AssignmentForm extends Component{
                 style={styles.button}>
                     <Text style={styles.buttonText}>
                         Done
+                    </Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+                onPress={this.onBackPressed.bind(this)}
+                style={styles.button}>
+                    <Text style={styles.buttonText}>
+                        Back
                     </Text>
             </TouchableHighlight>
         </View>

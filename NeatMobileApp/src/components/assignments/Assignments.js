@@ -36,7 +36,7 @@ class Assignments extends Component{
       }
 
       fetchAssignments(){
-        return fetch('http://52.87.176.128/api/assignments/')
+        return fetch('http://localhost:8000/api/assignments/')
               .then((response) => response.json())
               .then((responseJson) => {
 
@@ -54,7 +54,7 @@ class Assignments extends Component{
         this.props.navigator.push({
             id: 'AssignmentForm',
             passProps: {
-                classFK: 'http://52.87.176.128/api/classes/2'
+                classFK: 'http://localhost:8000/api/classes/2'
             }
         });
       }

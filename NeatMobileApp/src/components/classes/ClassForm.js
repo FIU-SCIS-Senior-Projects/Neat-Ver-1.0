@@ -35,14 +35,14 @@ class ClassForm extends Component{
     this.state = {
       className:"",
       classID: getRandomInt(100,200),
-      school: 'http://52.87.176.128/api/schools/2/',
+      school: 'http://localhost:8000/api/schools/2/',
 
     }
   }
   //POSTS to the api
     async onDonePressed(){
         try {
-            let response = await fetch('http://52.87.176.128/api/classes/',{
+            let response = await fetch('http://localhost:8000/api/classes/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
@@ -96,6 +96,11 @@ class ClassForm extends Component{
         this.setState({dueDate: date});
       };
 
+      onBackPressed() {
+         this.props.navigator.pop()
+
+      }
+
 
     render(){
 
@@ -113,6 +118,14 @@ class ClassForm extends Component{
                 style={styles.button}>
                     <Text style={styles.buttonText}>
                         Done
+                    </Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+                onPress={this.onBackPressed.bind(this)}
+                style={styles.button}>
+                    <Text style={styles.buttonText}>
+                        Back
                     </Text>
             </TouchableHighlight>
         </View>

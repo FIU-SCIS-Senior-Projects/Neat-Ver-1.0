@@ -45,7 +45,7 @@ class ClassView extends Component{
 
     fetchAssignments(){
 
-        return fetch('http://52.87.176.128/api/assignments/')
+        return fetch('http://localhost:8000/api/assignments/')
               .then((response) => response.json())
               .then((responseJson) => {
                 var display = [];

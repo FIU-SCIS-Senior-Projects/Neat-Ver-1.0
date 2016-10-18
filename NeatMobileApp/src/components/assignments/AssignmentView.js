@@ -38,14 +38,14 @@ class AssignmentView extends Component{
 
     fetchTasks(){
 
-        return fetch('http://52.87.176.128/api/task/')
+        return fetch('http://localhost:8000/api/task/')
               .then((response) => response.json())
               .then((responseJson) => {
                 var taskList = responseJson;
                 var display = [];
                 var j = 0
                 for(var i = 0; i < taskList.length; i++){
-                    if(taskList[i].user ===  'http://52.87.176.128/api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
+                    if(taskList[i].user ===  'http://localhost:8000/api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
                         display[j] = taskList[i];
                         j++;
                     }

@@ -33,7 +33,7 @@ class Classes extends Component{
 
       
       fetchClasses(){
-        return fetch('http://52.87.176.128/api/classes/')
+        return fetch('http://localhost:8000/api/classes/')
               .then((response) => response.json())
               .then((responseJson) => {
 
@@ -65,6 +65,13 @@ class Classes extends Component{
                 classUrl: rowData.url
             }
         });
+      }
+      
+      onBackPressed() {
+      this.props.navigator.push({
+            id: 'StudentDashboard'
+          });
+
       }
 
       //Styling using the row data
@@ -98,6 +105,14 @@ class Classes extends Component{
                     >
                     <Text style={styles.buttonText}>
                             Add Class
+                    </Text>
+                </TouchableHighlight>
+
+                <TouchableHighlight style={styles.button}
+                    onPress={this.onBackPressed.bind(this)}
+                    >
+                    <Text style={styles.buttonText}>
+                            Back
                     </Text>
                 </TouchableHighlight>
             </View>

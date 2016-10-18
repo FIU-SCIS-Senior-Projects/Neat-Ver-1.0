@@ -31,7 +31,7 @@ class Register extends Component {
   you can verify this by opening the debug tools and see the list of users
   */
   onGetPressed(){
-    fetch('http://52.87.176.128/restapi/users/')
+    fetch('http://localhost:8000/restapi/users/')
     .then((response)=>response.json())
     .then((responseData)=>{
       console.log("Response Body ->" + JSON.stringify(responseData))
@@ -47,7 +47,7 @@ react documentation on Network
 */
 async onPUTPressed(){
   try {
-    let response = await fetch('http://52.87.176.128/restapi/register/',{
+    let response = await fetch('http://localhost:8000/restapi/register/',{
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
