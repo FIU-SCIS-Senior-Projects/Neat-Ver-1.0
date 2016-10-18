@@ -4,23 +4,34 @@ import { StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
     button: {
-          height: 50,
-          backgroundColor: '#48BBEC',
-          borderColor: '#48BBEC',
-          alignSelf: 'stretch',
-          marginTop: 30,
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 5,
-        },
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        borderWidth: 3,
+        marginTop: 20,
+        marginLeft: 70,
+        marginRight: 70,
+        paddingRight: 20,
+        paddingLeft: 20,
+        paddingTop: 5,
+        paddingBottom: 5,
+        backgroundColor: '#FFF',
+        borderColor: '#599D95',
+    },
+    buttonText:{
+        fontSize: 18,
+        color: 'grey',
+        fontWeight: '100',
+    },
     List: {
-        borderColor: '#48BBEC',
+        borderColor: '#599D95',
         borderWidth: 1,
         height: 70,
-        //textAlign: 'center',
         paddingLeft: 10,
         flexDirection: 'row',
         alignItems: 'center',
+        marginBottom: 1,
     },
     progress: {
         margin: 10,
@@ -31,11 +42,9 @@ const styles = StyleSheet.create({
      input: {
         height: 50,
         padding: 4,
-        fontSize: 18,
         borderWidth: 1,
         borderColor: '#48bbec',
         borderRadius: 0,
-        color: '#48BBEC',
 
     },
 

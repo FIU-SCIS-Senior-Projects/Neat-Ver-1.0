@@ -38,7 +38,6 @@ class School(models.Model):
     schoolName = models.CharField(max_length=255)
     schoolID = models.CharField(max_length=255) # TODO: What does a school ID actually look like? Is it unique even across school districts?
 
-    #permissions
     class Meta:
         unique_together = ('schoolName', 'schoolID',)
 
@@ -54,11 +53,14 @@ class School(models.Model):
 class SchoolRoster(models.Model):
     #FK
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='roster')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrolledSchools')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schools')
 
     #fields
     schoolYear = models.PositiveSmallIntegerField(default = timezone.now().year) # TODO: how do we want to define school year?
     
+    class Meta:
+        unique_together = ('school', 'user',)
+
     def clean(self):
         if self.schoolYear < 2016:  # start year of the app
             self.schoolYear = timezone.now().year
@@ -93,7 +95,10 @@ class Class(models.Model):
 class ClassRoster(models.Model):
     #FK
     classFK = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='roster')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrolledClasses')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='classes')
+
+    class Meta:
+        unique_together = ('classFK', 'user',)
 
 
 class Assignment(models.Model):
@@ -107,6 +112,7 @@ class Assignment(models.Model):
     
     #permissions
     class Meta:
+        unique_together = ('classFK', 'assignmentName',)
 
         #add, change, delete already exist by default
         permissions = (
@@ -131,6 +137,7 @@ class Assignment(models.Model):
 class Task(models.Model):
     #FK
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='tasks')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
 
     #fields
     taskName = models.CharField(max_length=255)
@@ -171,20 +178,24 @@ class Task(models.Model):
 class Profile(models.Model):
     #FK
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    school = models.ForeignKey(School, on_delete=models.PROTECT, related_name='users', null=True) # TODO : Do we want a user to be deleted from the DB if they leave the service? Right now, it's not allowed.
 
     #fields
-    grade = models.PositiveSmallIntegerField()
-    age = models.PositiveSmallIntegerField()
+    grade = models.PositiveSmallIntegerField(null=True)
+    age = models.PositiveSmallIntegerField(null=True)
     gender = models.CharField(max_length=50, null=True)
     
     #email verification
-    activated = models.BooleanField(default=False)
-    activationKey = models.CharField(max_length=40, null=True)
-    keyExpiration = models.DateTimeField(null=True)
+    verified = models.BooleanField(default=False)
+    emailCode = models.CharField(max_length=40, null=True)
+    #keyExpiration = models.DateTimeField(null=True)
+
+    passwordCode = models.CharField(max_length=40, null=True)
 
     class Meta:
-        unique_together = ('user', 'school',)
+        #add, change, delete already exist by default
+        permissions = (
+            ('view_profile', 'View user profile'),
+        )
 
     def __str__(self):
         return "User Info: \nGrade:"  + str(self.grade) + "\nAge: " + str(self.age) + "\nGender: " + self.gender \

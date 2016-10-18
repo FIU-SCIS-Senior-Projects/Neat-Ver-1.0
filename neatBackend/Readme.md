@@ -7,20 +7,35 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 
 ##Recent Endpoints - examples
 
+####Add user to school
+`http POST http://127.0.0.1:8000/api/schoolrosters/ user=http://localhost:8000/api/user/4/ school=http://localhost:8000/api/schools/1/ 'Authorization: Token e68dff15c0f0f6f87ff8d7fac2f3f4f8ec947dd1'`
+
+####Create school
+`http POST http://127.0.0.1:8000/api/schools/ schoolName=FIU schoolID=123 'Authorization: Token 1dbc6867bac42923c3f34b222c66e1d7733bff7b'`
+
+####Change password (use pk) (url arg: code)
+`http POST http://127.0.0.1:8000/api/changePassword/2c9a2/ email=email@gmail.com password=newPassword`
+
+####Send "password code" e-mail (url arg: email)
+`http POST http://127.0.0.1:8000/api/send/passwordCode/email@gmail.com/`
+
+####Send "e-mail verification" e-mail
+`http POST http://127.0.0.1:8000/api/send/emailCode/ 'Authorization: Token 3ec82aeb21ca8e3f334db37d44d5cb1819252f5b'`
+
+####Verify user e-mail with code (url arg: code)
+`http POST http://127.0.0.1:8000/api/receive/emailCode/f72d6/ 'Authorization: Token 3ec82aeb21ca8e3f334db37d44d5cb1819252f5b'`
+
 ####Get specific user info (use pk)
-`curl -X GET http://127.0.0.1:8000/api/user/11/ -H 'Authorization: Token 9ea643724cda31626f11a67e6309855d470748a0'`
+`http GET http://127.0.0.1:8000/api/user/11/ 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
 ####Does a user exist?
-`curl -X GET http://127.0.0.1:8000/api/user/?username=admin -H 'Authorization: Token 9ea643724cda31626f11a67e6309855d470748a0'`
+`http GET http://127.0.0.1:8000/api/user/?email=user1@gmail.com 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
-####Change password (use pk)
-`curl -H "Content-Type: application/json" -X PUT -d '{"password":"newpassword"}' http://127.0.0.1:8000/api/user/11/ -H 'Authorization: Token d9ef2ef45498f4c8346aa46889e3b14a361ac6f3'`
-
-####Register
-`curl -H "Content-Type: application/json" -X POST -d '{"username":"user1321","email":"fasds@dsa.com","password":"password123","first_name":"John","last_name":"Smith","profile":{"grade":"12","age":"23","gender":"male"}}' http://127.0.0.1:8000/api/user/`
+####Register (hard-code student group, username removed)
+`http POST http://127.0.0.1:8000/api/user/ email=finalarcadia@gmail.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
 
 ####Login
-`curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"password123"}' http://52.87.176.128/api/login/`
+`http POST http://127.0.0.1:8000/api/login/ username=email@gmail.com password=password123`
 
 #Usage
 
