@@ -31,7 +31,7 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 ####Does a user exist?
 `http GET http://127.0.0.1:8000/api/user/?email=user1@gmail.com 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
-####Register (hard-code student group & school, username removed)
+####Register (hard-code student group, username removed)
 `http POST http://127.0.0.1:8000/api/user/ email=finalarcadia@gmail.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
 
 ####Login

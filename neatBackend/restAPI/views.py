@@ -128,7 +128,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     #authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('email',)
+    filter_fields = ('email', 'first_name', 'last_name', 'groups', 'profile')
     #permission_classes = (CustomObjectPermissions,)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
@@ -138,8 +138,10 @@ class SchoolViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows School to be viewed or posted.
     """
-    #authentication_classes = (TokenAuthentication,)
-    filter_backends = (filters.DjangoObjectPermissionsFilter,)
+    authentication_classes = (TokenAuthentication,)
+    #filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('schoolName', 'schoolID')
     #permission_classes = (CustomObjectPermissions,)
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
@@ -149,32 +151,48 @@ class SchoolRosterViewSet(viewsets.ModelViewSet):
     API endpoint that allows SchoolRosters to be viewed
     """
     authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('school', 'user', 'schoolYear')
     queryset = SchoolRoster.objects.all()
     serializer_class = SchoolRosterSerializer
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('grade', 'age', 'gender', 'verified', 'emailCode', 'passwordCode')
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     
 
 class ClassViewSet(viewsets.ModelViewSet):
     #permission_classes = (IsOwnerCanEditAnyCanCreate,)
+    authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('className', 'classID', 'school', 'roster')
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
 
 class ClassRosterViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('classFK', 'user')
     queryset = ClassRoster.objects.all()
     serializer_class = ClassRosterSerializer
 
 
 class AssignmentViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
 
 
 class TaskViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate')
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
