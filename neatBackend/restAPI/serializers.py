@@ -41,6 +41,12 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
             'name': {'validators': []}
         }
 
+class SimpleUserSerializer(serializers.HyperlinkedModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('url', 'email', 'password')
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     groups = GroupSerializer(many=True, required=False)

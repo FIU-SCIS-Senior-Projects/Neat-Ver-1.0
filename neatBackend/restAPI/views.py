@@ -13,7 +13,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import detail_route, list_route, api_view, authentication_classes
 #generic classes
 from rest_framework import generics
 #authentication
@@ -32,68 +32,92 @@ import datetime
 from django.core.mail import send_mail
 import hashlib, random
 
-class SendEmailView(APIView):
 
-    authentication_classes = (TokenAuthentication,)
-    #permission_classes = (permissions.IsAdminUser,)
 
-    #Create a new code and send an e-mail to the user
-    def post(self, request, field, format=None):
-        if field not in ['email', 'password']:
-            return Response({'error': 'wrong field'},status=status.HTTP_404_NOT_FOUND)
-        else:
-            user = request.user
-            profile = user.profile
-            code = self.genCode(user.username)
-            if field == 'email':
-                profile.emailCode = code
-            else:
-                profile.passwordCode = code
-            profile.save()
+#verify a user's e-mail given a code
+@api_view(['post'])
+@authentication_classes([TokenAuthentication])
+def receiveEmailCode(request, code):
+    user = request.user
+    profile = user.profile
+    if code == profile.emailCode:
+        profile.verified = True
+        profile.save()
+        return Response({'status': user.email + ' verified'})
+    else:
+        return Response({'status': 'wrong code provided'},status=status.HTTP_400_BAD_REQUEST)
 
-            subject = 'Verification e-mail'
-            body = 'Here is your code: ' + code
-            fromEmail = 'gfern022@fiu.edu'
-            send_mail(
-                subject,
-                body,
-                fromEmail,
-                [request.user.email],
-                fail_silently=False,
-            )
+#send a user a new code to verify their e-mail
+@api_view(['post'])
+@authentication_classes([TokenAuthentication])
+def sendEmailCode(request):
+    user = request.user
+    profile = user.profile
+    code = genCode(user.username)
+    profile.emailCode = code
+    profile.save()
+    #e-mail start
+    subject = 'Neat E-mail Verification'
+    body = 'Here is your code: ' + code
+    fromEmail = 'gfern022@fiu.edu'
+    send_mail(
+        subject,
+        body,
+        fromEmail,
+        [request.user.email],
+        fail_silently=False,
+    )
+    return Response({'status': 'E-mail code sent'})
 
-            return Response({'status': 'e-mail sent'})
+#send a user a new code to reset or change their password
+@api_view(['post'])
+def sendPasswordCode(request, email):
+    user = User.objects.filter(email=email)
+    if user.count() is 0:
+            return Response({'error': 'E-mail provided not in database'},status=status.HTTP_400_BAD_REQUEST)
+    user = user[0]
+    profile = user.profile
+    code = genCode(user.username)
+    profile.passwordCode = code
+    profile.save()
+    #e-mail start
+    subject = 'Neat Password Code'
+    body = 'Here is your code: ' + code
+    fromEmail = 'gfern022@fiu.edu'
+    send_mail(
+        subject,
+        body,
+        fromEmail,
+        [email],
+        fail_silently=False,
+    )
+    return Response({'status': 'Password code sent'})
 
-    def genCode(self, username):
-        salt = hashlib.sha256()
-        salt.update(str(random.random()).encode('utf-8')[:5])
-        salt.update(username.encode('utf-8'))
-        return salt.hexdigest()[:5]
+#change user's password given a code
+@api_view(['post'])
+def changePassword(request, code):
+    serializer = SimpleUserSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        user = User.objects.filter(email=request.data.get('email'))
+        if user.count() is 0:
+            return Response({'error': 'e-mail provided not in database'},status=status.HTTP_400_BAD_REQUEST)
+        user = user[0]
+        passcode = user.profile.passwordCode
+        if passcode != code:
+            return Response({'status': 'wrong code provided'},status=status.HTTP_400_BAD_REQUEST)
+        user.set_password(request.data.get('password'))
+        user.save()
+        return Response({'status': 'password set'})
+    else:
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
+        
+def genCode(username):
+    salt = hashlib.sha256()
+    salt.update(str(random.random()).encode('utf-8')[:5])
+    salt.update(username.encode('utf-8'))
+    return salt.hexdigest()[:5]
 
-class VerifyView(APIView):
-
-    authentication_classes = (TokenAuthentication,)
-    #permission_classes = (permissions.IsAdminUser,)
-
-    #verify the user's e-mail or password given a code
-    def post(self, request, field, code, format=None):
-        if field not in ['email', 'password']:
-            return Response({'error': 'wrong field'},status=status.HTTP_404_NOT_FOUND)
-        else:
-            user = request.user
-            profile = user.profile
-            if field == 'email':
-                if code == profile.emailCode:
-                    profile.verified = True
-                    profile.save()
-                    return Response({'status': user.email + ' verified'})
-                else:
-                    return Response({'status': 'wrong code provided'},status=status.HTTP_400_BAD_REQUEST)
-            else:
-                if code == profile.passwordCode:
-                    return Response({'status': 'code ' + code + ' matches'})
-                else:
-                    return Response({'status': 'wrong code provided'},status=status.HTTP_400_BAD_REQUEST)
 
 #For converting google oAuth code
 from rest_framework_social_oauth2.views import ConvertTokenView
@@ -108,38 +132,6 @@ class UserViewSet(viewsets.ModelViewSet):
     #permission_classes = (CustomObjectPermissions,)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-"""
-    def list(self, request):
-        pass
-
-    def create(self, request):
-        pass
-
-    def retrieve(self, request, pk=None):
-        pass
-
-    def update(self, request, pk=None):
-        pass
-
-    def partial_update(self, request, pk=None):
-        pass
-
-    def destroy(self, request, pk=None):
-        pass
-
-    @detail_route(methods=['post'])
-    def set_password(self, request, pk=None):
-        user = self.get_object()
-        serializer = PasswordSerializer(data=request.data)
-        if serializer.is_valid():
-            user.set_password(serializer.data['password'])
-            user.save()
-            return Response({'status': 'password set'})
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
-
-"""
 
 
 class SchoolViewSet(viewsets.ModelViewSet):
@@ -152,8 +144,6 @@ class SchoolViewSet(viewsets.ModelViewSet):
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
 
-#TODO : Figure out how to set foreign keys in django admin
-#TODO : Figure out how to allow updating of model fields
 class SchoolRosterViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows SchoolRosters to be viewed
