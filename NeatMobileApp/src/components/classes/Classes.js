@@ -13,7 +13,6 @@ import styles from './styles';
 
 var ClassForm = require('./ClassForm');
 var ClassView = require('./ClassView');
-var moment = require('moment');
 
 class Classes extends Component{
     constructor(props) {
@@ -32,6 +31,7 @@ class Classes extends Component{
         this.fetchClasses();
       }
 
+      
       fetchClasses(){
         return fetch('http://52.87.176.128/api/classes/')
               .then((response) => response.json())
@@ -47,23 +47,27 @@ class Classes extends Component{
               });
       }
 
+      //Dictates the action of add class button. Loads Classform Route
       onAddPressed(){
         this.props.navigator.push({
             id: 'ClassForm'
         });
       }
 
+      //Dictates the action of press on class. Loads Classview Route
       onPressRow(rowData){
 
       console.log("Class url" + rowData.url)
         this.props.navigator.push({
             id: 'ClassView',
+            //Passing the classURL to use later on in creating assingment
             passProps: {
                 classUrl: rowData.url
             }
         });
       }
 
+      //Styling using the row data
       renderRow(rowData){
 
         return(
