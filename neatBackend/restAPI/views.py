@@ -6,12 +6,14 @@ from restAPI.models import *
 from restAPI.serializers import *
 #viewsets
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from rest_framework.viewsets import ViewSet
 #classviews
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import detail_route, list_route, api_view, authentication_classes
 #generic classes
 from rest_framework import generics
 #authentication
@@ -26,6 +28,99 @@ from rest_framework import filters
 #dates
 from django.utils import timezone
 import datetime
+#email
+from django.core.mail import send_mail
+import hashlib, random
+
+
+
+#verify a user's e-mail given a code
+@api_view(['post'])
+@authentication_classes([TokenAuthentication])
+def receiveEmailCode(request, code):
+    user = request.user
+    profile = user.profile
+    if code == profile.emailCode:
+        profile.verified = True
+        profile.save()
+        return Response({'status': user.email + ' verified'})
+    else:
+        return Response({'status': 'wrong code provided'},status=status.HTTP_400_BAD_REQUEST)
+
+#send a user a new code to verify their e-mail
+@api_view(['post'])
+@authentication_classes([TokenAuthentication])
+def sendEmailCode(request):
+    user = request.user
+    profile = user.profile
+    code = genCode(user.username)
+    profile.emailCode = code
+    profile.save()
+    #e-mail start
+    subject = 'Neat E-mail Verification'
+    body = 'Here is your code: ' + code
+    fromEmail = 'gfern022@fiu.edu'
+    send_mail(
+        subject,
+        body,
+        fromEmail,
+        [request.user.email],
+        fail_silently=False,
+    )
+    return Response({'status': 'E-mail code sent'})
+
+#send a user a new code to reset or change their password
+@api_view(['post'])
+def sendPasswordCode(request, email):
+    user = User.objects.filter(email=email)
+    if user.count() is 0:
+            return Response({'error': 'E-mail provided not in database'},status=status.HTTP_400_BAD_REQUEST)
+    user = user[0]
+    profile = user.profile
+    code = genCode(user.username)
+    profile.passwordCode = code
+    profile.save()
+    #e-mail start
+    subject = 'Neat Password Code'
+    body = 'Here is your code: ' + code
+    fromEmail = 'gfern022@fiu.edu'
+    send_mail(
+        subject,
+        body,
+        fromEmail,
+        [email],
+        fail_silently=False,
+    )
+    return Response({'status': 'Password code sent'})
+
+#change user's password given a code
+@api_view(['post'])
+def changePassword(request, code):
+    serializer = SimpleUserSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        user = User.objects.filter(email=request.data.get('email'))
+        if user.count() is 0:
+            return Response({'error': 'e-mail provided not in database'},status=status.HTTP_400_BAD_REQUEST)
+        user = user[0]
+        passcode = user.profile.passwordCode
+        if passcode != code:
+            return Response({'status': 'wrong code provided'},status=status.HTTP_400_BAD_REQUEST)
+        user.set_password(request.data.get('password'))
+        user.save()
+        return Response({'status': 'password set'})
+    else:
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
+        
+def genCode(username):
+    salt = hashlib.sha256()
+    salt.update(str(random.random()).encode('utf-8')[:5])
+    salt.update(username.encode('utf-8'))
+    return salt.hexdigest()[:5]
+
+
+#For converting google oAuth code
+from rest_framework_social_oauth2.views import ConvertTokenView
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -33,7 +128,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     #authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('username',)
+    filter_fields = ('email',)
     #permission_classes = (CustomObjectPermissions,)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
@@ -43,18 +138,17 @@ class SchoolViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows School to be viewed or posted.
     """
-    authentication_classes = (TokenAuthentication,)
+    #authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoObjectPermissionsFilter,)
-    permission_classes = (CustomObjectPermissions,)
+    #permission_classes = (CustomObjectPermissions,)
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
 
-#TODO : Figure out how to set foreign keys in django admin
-#TODO : Figure out how to allow updating of model fields
 class SchoolRosterViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows SchoolRosters to be viewed
     """
+    authentication_classes = (TokenAuthentication,)
     queryset = SchoolRoster.objects.all()
     serializer_class = SchoolRosterSerializer
 
@@ -62,11 +156,10 @@ class SchoolRosterViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-
-
+    
 
 class ClassViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsOwnerCanEditAnyCanCreate,)
+    #permission_classes = (IsOwnerCanEditAnyCanCreate,)
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
@@ -89,3 +182,8 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
+
+@api_view(['GET'])
+def oauth_code(request):
+   g_code = request.GET['code']
+   return Response(g_code)

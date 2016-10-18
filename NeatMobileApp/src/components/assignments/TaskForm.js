@@ -19,47 +19,53 @@ import styles from './styles';
    NOTE: you must create a class and a school before being able to add an assignment
 */
 
-var moment = require('moment'),
-    CONFIG = require('../../config.js');
+var moment = require('moment');
 
-class AssignmentForm extends Component{
-  constructor(){
-    super();
+class TaskForm extends Component{
+  constructor(props){
+    super(props);
 
     this.state = {
-      assignmentName:"",
+      taskName:"",
       dueDate: new Date(),
-      classFK: CONFIG.server.host + '/api/classes/1/',
+      assignmentUrl: props.assignmentUrl,
+      //taskList: props.assignment.tasks
+      user: 'http://127.0.0.1:8000/api/user/1/',
       showDatePicker: false,
       errors: [],
 
     }
   }
+
   //POSTS to the api
     async onDonePressed(){
         try {
-            let response = await fetch(CONFIG.server.host + '/api/assignments/',{
+            let response = await fetch('http://127.0.0.1:8000/api/task/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
                   'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                  assignmentName: this.state.assignmentName,
-                  classFK: this.state.classFK,
-                  dueDate: moment(this.state.dueDate).format('YYYY-MM-DD')
+                  taskName: this.state.taskName,
+                  user: this.state.user,
+                  dueDate: moment(this.state.dueDate).format('YYYY-MM-DD'),
+                  assignment: this.state.assignmentUrl
                 })
             });
 
             let responseJson = await response.text();
 
 
-
             //verify if our operation was a success or failure
             if(response.status >= 200 && response.status < 300){
                 console.log("response succes is:" + responseJson);
                 this.props.navigator.push({
-                  id: 'AssignmentsDash'
+                  id: 'AssignmentView',
+                  passProps:{
+                    assignmentUrl: this.state.assignmentUrl
+                  }
+
                 });
                 console.log('DONE BUTTON WAS PRESSED')
             }else{
@@ -104,8 +110,8 @@ class AssignmentForm extends Component{
 
             <TextInput
                     style={styles.input}
-                    onChangeText={(val) => this.setState({assignmentName: val})}
-                    placeholder="Assignment Name">
+                    onChangeText={(val) => this.setState({taskName: val})}
+                    placeholder="Task Name">
             </TextInput>
                 <Text style={{paddingTop: 20}}>Due Date</Text>
                 <TouchableOpacity style={styles.input}
@@ -136,4 +142,4 @@ const Errors = (props) => {
   );
 }
 
-module.exports = AssignmentForm;
+module.exports = TaskForm;

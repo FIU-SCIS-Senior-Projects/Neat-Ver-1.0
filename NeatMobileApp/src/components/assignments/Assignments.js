@@ -5,7 +5,7 @@ import {
   View,
   StyleSheet,
   TouchableHighlight,
-  NavigatorIOS,
+  Navigator,
   ListView
 } from 'react-native';
 
@@ -13,6 +13,7 @@ import styles from './styles';
 import * as Progress from 'react-native-progress';
 
 var AssignmentForm = require('./AssignmentForm');
+var AssignmentView = require('./AssignmentView');
 var moment = require('moment'),
     CONFIG = require('../../config.js');
 
@@ -36,10 +37,11 @@ class Assignments extends Component{
       }
 
       fetchAssignments(){
-        return fetch(CONFIG.server.host + '/api/assignments/?format=json')
+        return fetch(CONFIG.server.host + '/api/assignments/')
               .then((response) => response.json())
               .then((responseJson) => {
-                var assignmentList = responseJson
+
+                var assignmentList = responseJson;
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(assignmentList)
                 })
@@ -47,8 +49,24 @@ class Assignments extends Component{
               .catch((error) => {
                 console.error(error);
               });
-
       }
+
+      onAddPressed(){
+        this.props.navigator.push({
+            id: 'AssignmentForm'
+        });
+      }
+
+      onPressRow(rowData){
+
+        this.props.navigator.push({
+            id: 'AssignmentView',
+            passProps: {
+                assignmentUrl: rowData.url
+            }
+        });
+      }
+
       changeColor(progress){
       var color = ''
         if(progress < 0.33){
@@ -64,51 +82,50 @@ class Assignments extends Component{
       }
 
       renderRow(rowData){
+
         return(
+        <TouchableHighlight
+                onPress={() => this.onPressRow(rowData)}
+                underlayColor='#ddd'
+              >
             <View style={styles.List}>
-
-                <Text>{rowData.assignmentName}</Text>
-                <Text style={{paddingLeft: 20}}>Due {moment(rowData.dueDate).from(rowData.startDate)}</Text>
-
 
                 <Progress.Circle
                     style={styles.progress}
                     progress={this.state.progress}
                     indeterminate={this.state.indeterminate}
-                    showsText="true"
+                    showsText={true}
                     color={this.changeColor(this.state.progress)}
                     direction="counter-clockwise"
                 />
 
+                <Text>{rowData.assignmentName}</Text>
+                <Text style={{paddingLeft: 20}}>Due {moment(rowData.dueDate).from(rowData.startDate)}</Text>
+
             </View>
+         </TouchableHighlight>
         )
       }
 
     render(){
         return(
             <View>
-                <Text style={{ padding: 10, justifyContent: 'center'}}>Assignment Dashboard</Text>
+                <Text style={{ padding: 20, justifyContent: 'center'}}>Assignment Dashboard</Text>
                 <ListView
                     dataSource={this.state.dataSource}
                     renderRow={this.renderRow.bind(this)}
                     enableEmptySections= {true}
                 />
 
-                <TouchableHighlight
+                <TouchableHighlight style={styles.button}
                     onPress={this.onAddPressed.bind(this)}
-                    style={styles.button}>
-                    <Text style={{ color: '#ffffff' }}>
+                    >
+                    <Text style={styles.buttonText}>
                             Add Assignment
                     </Text>
                 </TouchableHighlight>
             </View>
         );
-    }
-
-    onAddPressed(){
-        this.props.navigator.push({
-              id: 'AssignmentForm'
-            });
     }
 }
 
