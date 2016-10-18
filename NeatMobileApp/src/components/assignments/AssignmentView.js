@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   ListView,
   ScrollView,
+  Switch,
 } from 'react-native';
 
 import styles from './styles';
@@ -28,7 +29,8 @@ class AssignmentView extends Component{
 
         this.state={
             dataSource: ds,
-            assignmentUrl: props.assignmentUrl
+            assignmentUrl: props.assignmentUrl,
+            toggleState: false,
         };
     }
 
@@ -76,6 +78,10 @@ class AssignmentView extends Component{
     renderRow(rowData){
         return(
             <View style={styles.List}>
+                <Switch
+                    onValueChange={(value) => this.setState({toggleState: value})}
+                    style={{marginBottom: 10}}
+                    value={rowData.isDone} />
                 <Text>{rowData.taskName}</Text>
             </View>
         );
