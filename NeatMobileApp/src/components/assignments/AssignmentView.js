@@ -31,6 +31,7 @@ class AssignmentView extends Component{
             dataSource: ds,
             assignmentUrl: props.assignmentUrl,
             toggleState: true,
+            trueSwitchIsOn: true,
         };
     }
 
@@ -75,67 +76,15 @@ class AssignmentView extends Component{
         });
     }
 
-    putToogleData(rowData){
-
-        try {
-            let response = await fetch('http://127.0.0.1:8000/api/task/',{
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    taskName: this.state.taskName,
-                    user: this.state.user,
-                    dueDate: moment(this.state.dueDate).format('YYYY-MM-DD'),
-                    assignment: this.state.assignmentUrl
-                })
-            });
-
-            let responseJson = await response.text();
-
-
-            //verify if our operation was a success or failure
-            if(response.status >= 200 && response.status < 300){
-                console.log("response succes is:" + responseJson);
-                this.props.navigator.push({
-                    id: 'AssignmentView',
-                    passProps:{
-                        assignmentUrl: this.state.assignmentUrl
-                    }
-
-                });
-                console.log('DONE BUTTON WAS PRESSED')
-            }else{
-                console.log("response failure is:" + responseJson);
-                let errors = responseJson;
-                throw errors;
-            }
-
-        } catch(errors) {
-
-            console.log("catch errors:" + errors);
-
-            let formErrors = JSON.parse(errors);
-
-            let errorsArray = [];
-
-            for(let key in formErrors){
-                if(formErrors[key].length > 1){
-                    formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
-                }else {
-                    errorsArray.push(`${key} ${formErrors[key]}`)
-                }
-            }
-            this.setState({errors: errorsArray});
-        }
+    async putToogleData(rowData){
     }
+
 
     renderRow(rowData){
         return(
             <View style={styles.List}>
                 <Switch
-                    onValueChange={(value) => this.setState({toggleState: value})}
+                    onValueChange={() => {rowData.isDone = !rowData.isDone; console.log(rowData.taskName + ' task complete : ' + rowData.isDone)}}
                     style={{marginBottom: 10}}
                     value={rowData.isDone} />
                 <Text>{rowData.taskName}</Text>
