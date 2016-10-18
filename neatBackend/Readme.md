@@ -13,26 +13,29 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 ####Create school
 `http POST http://127.0.0.1:8000/api/schools/ schoolName=FIU schoolID=123 'Authorization: Token 1dbc6867bac42923c3f34b222c66e1d7733bff7b'`
 
-####Send verification e-mail (arg: password, email)
-`http POST http://127.0.0.1:8000/api/sendEmail/password/ 'Authorization: Token 3ec82aeb21ca8e3f334db37d44d5cb1819252f5b'`
+####Change password (use pk) (url arg: code)
+`http POST http://127.0.0.1:8000/api/changePassword/2c9a2/ email=email@gmail.com password=newPassword`
 
-####Verify user with code (arg1: password, email) (arg2: code)
-`http POST http://127.0.0.1:8000/api/verify/email/d303a/ 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
+####Send "password code" e-mail (url arg: email)
+`http POST http://127.0.0.1:8000/api/send/passwordCode/email@gmail.com/`
+
+####Send "e-mail verification" e-mail
+`http POST http://127.0.0.1:8000/api/send/emailCode/ 'Authorization: Token 3ec82aeb21ca8e3f334db37d44d5cb1819252f5b'`
+
+####Verify user e-mail with code (url arg: code)
+`http POST http://127.0.0.1:8000/api/receive/emailCode/f72d6/ 'Authorization: Token 3ec82aeb21ca8e3f334db37d44d5cb1819252f5b'`
 
 ####Get specific user info (use pk)
 `http GET http://127.0.0.1:8000/api/user/11/ 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
 ####Does a user exist?
-`http GET http://127.0.0.1:8000/api/user/?username=admin 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
-
-####Change password (use pk)
-`http PUT http://127.0.0.1:8000/api/user/2/ password=password123 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
+`http GET http://127.0.0.1:8000/api/user/?email=user1@gmail.com 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
 ####Register (hard-code student group & school, username removed)
 `http POST http://127.0.0.1:8000/api/user/ email=finalarcadia@gmail.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
 
 ####Login
-`http POST http://127.0.0.1:8000/api/login/ username=finalarcadia@gmail.com password=password123`
+`http POST http://127.0.0.1:8000/api/login/ username=email@gmail.com password=password123`
 
 #Usage
 
