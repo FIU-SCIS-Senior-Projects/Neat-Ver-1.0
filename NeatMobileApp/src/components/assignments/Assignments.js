@@ -36,7 +36,7 @@ class Assignments extends Component{
       }
 
       fetchAssignments(){
-        return fetch('http://127.0.0.1:8000/api/assignments/?format=json')
+        return fetch('http://127.0.0.1:8000/api/assignments/')
               .then((response) => response.json())
               .then((responseJson) => {
 
@@ -61,7 +61,7 @@ class Assignments extends Component{
         this.props.navigator.push({
             id: 'AssignmentView',
             passProps: {
-                assignment: rowData
+                assignmentUrl: rowData.url
             }
         });
       }

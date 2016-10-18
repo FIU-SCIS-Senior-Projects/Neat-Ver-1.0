@@ -28,13 +28,15 @@ class TaskForm extends Component{
     this.state = {
       taskName:"",
       dueDate: new Date(),
-      assignment: props.assignmentUrl,
+      assignmentUrl: props.assignmentUrl,
+      //taskList: props.assignment.tasks
       user: 'http://127.0.0.1:8000/api/user/1/',
       showDatePicker: false,
       errors: [],
 
     }
   }
+
   //POSTS to the api
     async onDonePressed(){
         try {
@@ -48,19 +50,22 @@ class TaskForm extends Component{
                   taskName: this.state.taskName,
                   user: this.state.user,
                   dueDate: moment(this.state.dueDate).format('YYYY-MM-DD'),
-                  assignment: this.state.assignment
+                  assignment: this.state.assignmentUrl
                 })
             });
 
             let responseJson = await response.text();
 
 
-
             //verify if our operation was a success or failure
             if(response.status >= 200 && response.status < 300){
                 console.log("response succes is:" + responseJson);
-                this.props.navigator.pop({
-                  id: 'AssignmentView'
+                this.props.navigator.push({
+                  id: 'AssignmentView',
+                  passProps:{
+                    assignmentUrl: this.state.assignmentUrl
+                  }
+
                 });
                 console.log('DONE BUTTON WAS PRESSED')
             }else{
