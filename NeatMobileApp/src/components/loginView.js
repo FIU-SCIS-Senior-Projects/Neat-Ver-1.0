@@ -65,7 +65,6 @@ class loginView extends Component{
     console.log('you have push the register button');
   }
 
-
   onForgotPressed(){
     this.props.navigator.push({
       id: 'ResetPassword'
