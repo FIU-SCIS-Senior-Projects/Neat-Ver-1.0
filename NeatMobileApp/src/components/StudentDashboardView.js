@@ -8,7 +8,7 @@ class StudentDashboardView extends Component{
 
   onClassesPressed(){
     this.props.navigator.push({
-      id: 'AddNewClass'
+      id: 'ClassDash'
     });
     console.log('Classes button pressed!')
   }
@@ -44,6 +44,7 @@ class StudentDashboardView extends Component{
             My Account
           </Text>
         </TouchableHighlight>
+
       </View>
     )
   }

@@ -9,15 +9,14 @@ import {
   TextInput,
   DatePickerIOS,
   TouchableOpacity,
-  ListView,
-  ScrollView,
+  ListView
 } from 'react-native';
 
 import styles from './styles';
 
-var Assignments = require('./Assignments');
+var Classes = require('./Classes');
 
-class AssignmentView extends Component{
+class ClassView extends Component{
 
     constructor(props) {
         super(props)
@@ -25,38 +24,22 @@ class AssignmentView extends Component{
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
         });
+        var taskList = props.assignment.tasks;
+        var displayTask = [];
+        var j =0
+
+        for(var i = 0; i < taskList.length;i++){
+            if(taskList[i].user === 'http://52.87.176.128/api/user/1/?format=json'){
+                displayTask[j] = taskList[i];
+                j++;
+            }
+        }
 
         this.state={
-            dataSource: ds,
-            assignmentUrl: props.assignmentUrl
+            dataSource: ds.cloneWithRows(displayTask),
+            assignmentUrl: props.assignment.url
+
         };
-    }
-
-    componentDidMount(){
-            this.fetchTasks();
-          }
-
-    fetchTasks(){
-
-        return fetch('http://52.87.176.128/api/task/')
-              .then((response) => response.json())
-              .then((responseJson) => {
-                var taskList = responseJson;
-                var display = [];
-                var j = 0
-                for(var i = 0; i < taskList.length; i++){
-                    if(taskList[i].user ===  'http://52.87.176.128/api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
-                        display[j] = taskList[i];
-                        j++;
-                    }
-                }
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(display)
-                })
-              })
-              .catch((error) => {
-                console.error(error);
-              });
     }
 
     onAddTask(){
@@ -68,23 +51,27 @@ class AssignmentView extends Component{
         });
     }
     pressDashboard(){
-         this.props.navigator.push({
-            id: 'AssignmentsDash'
+         this.props.navigator.pop({
+            id: 'Classes'
+
         });
     }
 
+
     renderRow(rowData){
+
         return(
             <View style={styles.List}>
                 <Text>{rowData.taskName}</Text>
             </View>
         );
+
     }
 
     render(){
         return(
+        <View >
 
-            <ScrollView>
             <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderRow.bind(this)}
@@ -105,10 +92,9 @@ class AssignmentView extends Component{
                         Assignment Dashboard
                 </Text>
             </TouchableHighlight>
-            </ScrollView>
-
+        </View>
         );
     }
 }
 
-module.exports = AssignmentView;
+module.exports = ClassView;
