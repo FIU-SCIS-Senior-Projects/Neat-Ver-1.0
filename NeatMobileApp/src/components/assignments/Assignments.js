@@ -52,7 +52,10 @@ class Assignments extends Component{
 
       onAddPressed(){
         this.props.navigator.push({
-            id: 'AssignmentForm'
+            id: 'AssignmentForm',
+            passProps: {
+                classFK: 'http://52.87.176.128/api/classes/2'
+            }
         });
       }
 

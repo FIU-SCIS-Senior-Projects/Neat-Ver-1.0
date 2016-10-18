@@ -59,7 +59,7 @@ class NeatMobileApp extends Component {
       case 'AssignmentsDash':
           return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
       case 'AssignmentForm':
-          return(<AssignmentForm navigator = {navigator} title = 'AssignmentForm'/>)
+          return(<AssignmentForm navigator = {navigator} {...route.passProps} title = 'AssignmentForm'/>)
       case 'AssignmentView':
           return(< AssignmentView navigator = {navigator}  {...route.passProps} title = 'AssignmentView'/>)
       case 'TaskForm':

@@ -55,6 +55,7 @@ class Classes extends Component{
 
       onPressRow(rowData){
 
+      console.log("Class url" + rowData.url)
         this.props.navigator.push({
             id: 'ClassView',
             passProps: {

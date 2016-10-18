@@ -15,6 +15,8 @@ import styles from './styles';
 
 /* TODO make classFK not hard coded
    TODO add tasks here maybe(?)
+   TODO get authorization token from when login code is merged
+        Figure out why props is not passing the classURL
 
    NOTE: you must create a class and a school before being able to add an assignment
 */
@@ -22,13 +24,15 @@ import styles from './styles';
 var moment = require('moment');
 
 class AssignmentForm extends Component{
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
 
+    console.log("props" + props.classFK)
     this.state = {
+    
       assignmentName:"",
       dueDate: new Date(),
-      classFK: 'http://52.87.176.128/api/classes/1/',
+      classFK: props.classFK,
       showDatePicker: false,
       errors: [],
 
@@ -36,12 +40,14 @@ class AssignmentForm extends Component{
   }
   //POSTS to the api
     async onDonePressed(){
+    
         try {
             let response = await fetch('http://52.87.176.128/api/assignments/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
-                  'Content-Type': 'application/json'
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Token 344009168785e1fc0d1ab09ea197412f291206ac'
                 },
                 body: JSON.stringify({
                   assignmentName: this.state.assignmentName,
@@ -58,7 +64,7 @@ class AssignmentForm extends Component{
             if(response.status >= 200 && response.status < 300){
                 console.log("response succes is:" + responseJson);
                 this.props.navigator.push({
-                  id: 'AssignmentsDash'
+                  id: 'ClassDash'
                 });
                 console.log('DONE BUTTON WAS PRESSED')
             }else{
@@ -70,6 +76,8 @@ class AssignmentForm extends Component{
           } catch(errors) {
 
             console.log("catch errors:" + errors);
+            console.log("class FK :" + this.state.classFK); //debug
+            console.log("ClassURLProp: " + this.props.classFK)//debug
 
             let formErrors = JSON.parse(errors);
 
