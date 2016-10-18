@@ -3,7 +3,7 @@ import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator
 
 const Login = require('./components/loginView');
 const StudentDashboard = require('./components/StudentDashboardView');
-const AddNewClass = require('./components/newClassView');
+const ClassList = require('./components/classList/ClassList');
 const AssignmentsDash = require('./components/assignments/Assignments');
 const AssignmentForm = require('./components/assignments/AssignmentForm');
 
@@ -55,12 +55,12 @@ class NeatMobileApp extends Component {
     }
     else {
       return (
-        <Splash duration={3000} backgroundColor={styles.splashContainer}>
+        <Splash duration={500} backgroundColor={styles.splashContainer}>
           <View style ={styles.container}>
 
             <Navigator
               initialRoute = {{
-                id: 'Login'
+                id: 'Login'//'Login'
               }}
               renderScene = {
                 this.navigatorRenderScene
@@ -85,8 +85,8 @@ class NeatMobileApp extends Component {
         return(<UpdatePassword navigator = {navigator} title = 'UpdatePassword'/>)
       case 'StudentDashboard':
         return(<StudentDashboard navigator = {navigator} title = 'StudentDashboard' />)
-      case 'AddNewClass':
-        return(<AddNewClass navigator = {navigator} title = 'AddNewClass'/>)
+      case 'ClassList':
+        return(<ClassList navigator = {navigator} title = 'ClassList'/>)
       case 'AssignmentsDash':
         return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
       case 'AssignmentForm':

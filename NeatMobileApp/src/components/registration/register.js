@@ -69,11 +69,11 @@ class Register extends Component {
     this.state = {
       value: {
       },
-      username: "",
+      //username: "",
       password: "",
       firstname: "",
       lastname: "",
-      profile: "",
+      groups: [],
       email: "",
       password_confirmation: "",
       errors: [],
@@ -89,17 +89,21 @@ onRegisterPressed(){
   var value = this.refs.form.getValue();
 
   authService.register({
-      username:  this.state.value.username,
+      //username:  this.state.value.username,
       password:  this.state.value.password,
       firstname: this.state.value.firstname,
       lastname:  this.state.value.lastname,
-      email:     this.state.value.email
+      email:     this.state.value.email,
+      groups:   this.state.value.groups
   }, (results)=> {
       this.setState(Object.assign({
           showProgress: false
       }, results));
       if(results.success){
-        this.props.navigator.pop();
+        //this.props.navigator.pop();
+        this.props.navigator.push({
+          id: 'StudentDashboard'
+        });
         console.log('you have register in');
         this.setState({
           value : {},
