@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 
 import styles from './styles';
-import * as Progress from 'react-native-progress';
 
 var ClassForm = require('./ClassForm');
 var ClassView = require('./ClassView');

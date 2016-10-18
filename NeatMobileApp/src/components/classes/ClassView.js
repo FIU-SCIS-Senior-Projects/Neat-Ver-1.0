@@ -9,7 +9,8 @@ import {
   TextInput,
   DatePickerIOS,
   TouchableOpacity,
-  ListView
+  ListView,
+  ScrollView,
 } from 'react-native';
 
 import styles from './styles';
@@ -24,64 +25,77 @@ class ClassView extends Component{
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
         });
-        var taskList = props.assignment.tasks;
-        var displayTask = [];
-        var j =0
-
-        for(var i = 0; i < taskList.length;i++){
-            if(taskList[i].user === 'http://52.87.176.128/api/user/1/?format=json'){
-                displayTask[j] = taskList[i];
-                j++;
-            }
-        }
 
         this.state={
-            dataSource: ds.cloneWithRows(displayTask),
-            assignmentUrl: props.assignment.url
-
+            dataSource: ds,
+            classUrl: props.classUrl
         };
     }
 
-    onAddTask(){
+    //TODO Fix repeated code here as this can be loaded from previous prop
+    componentDidMount(){
+            this.fetchAssignments();
+          }
+
+    fetchAssignments(){
+
+        return fetch('http://52.87.176.128/api/assignments/')
+              .then((response) => response.json())
+              .then((responseJson) => {
+                var assignmentList = responseJson;
+                var display = [];
+                var j = 0
+                for(var i = 0; i < assignmentList.length; i++){
+                    if(assignmentList[i].classFK ===  this.state.classUrl){
+                        display[j] = assignmentList[i];
+                        j++;
+                    }
+                }
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(display)
+                })
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+    }
+
+    onAddAssignment(){
         this.props.navigator.push({
-            id: 'TaskForm',
+            id: 'AssignmentForm',
             passProps:{
-                assignmentUrl: this.state.assignmentUrl
+                classUrl: this.state.classUrl
             }
         });
     }
     pressDashboard(){
-         this.props.navigator.pop({
-            id: 'Classes'
-
+         this.props.navigator.push({
+            id: 'ClassDash'
         });
     }
 
-
     renderRow(rowData){
-
         return(
             <View style={styles.List}>
-                <Text>{rowData.taskName}</Text>
+                <Text>{rowData.assignmentName}</Text>
             </View>
         );
-
     }
 
     render(){
         return(
-        <View >
 
+            <ScrollView>
             <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderRow.bind(this)}
             />
 
             <TouchableHighlight style={styles.button}
-                onPress={this.onAddTask.bind(this)}
+                onPress={this.onAddAssignment.bind(this)}
             >
                 <Text style={styles.buttonText}>
-                        Add Task
+                        Add Assignment
                 </Text>
             </TouchableHighlight>
 
@@ -89,10 +103,11 @@ class ClassView extends Component{
                 onPress={this.pressDashboard.bind(this)}
             >
                 <Text style={styles.buttonText}>
-                        Assignment Dashboard
+                        Class Dashboard
                 </Text>
             </TouchableHighlight>
-        </View>
+            </ScrollView>
+
         );
     }
 }
