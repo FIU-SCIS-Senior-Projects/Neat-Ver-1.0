@@ -101,6 +101,7 @@ class Classes extends Component{
                             Add Class
                     </Text>
                 </TouchableHighlight>
+
                 <TouchableHighlight style={styles.button}
                     onPress={this.onBackPressed.bind(this)}
                     >

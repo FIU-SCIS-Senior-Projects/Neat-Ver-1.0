@@ -23,8 +23,8 @@ var moment = require('moment'),
     CONFIG = require('../../config.js');
 
 class AssignmentForm extends Component{
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
 
     this.state = {
       assignmentName:"",

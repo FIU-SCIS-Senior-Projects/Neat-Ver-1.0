@@ -79,7 +79,7 @@ class ClassView extends Component{
     this.props.navigator.push({
         id: 'AssignmentView',
         passProps: {
-        classUrl: this.state.classUrl
+        assignmentUrl: rowData.url
         }
         });
     }

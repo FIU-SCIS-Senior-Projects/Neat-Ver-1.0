@@ -15,7 +15,8 @@ import {
 
 import styles from './styles';
 
-var Assignments = require('./Assignments');
+var Assignments = require('./Assignments'),
+    CONFIG = require('../../config.js');
 
 class AssignmentView extends Component{
 
@@ -38,14 +39,14 @@ class AssignmentView extends Component{
 
     fetchTasks(){
 
-        return fetch('http://127.0.0.1:8000/api/task/')
+        return fetch(CONFIG.server.host + 'api/task/')
               .then((response) => response.json())
               .then((responseJson) => {
                 var taskList = responseJson;
                 var display = [];
                 var j = 0
                 for(var i = 0; i < taskList.length; i++){
-                    if(taskList[i].user ===  'http://127.0.0.1:8000/api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
+                    if(taskList[i].user ===  CONFIG.server.host + 'api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
                         display[j] = taskList[i];
                         j++;
                     }
