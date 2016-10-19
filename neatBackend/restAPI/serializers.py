@@ -127,3 +127,8 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
         model = Assignment
         fields = ('url', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
 
+class AssignmentRosterSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = AssignmentRoster
+        fields = ('url', 'assignment', 'user')

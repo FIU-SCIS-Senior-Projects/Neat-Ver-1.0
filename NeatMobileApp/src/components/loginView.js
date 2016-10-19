@@ -12,76 +12,113 @@ import {
 } from 'react-native';
 
 import Logo from './../assets/img/Logo_Neat.png';
-
+var authService = require('../utilities/AuthService');
+var LoginForm = require('./LoginForm');
+var Header = require('./Header');
 
 class loginView extends Component{
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
 
     this.state = {
+      value: {
+      },
       email: "",
       password: "",
       errors: [],
+      showProgress: false,
+      success: false,
     }
   }
 
   onLoginPressed(){
-    this.props.navigator.push({
-      id: 'StudentDashboard'
+    this.setState({showProgress: true});
+
+    authService.login({
+        username: this.state.value.username,
+        password: this.state.value.password
+    }, (results)=> {
+        this.setState(Object.assign({
+            showProgress: false
+        }, results));
+        if(results.success){
+          this.props.navigator.push({
+            id: 'StudentDashboard'
+          });
+          this.setState({
+            value : {},
+            success: false,
+            badCredentials: false,
+            unknownError: false
+          })
+        }
+        else {
+          console.log('error during login: ', results.status);
+        }
     });
-    console.log('you have push the login button')
   }
 
   onRegisterPressed(){
     this.props.navigator.push({
       id: 'Register'
     });
-    console.log('you have push the register button')
+    console.log('you have push the register button');
+  }
+
+  onForgotPressed(){
+    this.props.navigator.push({
+      id: 'ResetPassword'
+    });
+    console.log('Reset password requested');
   }
 
   render(){
+    var errorCtrl = <View />;
+    console.log('state info: ', this.state.success, this.state.badCredentials, this.state.unknownError, this.state.value);
 
+    if(!this.state.success && this.state.badCredentials) {
+      errorCtrl = <Text style={styles.error}>
+        That username and password combination did not work
+      </Text>
+    }
+
+    if(!this.state.success && this.state.unknownError) {
+      errorCtrl = <Text style={styles.error}>
+        We experienced an unexpected issue
+      </Text>
+    }
     return(
       <View style={styles.container}>
-        <Image source={Logo} style={styles.logo}/>
-        <Text style={styles.heading}>
-          NEAT
-        </Text>
-        <View style={styles.inputs}>
-          <View style={styles.inputContainer}>
-              <Image style={styles.inputIcon} source={require('image!ic_perm_identity')}/>
-              <TextInput
-                  style={[styles.input, styles.greyFont]}
-                  placeholder="Username"
-                  value={this.state.username}
-              />
+        <Header
+          showProgress={this.state.showProgress}
+        />
+        <View style={styles.inputs, styles.inputContainer}>
+          <LoginForm
+            value={this.state.value}
+            onChange={(value) => this.setState({value})}
+            />
+        </View>
+        <View style={styles.registerForgotContainer}>
+          <View style={styles.registerContainer}>
+            <Text
+              style={styles.greyFont}
+              onPress={(this.onRegisterPressed.bind(this))}>
+              Register
+            </Text>
           </View>
-          <View style={styles.inputContainer}>
-              <Image style={styles.inputIcon} source={require('image!ic_lock_outline')}/>
-              <TextInput
-                  password={true}
-                  style={[styles.input, styles.greyFont]}
-                  placeholder="Pasword"
-                  value={this.state.password}
-              />
-          </View>
-
-          <View style={styles.registerForgotContainer}>
-              <View style={styles.registerContainer}>
-                  <Text style={styles.greyFont} onPress={(this.onRegisterPressed.bind(this))}>
-                    Register
-                  </Text>
-              </View>
-              <View style={styles.forgotContainer}>
-                  <Text style={styles.greyFont} >Forgot?</Text>
-              </View>
+          <View style={styles.forgotContainer}>
+              <Text style={styles.greyFont} onPress={(this.onForgotPressed.bind(this))}
+              >Forgot?</Text>
           </View>
         </View>
-        <TouchableHighlight style = {styles.button} onPress={(this.onLoginPressed.bind(this))} >
+        <TouchableHighlight
+          style = {styles.button}
+          onPress={this.onLoginPressed.bind(this)} >
           <Text style = {styles.buttonText}>
             Sign In
           </Text>
         </TouchableHighlight>
+        {errorCtrl}
       </View>
     )
   }
@@ -110,6 +147,7 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       width: 275,
       marginTop: 10,
+      marginBottom: 10,
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 20,
@@ -172,10 +210,16 @@ const styles = StyleSheet.create({
       padding: 15,
     },
     greyFont: {
-      color: '#D8D8D8'
+      // color: '#D8D8D8'
+      color: '#000'
     },
     whiteFont: {
       color: '#FFF'
+    },
+    error: {
+      alignSelf: 'center',
+      color: 'red',
+      paddingTop: 10
     }
 })
 module.exports = loginView;

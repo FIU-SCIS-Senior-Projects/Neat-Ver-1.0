@@ -14,7 +14,8 @@ import * as Progress from 'react-native-progress';
 
 var AssignmentForm = require('./AssignmentForm');
 var AssignmentView = require('./AssignmentView');
-var moment = require('moment');
+var moment = require('moment'),
+    CONFIG = require('../../config.js');
 
 class Assignments extends Component{
     constructor(props) {
@@ -36,7 +37,7 @@ class Assignments extends Component{
       }
 
       fetchAssignments(){
-        return fetch('http://127.0.0.1:8000/api/assignments/')
+        return fetch(CONFIG.server.host + 'api/assignments/')
               .then((response) => response.json())
               .then((responseJson) => {
 
@@ -113,6 +114,7 @@ class Assignments extends Component{
                 <ListView
                     dataSource={this.state.dataSource}
                     renderRow={this.renderRow.bind(this)}
+                    enableEmptySections= {true}
                 />
 
                 <TouchableHighlight style={styles.button}
