@@ -7,6 +7,9 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 
 ##Recent Endpoints - examples
 
+####Add user to assignment
+`http POST http://127.0.0.1:8000/api/assignmentrosters/ user=http://localhost:8000/api/user/4/ school=http://localhost:8000/api/assignment/1/ 'Authorization: Token e68dff15c0f0f6f87ff8d7fac2f3f4f8ec947dd1'`
+
 ####Add user to school
 `http POST http://127.0.0.1:8000/api/schoolrosters/ user=http://localhost:8000/api/user/4/ school=http://localhost:8000/api/schools/1/ 'Authorization: Token e68dff15c0f0f6f87ff8d7fac2f3f4f8ec947dd1'`
 
@@ -31,8 +34,8 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 ####Does a user exist?
 `http GET http://127.0.0.1:8000/api/user/?email=user1@gmail.com 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
 
-####Register (hard-code student group & school, username removed)
-`http POST http://127.0.0.1:8000/api/user/ email=finalarcadia@gmail.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
+####Register (hard-code student group, username removed)
+`http POST http://127.0.0.1:8000/api/user/ email=user3@neat.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
 
 ####Login
 `http POST http://127.0.0.1:8000/api/login/ username=email@gmail.com password=password123`
