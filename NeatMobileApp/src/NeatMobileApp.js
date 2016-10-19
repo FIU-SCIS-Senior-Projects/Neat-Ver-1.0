@@ -4,6 +4,9 @@ import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator
 const Login = require('./components/loginView');
 const StudentDashboard = require('./components/StudentDashboardView');
 const ClassList = require('./components/classList/ClassList');
+const ClassDash = require('./components/classes/Classes');
+const ClassForm = require('./components/classes/ClassForm');
+const ClassView = require('./components/classes/ClassView');
 const AssignmentsDash = require('./components/assignments/Assignments');
 const AssignmentForm = require('./components/assignments/AssignmentForm');
 const AssignmentView = require('./components/assignments/AssignmentView');
@@ -95,6 +98,12 @@ class NeatMobileApp extends Component {
         return(<AssignmentForm navigator = {navigator} title = 'AssignmentForm'/>)
       case 'AssignmentView':
           return(< AssignmentView navigator = {navigator}  {...route.passProps} title = 'AssignmentView'/>)
+      case 'ClassDash':
+        return(<ClassDash navigator = {navigator} title = 'ClassDash'/>)
+      case 'ClassForm':
+        return(<ClassForm navigator = {navigator} title = 'ClassForm'/>)
+      case 'ClassView':
+          return(< ClassView navigator = {navigator}  {...route.passProps} title = 'ClassView'/>)
       case 'TaskForm':
           return(<TaskForm navigator = {navigator} {...route.passProps} title = 'TaskForm'/>)
     }
