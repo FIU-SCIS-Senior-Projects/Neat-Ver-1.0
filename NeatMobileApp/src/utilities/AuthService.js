@@ -64,7 +64,7 @@ class AuthService {
   }
 
   handleResponse(response) {
-    console.log('status: ', response);
+    // console.log('status: ', response);
     if(response.status >= 200 && response.status < 300){
         return response;
     }
@@ -75,6 +75,7 @@ class AuthService {
   }
 
   doPost(url, params) {
+    console.log('url', url, 'params', params);
     return fetch(url, {
       method  : 'POST',
       headers : { 'Content-Type' : 'application/json' },

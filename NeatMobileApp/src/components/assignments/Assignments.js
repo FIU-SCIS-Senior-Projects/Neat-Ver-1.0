@@ -37,7 +37,7 @@ class Assignments extends Component{
       }
 
       fetchAssignments(){
-        return fetch(CONFIG.server.host + '/api/assignments/')
+        return fetch(CONFIG.server.host + 'api/assignments/')
               .then((response) => response.json())
               .then((responseJson) => {
 
