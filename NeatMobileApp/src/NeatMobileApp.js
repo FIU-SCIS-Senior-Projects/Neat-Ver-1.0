@@ -6,8 +6,8 @@ const StudentDashboard = require('./components/StudentDashboardView');
 const AddNewClass = require('./components/newClassView');
 const AssignmentsDash = require('./components/assignments/Assignments');
 const AssignmentForm = require('./components/assignments/AssignmentForm');
-const AssignmentView = require('./src/components/assignments/AssignmentView');
-const TaskForm = require('./src/components/assignments/TaskForm');
+const AssignmentView = require('./components/assignments/AssignmentView');
+const TaskForm = require('./components/assignments/TaskForm');
 
 import Register from './components/registration/register';
 import Splash from './components/neatsplash';
