@@ -31,6 +31,13 @@ class StudentDashboardView extends Component{
     console.log('Logout button pressed');
   }
 
+  onClassRankingPressed(){
+      this.props.navigator.push({
+        id: 'ClassRank'
+      });
+    console.log('Logout button pressed');
+  }
+
   render(){
     return(
       <View style={styles.container}>
@@ -52,6 +59,13 @@ class StudentDashboardView extends Component{
             My Account
           </Text>
         </TouchableHighlight>
+
+        <TouchableHighlight style = {styles.button} onPress={(this.onClassRankingPressed.bind(this))} >
+          <Text style = {styles.buttonText}>
+            Class Ranking
+          </Text>
+        </TouchableHighlight>
+
         <TouchableHighlight style = {styles.button} onPress={() => this.onLogoutPressed()} >
           <Text style = {styles.buttonText}>
             Logout

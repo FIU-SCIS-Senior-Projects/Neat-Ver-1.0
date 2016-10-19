@@ -12,6 +12,7 @@ import ResetPassword from './components/credentials/reset';
 import UpdatePassword from './components/credentials/updatePassword';
 import Splash from './components/neatsplash';
 
+import ClassRank from './components/classRanking/ClassRank';
 var AuthService = require('./utilities/AuthService');
 import { AsyncStorage } from 'react-native';
 
@@ -91,6 +92,8 @@ class NeatMobileApp extends Component {
         return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
       case 'AssignmentForm':
         return(<AssignmentForm navigator = {navigator} title = 'AssignmentForm'/>)
+        case 'ClassRank':
+          return(<ClassRank navigator = {navigator} title = 'ClassRank'/>)
     }
   }
 }
