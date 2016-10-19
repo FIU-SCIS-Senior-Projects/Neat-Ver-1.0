@@ -3,13 +3,15 @@ import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator
 
 const Login = require('./components/loginView');
 const StudentDashboard = require('./components/StudentDashboardView');
-const AddNewClass = require('./components/newClassView');
+const ClassList = require('./components/classList/ClassList');
 const AssignmentsDash = require('./components/assignments/Assignments');
 const AssignmentForm = require('./components/assignments/AssignmentForm');
 const AssignmentView = require('./components/assignments/AssignmentView');
 const TaskForm = require('./components/assignments/TaskForm');
 
 import Register from './components/registration/register';
+import ResetPassword from './components/credentials/reset';
+import UpdatePassword from './components/credentials/updatePassword';
 import Splash from './components/neatsplash';
 
 var AuthService = require('./utilities/AuthService');
@@ -55,12 +57,12 @@ class NeatMobileApp extends Component {
     }
     else {
       return (
-        <Splash duration={3000} backgroundColor={styles.splashContainer}>
+        <Splash duration={500} backgroundColor={styles.splashContainer}>
           <View style ={styles.container}>
 
             <Navigator
               initialRoute = {{
-                id: 'Login'
+                id: 'Login'//'Login'
               }}
               renderScene = {
                 this.navigatorRenderScene
@@ -79,10 +81,14 @@ class NeatMobileApp extends Component {
         return(<Login navigator = {navigator} title = 'Login'/>)
       case 'Register':
         return(<Register navigator = {navigator} title = 'Register' />)
+      case 'ResetPassword':
+        return(<ResetPassword navigator = {navigator} title = 'ResetPassword'/>)
+      case 'UpdatePassword':
+        return(<UpdatePassword navigator = {navigator} title = 'UpdatePassword'/>)
       case 'StudentDashboard':
         return(<StudentDashboard navigator = {navigator} title = 'StudentDashboard' />)
-      case 'AddNewClass':
-        return(<AddNewClass navigator = {navigator} title = 'AddNewClass'/>)
+      case 'ClassList':
+        return(<ClassList navigator = {navigator} title = 'ClassList'/>)
       case 'AssignmentsDash':
         return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
       case 'AssignmentForm':

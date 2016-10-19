@@ -33,6 +33,7 @@ class loginView extends Component{
 
   onLoginPressed(){
     this.setState({showProgress: true});
+
     authService.login({
         username: this.state.value.username,
         password: this.state.value.password
@@ -64,9 +65,16 @@ class loginView extends Component{
     console.log('you have push the register button');
   }
 
+  onForgotPressed(){
+    this.props.navigator.push({
+      id: 'ResetPassword'
+    });
+    console.log('Reset password requested');
+  }
+
   render(){
     var errorCtrl = <View />;
-  console.log('state info: ', this.state.success, this.state.badCredentials, this.state.unknownError, this.state.value);
+    console.log('state info: ', this.state.success, this.state.badCredentials, this.state.unknownError, this.state.value);
 
     if(!this.state.success && this.state.badCredentials) {
       errorCtrl = <Text style={styles.error}>
@@ -99,7 +107,8 @@ class loginView extends Component{
             </Text>
           </View>
           <View style={styles.forgotContainer}>
-            <Text style={styles.greyFont} >Forgot?</Text>
+              <Text style={styles.greyFont} onPress={(this.onForgotPressed.bind(this))}
+              >Forgot?</Text>
           </View>
         </View>
         <TouchableHighlight

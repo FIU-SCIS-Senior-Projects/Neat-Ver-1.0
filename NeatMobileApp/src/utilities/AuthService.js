@@ -54,29 +54,6 @@ class AuthService {
     });
   }
 
-  register(creds, cb) {
-    if(!creds){
-      return;
-    }
-    var b           = new buffer.Buffer(creds.username + ':' + creds.password);
-    var encodedAuth = b.toString('base64');
-
-    this.doPost(CONFIG.server.host + 'api/register/', {
-      username : creds.username,
-      email    : creds.email,
-      password : creds.password,
-      profile: {
-        grade : '',
-        age   : ''
-      },
-    })
-    .then(this.handleResponse)
-    .then(response => response.json())
-    .then(results  => cb({success: true}))
-    .catch(err     => cb(err));
-
-  }
-
   logout(cb){
     AsyncStorage.removeItem(userKey, (err) => {
       if(err) {
@@ -87,7 +64,7 @@ class AuthService {
   }
 
   handleResponse(response) {
-    console.log('status: ', response.status);
+    console.log('status: ', response);
     if(response.status >= 200 && response.status < 300){
         return response;
     }
@@ -105,6 +82,55 @@ class AuthService {
     });
   }
 
+  doGet(url) {
+    return fetch(url, {method  : 'GET'})
+  }
+
+  register(creds, cb) {
+      console.log('creds from register AuthService', creds);
+
+      this.doPost(CONFIG.server.host + 'api/user/', {
+        email     : creds.email,
+        first_name: creds.firstname,
+        last_name : creds.lastname,
+        password  : creds.password,
+        groups  : []
+      })
+      .then(this.handleResponse)
+      .then(response =>response.json())
+      .then((results)=> {
+        return cd({success: true});
+      })
+      .catch(err     => cb(err));
+  }//end of register
+
+
+  requestCode(creds, cb) {
+    //if(!creds){
+      //return;
+    //}
+    //var b           = new buffer.Buffer(creds.username);
+    //var encodedAuth = b.toString('base64');
+    console.log('creds from requestCode', creds.username);
+
+    this.doGet(CONFIG.server.host + 'api/user/?username='+ creds.username, {
+      //username : creds.username,
+    })
+    .then(this.handleResponse)
+    .then(response => response.json())
+    .then(console.log(results.body.username))
+    .then(results  => cb({success: true}))
+
+    //.then((results)=> {
+     // console.log('Api response' + results);
+    //  return cd({success: true});
+    //})
+    .catch(err     => cb(err));
+}//end of requestCode
+
+
+
+
   login(creds, cb){
     var b           = new buffer.Buffer(creds.username + ':' + creds.password);
     var encodedAuth = b.toString('base64');
@@ -118,15 +144,6 @@ class AuthService {
     .then(response => response.json())
     .then((results)=> {
       console.log('after handleResponse');
-      // AsyncStorage.multiSet([
-      //         [authKey, encodedAuth] //creds is null at this point
-      //         [userKey, JSON.stringify(results.token)]
-      //     ], (err)=> {
-      //         if(err){
-      //             throw err;
-      //         }
-      //         return cb({success: true});
-      // })
       AsyncStorage.setItem(userKey, JSON.stringify(results.token), (err)=> {
           if(err){
               throw err;
