@@ -25,7 +25,6 @@ var Form = t.form.Form;
 var RegisterForm = t.struct({
   firstname:     t.String,
   lastname:      t.String,
-  username:      t.String,
   email:         t.String,
   password:      t.String,
   passwordAgain: t.String,
@@ -46,10 +45,6 @@ var options = {
       autoCapitalize: 'none',
       keyboardType: 'email-address',
     },
-    username: {
-      autoCapitalize: 'none',
-      //error: 'Enter username'
-    },
     password: {
       secureTextEntry: true,
      // error: 'Enter password'
@@ -69,7 +64,6 @@ class Register extends Component {
     this.state = {
       value: {
       },
-      //username: "",
       password: "",
       firstname: "",
       lastname: "",
