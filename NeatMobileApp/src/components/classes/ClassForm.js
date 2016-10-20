@@ -60,8 +60,8 @@ class ClassForm extends Component{
             //verify if our operation was a success or failure
             if(response.status >= 200 && response.status < 300){
                 console.log("response succes is:" + responseJson);
-                this.props.navigator.push({
-                  id: 'ClassDash'
+                this.props.navigator.pop({
+                  id: 'ClassList'
                 });
                 console.log('DONE BUTTON WAS PRESSED')
             }else{
