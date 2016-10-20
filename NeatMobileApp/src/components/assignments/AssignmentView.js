@@ -122,7 +122,6 @@ class AssignmentView extends Component{
     renderRow(rowData){
         console.log("Before return render, rowData: " + JSON.stringify(rowData));
         return(
-<<<<<<< HEAD
                <View style={styles.List}>
                     <Switch
                         onValueChange={() => {this.toogleSwitched(rowData); console.log("clicked on voluechange")}}
