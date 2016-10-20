@@ -4,8 +4,13 @@ import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator
 const Login = require('./components/loginView');
 const StudentDashboard = require('./components/StudentDashboardView');
 const ClassList = require('./components/classList/ClassList');
+const ClassDash = require('./components/classes/Classes');
+const ClassForm = require('./components/classes/ClassForm');
+const ClassView = require('./components/classes/ClassView');
 const AssignmentsDash = require('./components/assignments/Assignments');
 const AssignmentForm = require('./components/assignments/AssignmentForm');
+const AssignmentView = require('./components/assignments/AssignmentView');
+const TaskForm = require('./components/assignments/TaskForm');
 
 import Register from './components/registration/register';
 import ResetPassword from './components/credentials/reset';
@@ -92,8 +97,18 @@ class NeatMobileApp extends Component {
         return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
       case 'AssignmentForm':
         return(<AssignmentForm navigator = {navigator} title = 'AssignmentForm'/>)
-        case 'ClassRank':
+      case 'ClassRank':
           return(<ClassRank navigator = {navigator} title = 'ClassRank'/>)
+      case 'AssignmentView':
+          return(< AssignmentView navigator = {navigator}  {...route.passProps} title = 'AssignmentView'/>)
+      case 'ClassDash':
+        return(<ClassDash navigator = {navigator} title = 'ClassDash'/>)
+      case 'ClassForm':
+        return(<ClassForm navigator = {navigator} title = 'ClassForm'/>)
+      case 'ClassView':
+          return(< ClassView navigator = {navigator}  {...route.passProps} title = 'ClassView'/>)
+      case 'TaskForm':
+          return(<TaskForm navigator = {navigator} {...route.passProps} title = 'TaskForm'/>)
     }
   }
 }

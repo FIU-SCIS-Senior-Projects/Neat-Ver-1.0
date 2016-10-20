@@ -19,7 +19,8 @@ import styles from './styles';
    NOTE: you must create a class and a school before being able to add an assignment
 */
 
-var moment = require('moment');
+var moment = require('moment'),
+    CONFIG = require('../../config.js');
 
 class TaskForm extends Component{
   constructor(props){
@@ -30,7 +31,7 @@ class TaskForm extends Component{
       dueDate: new Date(),
       assignmentUrl: props.assignmentUrl,
       //taskList: props.assignment.tasks
-      user: 'http://127.0.0.1:8000/api/user/1/',
+      user: CONFIG.server.host + 'api/user/1/',
       showDatePicker: false,
       errors: [],
 
@@ -40,7 +41,7 @@ class TaskForm extends Component{
   //POSTS to the api
     async onDonePressed(){
         try {
-            let response = await fetch('http://127.0.0.1:8000/api/task/',{
+            let response = await fetch(CONFIG.server.host + 'api/task/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
@@ -60,7 +61,7 @@ class TaskForm extends Component{
             //verify if our operation was a success or failure
             if(response.status >= 200 && response.status < 300){
                 console.log("response succes is:" + responseJson);
-                this.props.navigator.push({
+                this.props.navigator.pop({
                   id: 'AssignmentView',
                   passProps:{
                     assignmentUrl: this.state.assignmentUrl
