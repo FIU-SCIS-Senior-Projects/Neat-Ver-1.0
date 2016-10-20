@@ -17,7 +17,7 @@ import ResetPassword from './components/credentials/reset';
 import UpdatePassword from './components/credentials/updatePassword';
 import Splash from './components/neatsplash';
 
-import ClassRank from './components/classRanking/ClassRank';
+import AssignmentRank from './components/assignmentRanking/AssignmentRank';
 var AuthService = require('./utilities/AuthService');
 import { AsyncStorage } from 'react-native';
 
@@ -66,7 +66,7 @@ class NeatMobileApp extends Component {
 
             <Navigator
               initialRoute = {{
-                id: 'Login'//'Login'
+                id: 'Login'
               }}
               renderScene = {
                 this.navigatorRenderScene
@@ -97,12 +97,8 @@ class NeatMobileApp extends Component {
         return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
       case 'AssignmentForm':
         return(<AssignmentForm navigator = {navigator} title = 'AssignmentForm'/>)
-<<<<<<< HEAD
-        case 'ClassRank':
-          return(<ClassRank navigator = {navigator} title = 'ClassRank'/>)
-=======
-      case 'ClassRank':
-          return(<ClassRank navigator = {navigator} title = 'ClassRank'/>)
+      case 'AssignmentRank':
+          return(<AssignmentRank navigator = {navigator} title = 'AssignmentRank'/>)
       case 'AssignmentView':
           return(< AssignmentView navigator = {navigator}  {...route.passProps} title = 'AssignmentView'/>)
       case 'ClassDash':
@@ -113,7 +109,6 @@ class NeatMobileApp extends Component {
           return(< ClassView navigator = {navigator}  {...route.passProps} title = 'ClassView'/>)
       case 'TaskForm':
           return(<TaskForm navigator = {navigator} {...route.passProps} title = 'TaskForm'/>)
->>>>>>> dev
     }
   }
 }

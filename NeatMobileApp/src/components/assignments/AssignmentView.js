@@ -75,6 +75,12 @@ class AssignmentView extends Component{
         // });
     }
 
+    pressRankings(){
+          this.props.navigator.push({
+             id: 'AssignmentRank'
+         });
+    }
+
     renderRow(rowData){
         return(
             <View style={styles.List}>
@@ -97,6 +103,14 @@ class AssignmentView extends Component{
             >
                 <Text style={styles.buttonText}>
                         Add Task
+                </Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight style={styles.button}
+                onPress={this.pressRankings.bind(this)}
+            >
+                <Text style={styles.buttonText}>
+                        Assignment Rankings
                 </Text>
             </TouchableHighlight>
 

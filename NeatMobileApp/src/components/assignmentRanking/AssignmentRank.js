@@ -6,12 +6,6 @@ import api from './../../utilities/api';
 import _ from 'lodash';
 import * as Progress from 'react-native-progress';
 
-/*
-import Icon from '../../../node_modules/react-native-vector-icons/FontAwesome';
-import Logo from './../../assets/img/Logo_Neat.png';
-var authService = require('../../utilities/AuthService');
-var Header = require('./../Header');
-*/
 
 const userClasses =[
     {
@@ -34,7 +28,7 @@ const userClasses =[
 
 
 
-const progress =[
+const assignmentProgress =[
   {
    "name":"nelson",
    "perc":0.9
@@ -60,37 +54,18 @@ const progress =[
     "perc":0.4
   }
 ]
-class ClassRank extends Component{
 
+class AssignmentRank extends Component{
   constructor(props){
     super(props);
 
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> r1 != r2})
 
     this.state={
-      progress: 0.58,
+      assignmentProgress: 0.0,
       indeterminate: false,
-      classesDatasource: ds.cloneWithRows(progress)
-      //users:[],
-      //username: ''
+      classesDatasource: ds.cloneWithRows(assignmentProgress)
     }
-  }
-/*
-  componentWillMount(){
-    api.getUsers().then((res)=>{
-      this.setState({
-        users: res.users,
-        username: res.user[0].username
-      })
-    });
-  }
-*/
-  onAddNewClassPressed(){
-
-    this.props.navigator.push({
-      id: ' '
-    });
-    console.log('you have pushe the Add new class button')
   }
 
   render(){
@@ -99,26 +74,19 @@ class ClassRank extends Component{
         <ListView
             style = {{marginTop: 100}}
             dataSource = {this.state.classesDatasource}
-            renderRow = {(classes) => {return this._renderClassRow(classes)}}
+            renderRow = {(assignment) => {return this._renderClassRow(assignment)}}
         />
-
-
-        <TouchableHighlight style = {styles.button} onPress={(this.onAddNewClassPressed.bind(this))} >
-          <Text style = {styles.buttonText}>
-            +
-          </Text>
-        </TouchableHighlight>
       </View>
     )
   }
 
-  _renderClassRow(classes){
+  _renderClassRow(assignment){
       return(
           <View style={styles.container}>
-            <Text style = {styles.classname}>
-                {classes.name + " " + (classes.perc * 100) + "%"}
+            <Text style = {styles.assignmentName}>
+                {assignment.name + " " + (assignment.perc * 100) + "%"}
             </Text>
-            <Progress.Bar progress={classes.perc}
+            <Progress.Bar progress={assignment.perc}
                           width={200}
                           height={10}
                           color ={'#599D95'}/>
@@ -132,7 +100,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
     },
-    classname:{
+    assignmentName:{
         borderColor: '#599D95',
         //borderWidth: 1,
         //width: 175,
@@ -204,4 +172,4 @@ const styles = StyleSheet.create({
       }
   })
 
-    export default ClassRank;
+    export default AssignmentRank;
