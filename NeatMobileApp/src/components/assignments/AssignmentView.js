@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   ListView,
   ScrollView,
+  Switch,
 } from 'react-native';
 
 import styles from './styles';
@@ -74,11 +75,44 @@ class AssignmentView extends Component{
         //     id: 'AssignmentsDash'
         // });
     }
+    toogleSwitched(rowData){
+        console.log("rowData before is: " + JSON.stringify(rowData));
+        rowData.isDone = !rowData.isDone;
+        this.forceUpdate();
+        console.log("rowData is: " + JSON.stringify(rowData));
+        
+        fetch(rowData.url, {
+              method: "PUT",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                assignment: rowData.assignment,
+                user: rowData.user,
+                taskName: rowData.taskName,
+                isDone: rowData.isDone,
+                hoursPlanned: rowData.hoursPlanned,
+                hoursCompleted: rowData.hoursCompleted,
+                startDate: rowData.startDate,
+                endDate: rowData.endDate,
+              })
+        })
+        .then((response) => response.json())
+        .then((responseData) => console.log("PUT success with response: " + JSON.stringify(responseData)))
+        .catch((errpr) => console.error(error));
+        
+    }
 
     renderRow(rowData){
+        console.log("Before return render, rowData: " + JSON.stringify(rowData));
         return(
-            <View style={styles.List}>
-                <Text>{rowData.taskName}</Text>
+               <View style={styles.List}>
+                    <Switch
+                        onValueChange={() => {this.toogleSwitched(rowData); console.log("clicked on voluechange")}}
+                        style={{paddingLeft: 80, marginBottom: 5}}
+                        value={rowData.isDone} />
+               <Text>{rowData.taskName}</Text>
             </View>
         );
     }
