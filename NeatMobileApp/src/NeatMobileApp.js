@@ -2,8 +2,13 @@ import React, { Component } from 'react';
 import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator,} from 'react-native';
 
 const Login = require('./components/loginView');
-const StudentDashboard = require('./components/StudentDashboardView');
-const ClassList = require('./components/classList/ClassList');
+
+//Classes
+const ClassList = require('./components/classes/Classes');
+const ClassForm = require('./components/classes/ClassForm');
+const ClassView = require('./components/classes/ClassView');
+
+//Assignment
 const AssignmentsDash = require('./components/assignments/UserAssignment');
 const AssignmentForm = require('./components/assignments/AssignmentForm');
 const AssignmentView = require('./components/assignments/AssignmentView');
@@ -44,7 +49,7 @@ class NeatMobileApp extends Component {
 
             <Navigator
               initialRoute = {{
-                id: 'StudentDashboard'
+                id: 'AssignmentsDash'
               }}
               renderScene = {
                 this.navigatorRenderScene
@@ -85,16 +90,20 @@ class NeatMobileApp extends Component {
         return(<ResetPassword navigator = {navigator} title = 'ResetPassword'/>)
       case 'UpdatePassword':
         return(<UpdatePassword navigator = {navigator} title = 'UpdatePassword'/>)
-      case 'StudentDashboard':
-        return(<StudentDashboard navigator = {navigator} title = 'StudentDashboard' />)
       case 'ClassList':
         return(<ClassList navigator = {navigator} title = 'ClassList'/>)
       case 'AssignmentsDash':
         return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
       case 'AssignmentForm':
-        return(<AssignmentForm navigator = {navigator} title = 'AssignmentForm'/>)
+        return(<AssignmentForm navigator = {navigator} {...route.passProps} title = 'AssignmentForm'/>)
       case 'AssignmentView':
           return(< AssignmentView navigator = {navigator}  {...route.passProps} title = 'AssignmentView'/>)
+      case 'ClassList':
+        return(<ClassList navigator = {navigator} {...route.passProps} title = 'ClassList'/>)
+      case 'ClassForm':
+        return(<ClassForm navigator = {navigator} title = 'ClassForm'/>)
+      case 'ClassView':
+          return(< ClassView navigator = {navigator}  {...route.passProps} title = 'ClassView'/>)
       case 'TaskForm':
           return(<TaskForm navigator = {navigator} {...route.passProps} title = 'TaskForm'/>)
     }

@@ -13,44 +13,43 @@ import {
 
 import styles from './styles';
 
-/* TODO make classFK not hard coded
-   TODO add tasks here maybe(?)
-
-   NOTE: you must create a class and a school before being able to add an assignment
-*/
-
 var moment = require('moment'),
     CONFIG = require('../../config.js');
 
-class AssignmentForm extends Component{
-  constructor(props){
-    super(props);
+/* TODO 
+change school id to dynamic
+*/
+//For demo purposes only
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+class ClassForm extends Component{
+  constructor(){
+    super();
 
     this.state = {
-      assignmentName:"",
-      dueDate: new Date(),
-      classFK: props.classUrl,
-      showDatePicker: false,
-      errors: [],
+      className:"",
+      classID: getRandomInt(100,200),
+      school: 'http://localhost:8000/api/schools/1/',
 
     }
-    console.log(this.state.classFK);
   }
-
   //POSTS to the api
     async onDonePressed(){
-
         try {
-            let response = await fetch(CONFIG.server.host + 'api/assignments/',{
+            let response = await fetch(CONFIG.server.host + 'api/classes/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
                   'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                  assignmentName: this.state.assignmentName,
-                  classFK: this.state.classFK,
-                  dueDate: moment(this.state.dueDate).format('YYYY-MM-DD')
+                  className: this.state.className,
+                  classID: this.state.classID,
+                  school: this.state.school
                 })
             });
 
@@ -60,9 +59,9 @@ class AssignmentForm extends Component{
 
             //verify if our operation was a success or failure
             if(response.status >= 200 && response.status < 300){
-                console.log("response succes is:" + this.state.assignmentName);
+                console.log("response succes is:" + responseJson);
                 this.props.navigator.pop({
-                  id: 'AssignmentsDash'
+                  id: 'ClassList'
                 });
                 console.log('DONE BUTTON WAS PRESSED')
             }else{
@@ -90,40 +89,35 @@ class AssignmentForm extends Component{
           }
     }
 
-     onDateChange = (date) => {
-        this.setState({dueDate: date});
-      };
+      onBackPressed() {
+         this.props.navigator.pop()
 
+      }
 
-    render(){
-        var showDatePicker = this.state.showDatePicker ?
-                    <DatePickerIOS
-                        style={{ height: 150 }}
-                        date={this.state.dueDate} onDateChange={this.onDateChange}
-                        mode="date"/> : <View />
+render(){
 
         return(
         <View style={{ marginTop: 65 }}>
 
             <TextInput
                     style={styles.input}
-                    onChangeText={(val) => this.setState({assignmentName: val})}
-                    placeholder="Assignment Name">
+                    onChangeText={(val) => this.setState({className: val})}
+                    placeholder="Class Name">
             </TextInput>
-                <Text style={{paddingTop: 20}}>Due Date</Text>
-                <TouchableOpacity style={styles.input}
-                    onPress={() => this.setState({showDatePicker: !this.state.showDatePicker})}>
-
-                    <Text>{moment(this.state.dueDate).format('DD/MM/YYYY')}</Text>
-
-                </TouchableOpacity>
-                {showDatePicker}
 
             <TouchableHighlight
                 onPress={this.onDonePressed.bind(this)}
                 style={styles.button}>
                     <Text style={styles.buttonText}>
                         Done
+                    </Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+                onPress={this.onBackPressed.bind(this)}
+                style={styles.button}>
+                    <Text style={styles.buttonText}>
+                        Back
                     </Text>
             </TouchableHighlight>
         </View>
@@ -139,4 +133,4 @@ const Errors = (props) => {
   );
 }
 
-module.exports = AssignmentForm;
+module.exports = ClassForm;

@@ -11,17 +11,15 @@ import {
   TouchableOpacity,
   ListView,
   ScrollView,
-  Switch,
 } from 'react-native';
 
 import styles from './styles';
 
-var Assignments = require('./UserAssignment');
+//TODO uses this variable to 
+var Classes = require('./Classes');
+var CONFIG = require('../../config.js');
 
-    CONFIG = require('../../config.js');
-
-
-class AssignmentView extends Component{
+class ClassView extends Component{
 
     constructor(props) {
         super(props)
@@ -32,38 +30,32 @@ class AssignmentView extends Component{
 
         this.state={
             dataSource: ds,
-            assignmentUrl: props.assignmentUrl,
-            toggleState: true,
-            trueSwitchIsOn: true,
+            classUrl: props.classUrl
         };
     }
 
     componentDidMount(){
-        this.fetchTasks();
-
+        this.fetchAssignmentsForClass();
     }
+
     componentWillReceiveProps(){
-        this.fetchTasks();
+        this.fetchAssignmentsForClass();
     }
-    fetchTasks(){
 
-        return fetch(CONFIG.server.host + 'api/task/')
+    fetchAssignmentsForClass(){
+
+    return fetch(CONFIG.server.host +'api/assignments/')
               .then((response) => response.json())
               .then((responseJson) => {
-                var taskList = responseJson;
-
                 var display = [];
                 var j = 0
-
-                for(var i = 0; i < taskList.length; i++){
-                    if(taskList[i].user ===  CONFIG.server.host + 'api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
-                        display[j] = taskList[i];
-
+                console.log(responseJson);
+                for(var i = 0; i < responseJson.length; i++){
+                    if(responseJson[i].classFK ===  this.state.classUrl){
+                        display[j] = responseJson[i];
                         j++;
                     }
-
                 }
-
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(display)
                 })
@@ -73,50 +65,67 @@ class AssignmentView extends Component{
               });
     }
 
-    onAddTask(){
+    onAddAssignment(){
         this.props.navigator.push({
-            id: 'TaskForm',
+            id: 'AssignmentForm',
             passProps:{
-                assignmentUrl: this.state.assignmentUrl
+                classUrl: this.state.classUrl
+            }
+        });
+    }
+    pressDashboard(){
+         this.props.navigator.pop({
+            id: 'ClassList'
+        });
+    }
+    onPressRow(rowData){
+
+        this.props.navigator.push({
+            id: 'AssignmentView',
+            passProps: {
+            assignmentUrl: rowData.url
             }
         });
     }
 
-    pressDashboard(){
-        let route = this.props.navigator.getCurrentRoutes().find((route) => route.id === 'AssignmentsDash');
-        this.props.navigator.popToRoute(route);
-    }
-
-    async putToogleData(rowData){
-    }
-
-
     renderRow(rowData){
         return(
             <View style={styles.List}>
-                <Switch
-                    onValueChange={() => {rowData.isDone = !rowData.isDone; console.log(rowData.taskName + ' task complete : ' + rowData.isDone)}}
-                    style={{marginBottom: 10}}
-                    value={rowData.isDone} />
-                <Text>{rowData.taskName}</Text>
+                <Text>{rowData.assignmentName}</Text>
             </View>
         );
-    }
+        }
+        
+    renderRow(rowData){
+
+        return(
+        <TouchableHighlight
+                onPress={() => this.onPressRow(rowData)}
+                underlayColor='#ddd'
+              >
+            <View style={styles.List}>
+
+                <Text>{rowData.assignmentName}</Text>
+            </View>
+         </TouchableHighlight>
+        )
+      }
 
     render(){
         return(
 
             <ScrollView>
+
             <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderRow.bind(this)}
             />
 
             <TouchableHighlight style={styles.button}
-                onPress={this.onAddTask.bind(this)}
+                onPress={this.onAddAssignment.bind(this)}
             >
                 <Text style={styles.buttonText}>
-                        Add Task
+                        Add Assignment
                 </Text>
             </TouchableHighlight>
 
@@ -124,7 +133,7 @@ class AssignmentView extends Component{
                 onPress={this.pressDashboard.bind(this)}
             >
                 <Text style={styles.buttonText}>
-                        Assignment Dashboard
+                        Class Dashboard
                 </Text>
             </TouchableHighlight>
             </ScrollView>
@@ -133,4 +142,4 @@ class AssignmentView extends Component{
     }
 }
 
-module.exports = AssignmentView;
+module.exports = ClassView;

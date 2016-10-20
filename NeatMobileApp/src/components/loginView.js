@@ -43,7 +43,7 @@ class loginView extends Component{
         }, results));
         if(results.success){
           this.props.navigator.push({
-            id: 'StudentDashboard'
+            id: 'AssignmentsDash'
           });
           this.setState({
             value : {},

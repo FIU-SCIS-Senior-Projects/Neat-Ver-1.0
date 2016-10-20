@@ -2,23 +2,23 @@ import React, {Component} from 'react';
 import {
   AppRegistry,
   Text,
-  ScrollView,
   View,
   StyleSheet,
   TouchableHighlight,
   Navigator,
   ListView,
+  ScrollView,
 } from 'react-native';
 
 import styles from './styles';
 import * as Progress from 'react-native-progress';
 
-var AssignmentForm = require('./AssignmentForm');
-var AssignmentView = require('./AssignmentView');
+var ClassForm = require('./ClassForm');
+var ClassView = require('./ClassView');
 var moment = require('moment'),
     CONFIG = require('../../config.js');
 
-class Assignments extends Component{
+class Classes extends Component{
     constructor(props) {
         super(props);
 
@@ -27,28 +27,25 @@ class Assignments extends Component{
         });
 
         this.state = {
-          dataSource: ds,
-          progress: 0.58,
-          indeterminate: false,
+          dataSource: ds
         };
       }
 
       componentDidMount(){
-        this.fetchAssignments();
+        this.fetchClasss();
       }
       componentWillReceiveProps(){
-       this.fetchAssignments();
+        this.fetchClasss();
       }
 
-      fetchAssignments(){
-        return fetch('http://localhost:8000/api/assignments/')
+      fetchClasss(){
+        return fetch(CONFIG.server.host + 'api/classes/')
               .then((response) => response.json())
               .then((responseJson) => {
 
-                var assignmentList = responseJson;
-                console.log('my print state: ' + responseJson.assignmentName)
+                var classList = responseJson;
                 this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(assignmentList)
+                    dataSource: this.state.dataSource.cloneWithRows(classList)
                 })
               })
               .catch((error) => {
@@ -58,33 +55,23 @@ class Assignments extends Component{
 
       onAddPressed(){
         this.props.navigator.push({
-            id: 'ClassList'
+            id: 'ClassForm'
         });
+      }
+      onBackPressed(){
+        this.props.navigator.pop();
       }
 
       onPressRow(rowData){
 
         this.props.navigator.push({
-            id: 'AssignmentView',
+            id: 'ClassView',
             passProps: {
-                assignmentUrl: rowData.url
+                classUrl: rowData.url
             }
         });
       }
 
-      changeColor(progress){
-      var color = ''
-        if(progress < 0.33){
-           color='F44336'
-        }
-        else if(progress >= 0.33 && progress < 0.66){
-            color='#ffcc00'
-        }
-        else{
-            color='#009688'
-        }
-        return color;
-      }
 
       renderRow(rowData){
 
@@ -95,18 +82,7 @@ class Assignments extends Component{
               >
             <View style={styles.List}>
 
-                <Progress.Circle
-                    style={styles.progress}
-                    progress={this.state.progress}
-                    indeterminate={this.state.indeterminate}
-                    showsText={true}
-                    color={this.changeColor(this.state.progress)}
-                    direction="counter-clockwise"
-                />
-
-                <Text>{rowData.assignmentName}</Text>
-                <Text style={{paddingLeft: 20}}>Due {moment(rowData.dueDate).from(rowData.startDate)}</Text>
-
+                <Text>{rowData.className}</Text>
             </View>
          </TouchableHighlight>
         )
@@ -114,8 +90,8 @@ class Assignments extends Component{
 
     render(){
         return(
-            <ScrollView style={styles.container}>
-                <Text style={{ padding: 20, justifyContent: 'center'}}>Assignment Dashboard</Text>
+            <ScrollView>
+                <Text style={{ padding: 20, justifyContent: 'center'}}>Class Dashboard</Text>
                 <ListView
                     dataSource={this.state.dataSource}
                     renderRow={this.renderRow.bind(this)}
@@ -126,7 +102,15 @@ class Assignments extends Component{
                     onPress={this.onAddPressed.bind(this)}
                     >
                     <Text style={styles.buttonText}>
-                            Add
+                            Add Class
+                    </Text>
+                </TouchableHighlight>
+
+                <TouchableHighlight style={styles.button}
+                    onPress={this.onBackPressed.bind(this)}
+                    >
+                    <Text style={styles.buttonText}>
+                            Back
                     </Text>
                 </TouchableHighlight>
             </ScrollView>
@@ -135,4 +119,4 @@ class Assignments extends Component{
 }
 
 
-module.exports = Assignments;
+module.exports = Classes;
