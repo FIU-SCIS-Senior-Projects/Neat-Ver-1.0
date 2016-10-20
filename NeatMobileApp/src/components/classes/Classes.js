@@ -6,7 +6,8 @@ import {
   StyleSheet,
   TouchableHighlight,
   Navigator,
-  ListView
+  ListView,
+  ScrollView,
 } from 'react-native';
 
 import styles from './styles';
@@ -31,6 +32,9 @@ class Classes extends Component{
       }
 
       componentDidMount(){
+        this.fetchClasss();
+      }
+      componentWillReceiveProps(){
         this.fetchClasss();
       }
 
@@ -86,7 +90,7 @@ class Classes extends Component{
 
     render(){
         return(
-            <View>
+            <ScrollView>
                 <Text style={{ padding: 20, justifyContent: 'center'}}>Class Dashboard</Text>
                 <ListView
                     dataSource={this.state.dataSource}
@@ -109,7 +113,7 @@ class Classes extends Component{
                             Back
                     </Text>
                 </TouchableHighlight>
-            </View>
+            </ScrollView>
         );
     }
 }

@@ -11,12 +11,15 @@ import {
   TouchableOpacity,
   ListView,
   ScrollView,
+  Switch,
 } from 'react-native';
 
 import styles from './styles';
 
-var Assignments = require('./Assignments'),
+var Assignments = require('./UserAssignment');
+
     CONFIG = require('../../config.js');
+
 
 class AssignmentView extends Component{
 
@@ -29,28 +32,38 @@ class AssignmentView extends Component{
 
         this.state={
             dataSource: ds,
-            assignmentUrl: props.assignmentUrl
+            assignmentUrl: props.assignmentUrl,
+            toggleState: true,
+            trueSwitchIsOn: true,
         };
     }
 
     componentDidMount(){
-            this.fetchTasks();
-          }
+        this.fetchTasks();
 
+    }
+    componentWillReceiveProps(){
+        this.fetchTasks();
+    }
     fetchTasks(){
 
         return fetch(CONFIG.server.host + 'api/task/')
               .then((response) => response.json())
               .then((responseJson) => {
                 var taskList = responseJson;
+
                 var display = [];
                 var j = 0
+
                 for(var i = 0; i < taskList.length; i++){
                     if(taskList[i].user ===  CONFIG.server.host + 'api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
                         display[j] = taskList[i];
+
                         j++;
                     }
+
                 }
+
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(display)
                 })
@@ -68,16 +81,23 @@ class AssignmentView extends Component{
             }
         });
     }
+
     pressDashboard(){
-    this.props.navigator.pop();
-        //  this.props.navigator.push({
-        //     id: 'AssignmentsDash'
-        // });
+        let route = this.props.navigator.getCurrentRoutes().find((route) => route.id === 'AssignmentsDash');
+        this.props.navigator.popToRoute(route);
     }
+
+    async putToogleData(rowData){
+    }
+
 
     renderRow(rowData){
         return(
             <View style={styles.List}>
+                <Switch
+                    onValueChange={() => {rowData.isDone = !rowData.isDone; console.log(rowData.taskName + ' task complete : ' + rowData.isDone)}}
+                    style={{marginBottom: 10}}
+                    value={rowData.isDone} />
                 <Text>{rowData.taskName}</Text>
             </View>
         );
@@ -90,6 +110,7 @@ class AssignmentView extends Component{
             <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderRow.bind(this)}
+              enableEmptySections= {true}
             />
 
             <TouchableHighlight style={styles.button}
