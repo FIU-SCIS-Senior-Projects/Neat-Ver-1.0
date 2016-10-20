@@ -7,6 +7,15 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 
 ##Recent Endpoints - examples
 
+####Get collab assignment statistics (url arg: assignment pk)
+`http GET http://127.0.0.1:8000/api/collab/assig/1/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
+
+####Get user info from token
+`http GET http://127.0.0.1:8000/api/user/getFromToken/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
+
+####Get user assignment progress (url arg: assignment pk)
+`http GET http://127.0.0.1:8000/api/getAssigProgress/1/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
+
 ####Add user to assignment
 `http POST http://127.0.0.1:8000/api/assignmentrosters/ user=http://localhost:8000/api/user/4/ school=http://localhost:8000/api/assignment/1/ 'Authorization: Token e68dff15c0f0f6f87ff8d7fac2f3f4f8ec947dd1'`
 
@@ -28,17 +37,14 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 ####Verify user e-mail with code (url arg: code)
 `http POST http://127.0.0.1:8000/api/receive/emailCode/f72d6/ 'Authorization: Token 3ec82aeb21ca8e3f334db37d44d5cb1819252f5b'`
 
-####Get specific user info (use pk)
-`http GET http://127.0.0.1:8000/api/user/11/ 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
-
 ####Does a user exist?
-`http GET http://127.0.0.1:8000/api/user/?email=user1@gmail.com 'Authorization: Token 3adfa56644d6f9a56f7693f5fb46769c54a4cd50'`
+`http GET http://127.0.0.1:8000/api/user/?email=user1@gmail.com`
 
-####Register (hard-code student group, username removed)
+####Register
 `http POST http://127.0.0.1:8000/api/user/ email=user3@neat.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
 
-####Login
-`http POST http://127.0.0.1:8000/api/login/ username=email@gmail.com password=password123`
+####Login (note username field, not email)
+`http POST http://127.0.0.1:8000/api/login/ username=user1@neat.com password=password123`
 
 #Usage
 

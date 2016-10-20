@@ -118,15 +118,43 @@ def genCode(username):
     salt.update(username.encode('utf-8'))
     return salt.hexdigest()[:5]
 
-@api_view(['post'])
+#Get user progress for an assignment, given assignment pk
+@api_view(['get'])
 @authentication_classes([TokenAuthentication])
-def CollabView(request, pk):
+def getAssigProgressView(request, pk):
+    taskNum, taskProg = 0, 0
     assig = Assignment.objects.filter(pk=pk)
     if assig.count() is 0:
         return Response({'error': 'assignment provided not in database'},status=status.HTTP_400_BAD_REQUEST)
     else:
-        return Response({'status': 'aok'})
         assig = assig[0]
+        for task in assig.tasks.filter(user=request.user):
+            taskNum += 1
+            if task.isDone == True:
+                taskProg += 1
+        if taskNum == 0:
+            return Response({'error': 'this user has no tasks in this assignment'},status=status.HTTP_400_BAD_REQUEST)
+        return Response({'percentage': (taskProg/taskNum)})
+
+#Get assignment statistics, given assignment pk
+@api_view(['get'])
+@authentication_classes([TokenAuthentication])
+def CollabView(request, pk):
+    assig = Assignment.objects.filter(pk=pk)
+    array = []
+    if assig.count() is 0:
+        return Response({'error': 'assignment provided not in database'},status=status.HTTP_400_BAD_REQUEST)
+    else:
+        assig = assig[0]
+        for rosterObj in AssignmentRoster.objects.filter(assignment=assig):
+            taskNum, taskProg = 0, 0
+            for task in assig.tasks.filter(user=rosterObj.user):
+                taskNum += 1
+                if task.isDone == True:
+                    taskProg += 1
+            if taskNum != 0:
+                array.append({'user': rosterObj.user.email, 'name': rosterObj.user.first_name, 'percentage': (taskProg/taskNum)})
+        return Response(array)
 
 
 #For converting google oAuth code
@@ -143,6 +171,10 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
+    @list_route(methods=['get'],authentication_classes=[TokenAuthentication])
+    def getFromToken(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
 
 class SchoolViewSet(viewsets.ModelViewSet):
     """
