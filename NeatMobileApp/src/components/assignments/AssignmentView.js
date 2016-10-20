@@ -110,6 +110,7 @@ class AssignmentView extends Component{
             <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderRow.bind(this)}
+              enableEmptySections= {true}
             />
 
             <TouchableHighlight style={styles.button}

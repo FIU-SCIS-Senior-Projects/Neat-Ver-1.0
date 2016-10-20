@@ -15,7 +15,7 @@ import {
 
 import styles from './styles';
 
-//TODO uses this variable to 
+//TODO uses this variable to
 var Classes = require('./Classes');
 var CONFIG = require('../../config.js');
 
@@ -95,7 +95,7 @@ class ClassView extends Component{
             </View>
         );
         }
-        
+
     renderRow(rowData){
 
         return(
@@ -119,6 +119,7 @@ class ClassView extends Component{
             <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderRow.bind(this)}
+              enableEmptySections= {true}
             />
 
             <TouchableHighlight style={styles.button}
