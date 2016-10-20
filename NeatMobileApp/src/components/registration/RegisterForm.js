@@ -6,9 +6,6 @@ var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
 var RegisterFormInput = t.struct({
-  firstname:     t.String,
-  lastname:      t.String,
-  username:      t.String,
   email:         t.String,
   password:      t.String,
   passwordAgain: t.String,

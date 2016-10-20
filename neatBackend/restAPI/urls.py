@@ -15,6 +15,7 @@ router.register(r'assignments', views.AssignmentViewSet)
 router.register(r'task', views.TaskViewSet)
 router.register(r'user', views.UserViewSet)
 router.register(r'group', views.GroupViewSet)
+router.register(r'assignmentroster', views.AssignmentRosterViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

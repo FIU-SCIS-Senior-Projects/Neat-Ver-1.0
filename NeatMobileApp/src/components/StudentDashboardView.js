@@ -13,7 +13,7 @@ class StudentDashboardView extends Component{
 
   onClassesPressed(){
     this.props.navigator.push({
-      id: 'ClassList'
+      id: 'ClassDash'
     });
     console.log('Classes button pressed!')
   }

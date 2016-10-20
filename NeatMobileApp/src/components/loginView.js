@@ -53,7 +53,7 @@ class loginView extends Component{
           })
         }
         else {
-          console.log('error during login: ', results);
+          console.log('error during login: ', results.status);
         }
     });
   }
@@ -84,7 +84,7 @@ class loginView extends Component{
 
     if(!this.state.success && this.state.unknownError) {
       errorCtrl = <Text style={styles.error}>
-        We experienced and unexpected issue
+        We experienced an unexpected issue
       </Text>
     }
     return(
