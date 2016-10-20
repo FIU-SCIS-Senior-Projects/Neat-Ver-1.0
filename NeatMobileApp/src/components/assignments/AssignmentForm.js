@@ -29,7 +29,7 @@ class AssignmentForm extends Component{
     this.state = {
       assignmentName:"",
       dueDate: new Date(),
-      classFK: CONFIG.server.host + '/api/classes/1/',
+      classFK: CONFIG.server.host + 'api/classes/1/',
       showDatePicker: false,
       errors: [],
 

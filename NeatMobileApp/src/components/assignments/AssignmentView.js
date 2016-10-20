@@ -16,7 +16,7 @@ import {
 
 import styles from './styles';
 
-var Assignments = require('./Assignments');
+var Assignments = require('./UserAssignment');
 
 class AssignmentView extends Component{
 

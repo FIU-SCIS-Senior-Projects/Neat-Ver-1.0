@@ -4,7 +4,7 @@ import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator
 const Login = require('./components/loginView');
 const StudentDashboard = require('./components/StudentDashboardView');
 const ClassList = require('./components/classList/ClassList');
-const AssignmentsDash = require('./components/assignments/Assignments');
+const AssignmentsDash = require('./components/assignments/UserAssignment');
 const AssignmentForm = require('./components/assignments/AssignmentForm');
 const AssignmentView = require('./components/assignments/AssignmentView');
 const TaskForm = require('./components/assignments/TaskForm');
