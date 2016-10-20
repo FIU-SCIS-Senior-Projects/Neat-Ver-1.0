@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 1,
+        //marginBottom: ,
     },
     progress: {
         margin: 10,

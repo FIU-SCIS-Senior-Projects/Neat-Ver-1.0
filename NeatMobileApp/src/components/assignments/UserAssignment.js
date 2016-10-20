@@ -28,7 +28,7 @@ class Assignments extends Component{
 
         this.state = {
           dataSource: ds,
-          progress: 0.58,
+          //progress: 0.58,
           indeterminate: false,
         };
       }
@@ -41,7 +41,10 @@ class Assignments extends Component{
       }
 
       fetchAssignments(){
-        return fetch('http://localhost:8000/api/assignments/')
+        return fetch(CONFIG.server.host + 'api/assignments/', {
+            method  : 'GET',
+            headers : { 'Content-Type' : 'application/json' }
+            })
               .then((response) => response.json())
               .then((responseJson) => {
 
@@ -75,7 +78,7 @@ class Assignments extends Component{
       changeColor(progress){
       var color = ''
         if(progress < 0.33){
-           color='F44336'
+           color='#F44336'
         }
         else if(progress >= 0.33 && progress < 0.66){
             color='#ffcc00'
@@ -88,6 +91,7 @@ class Assignments extends Component{
 
       renderRow(rowData){
 
+        var progress = Math.random();
         return(
         <TouchableHighlight
                 onPress={() => this.onPressRow(rowData)}
@@ -97,10 +101,10 @@ class Assignments extends Component{
 
                 <Progress.Circle
                     style={styles.progress}
-                    progress={this.state.progress}
+                    progress={progress}
                     indeterminate={this.state.indeterminate}
                     showsText={true}
-                    color={this.changeColor(this.state.progress)}
+                    color={this.changeColor(progress)}
                     direction="counter-clockwise"
                 />
 
