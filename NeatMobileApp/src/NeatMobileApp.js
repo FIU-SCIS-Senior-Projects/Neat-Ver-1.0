@@ -68,7 +68,7 @@ class NeatMobileApp extends Component {
 
             <Navigator
               initialRoute = {{
-                id: 'AssignmentRank'
+                id: 'Login'
               }}
               renderScene = {
                 this.navigatorRenderScene

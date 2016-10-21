@@ -18,6 +18,7 @@ import {
 import styles from './styles';
 
 var Assignments = require('./UserAssignment');
+import AssignmentRank from '../assignmentRanking/AssignmentRank';
 
     CONFIG = require('../../config.js');
 
@@ -143,8 +144,9 @@ class AssignmentView extends Component{
                 renderRow={this.renderRow.bind(this)}
                 enableEmptySections= {true}
               />
-
             </ScrollView>
+
+            <AssignmentRank style={{backgroundColor: 'transparent', padding: 10}}/>
               <TouchableHighlight style={styles.button}
                   onPress={this.onAddTask.bind(this)}
               >

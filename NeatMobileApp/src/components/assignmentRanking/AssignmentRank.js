@@ -1,7 +1,7 @@
 'use strict'
 
 import React, { Component } from 'react';
-import { View ,Text ,TextInput, TouchableHighlight ,Alert ,StyleSheet,ListView
+import { View ,Text ,TextInput, TouchableHighlight ,Alert ,StyleSheet,ListView, Image
 } from 'react-native';
 import _ from 'lodash';
 var authService = require('../../utilities/AuthService');
@@ -119,21 +119,21 @@ class AssignmentRank extends Component{
 
   _renderClassRow(assignment){
       return(
-          <View style={styles.assignmentRow}>
-            <View style = {styles.nameAndPercentageTextContainer}>
-                <Text style = {styles.rowStudentName}>
-                    {assignment.name}
-                </Text>
+        <View style={styles.assignmentRow}>
+          <View style = {styles.nameAndPercentageTextContainer}>
+              <Text style = {styles.rowStudentName}>
+                  {assignment.name}
+              </Text>
 
-                <Text style = {styles.rowPercentageCompletion}>
-                    {(assignment.percentage * 100) + "%"}
-                </Text>
-            </View>
-            <Progress.Bar progress={assignment.percentage}
-                          width={300}
-                          height={10}
-                          color ={this._renderCollor(assignment.percentage)}/>
+              <Text style = {styles.rowPercentageCompletion}>
+                  {(assignment.percentage * 100) + "%"}
+              </Text>
           </View>
+          <Progress.Bar progress={assignment.percentage}
+            width={300}
+            height={10}
+            color ={this._renderCollor(assignment.percentage)}/>
+        </View>
       )
   }
 }
@@ -184,6 +184,14 @@ const styles = StyleSheet.create({
         paddingBottom:10,
         paddingTop:40,
         backgroundColor: '#FFF',
+    },
+    backgroundImage: {
+      // flex: 1,
+      // resizeMode: 'stretch', // or 'stretch'
+      // justifyContent: 'space-between',
+      // alignItems: 'stretch',
+      width: null,
+      height: null,
     },
   })
 
