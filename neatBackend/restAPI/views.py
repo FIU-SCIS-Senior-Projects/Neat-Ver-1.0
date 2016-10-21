@@ -232,7 +232,7 @@ class AssignmentRosterViewSet(viewsets.ModelViewSet):
 
 class AssignmentViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication, BasicAuthentication)
-    permission_classes = (permissions.IsAuthenticated,)
+    #permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
     queryset = Assignment.objects.all()
