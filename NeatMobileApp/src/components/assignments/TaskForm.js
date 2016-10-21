@@ -31,7 +31,7 @@ class TaskForm extends Component{
       dueDate: new Date(),
       assignmentUrl: props.assignmentUrl,
       //taskList: props.assignment.tasks
-      user: CONFIG.server.host + 'api/user/1/',
+      user: CONFIG.server.host + '/user/1/',
       showDatePicker: false,
       errors: [],
 
@@ -41,7 +41,7 @@ class TaskForm extends Component{
   //POSTS to the api
     async onDonePressed(){
         try {
-            let response = await fetch(CONFIG.server.host + 'api/task/',{
+            let response = await fetch(CONFIG.server.host + '/task/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',

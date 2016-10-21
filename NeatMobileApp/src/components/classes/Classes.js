@@ -39,7 +39,7 @@ class Classes extends Component{
       }
 
       fetchClasss(){
-        return fetch(CONFIG.server.host + 'api/classes/')
+        return fetch(CONFIG.server.host + '/classes/')
               .then((response) => response.json())
               .then((responseJson) => {
 

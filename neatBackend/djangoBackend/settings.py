@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social.apps.django_app.default',
     'rest_framework_social_oauth2',   
-    'rest_social_auth',   
+    'rest_social_auth',
+    'corsheaders',   
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -88,12 +89,16 @@ REST_FRAMEWORK = {
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'djangoBackend.urls'
 

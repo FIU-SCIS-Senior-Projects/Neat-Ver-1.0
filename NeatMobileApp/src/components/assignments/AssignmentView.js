@@ -47,7 +47,7 @@ class AssignmentView extends Component{
     }
     fetchTasks(){
 
-        return fetch(CONFIG.server.host + 'api/task/')
+        return fetch(CONFIG.server.host + '/task/')
               .then((response) => response.json())
               .then((responseJson) => {
                 var taskList = responseJson;
@@ -56,7 +56,7 @@ class AssignmentView extends Component{
                 var j = 0
 
                 for(var i = 0; i < taskList.length; i++){
-                    if(taskList[i].user ===  CONFIG.server.host + 'api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
+                    if(taskList[i].user ===  CONFIG.server.host + '/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
                         display[j] = taskList[i];
 
                         j++;
@@ -86,19 +86,48 @@ class AssignmentView extends Component{
         let route = this.props.navigator.getCurrentRoutes().find((route) => route.id === 'AssignmentsDash');
         this.props.navigator.popToRoute(route);
     }
+    toogleSwitched(rowData){
+        console.log("rowData before is: " + JSON.stringify(rowData));
+        rowData.isDone = !rowData.isDone;
+        this.forceUpdate();
+        console.log("rowData is: " + JSON.stringify(rowData));
+        
+        fetch(rowData.url, {
+              method: "PUT",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                assignment: rowData.assignment,
+                user: rowData.user,
+                taskName: rowData.taskName,
+                isDone: rowData.isDone,
+                hoursPlanned: rowData.hoursPlanned,
+                hoursCompleted: rowData.hoursCompleted,
+                startDate: rowData.startDate,
+                endDate: rowData.endDate,
+              })
+        })
+        .then((response) => response.json())
+        .then((responseData) => console.log("PUT success with response: " + JSON.stringify(responseData)))
+        .catch((errpr) => console.error(error));
+        
+    }
 
     async putToogleData(rowData){
     }
 
 
     renderRow(rowData){
+        console.log("Before return render, rowData: " + JSON.stringify(rowData));
         return(
-            <View style={styles.List}>
-                <Switch
-                    onValueChange={() => {rowData.isDone = !rowData.isDone; console.log(rowData.taskName + ' task complete : ' + rowData.isDone)}}
-                    style={{marginBottom: 10}}
-                    value={rowData.isDone} />
-                <Text>{rowData.taskName}</Text>
+               <View style={styles.List}>
+                    <Switch
+                        onValueChange={() => {this.toogleSwitched(rowData); console.log("clicked on voluechange")}}
+                        style={{paddingLeft: 80, marginBottom: 5}}
+                        value={rowData.isDone} />
+               <Text>{rowData.taskName}</Text>
             </View>
         );
     }
@@ -110,6 +139,7 @@ class AssignmentView extends Component{
             <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderRow.bind(this)}
+              enableEmptySections= {true}
             />
 
             <TouchableHighlight style={styles.button}
