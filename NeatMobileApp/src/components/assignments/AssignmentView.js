@@ -133,6 +133,7 @@ class AssignmentView extends Component{
     }
 
     render(){
+
         return(
 
             <ScrollView>

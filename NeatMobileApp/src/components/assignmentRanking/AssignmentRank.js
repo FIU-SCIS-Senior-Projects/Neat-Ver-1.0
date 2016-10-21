@@ -6,7 +6,8 @@ import { View ,Text ,TextInput, TouchableHighlight ,Alert ,StyleSheet,ListView
 import _ from 'lodash';
 var authService = require('../../utilities/AuthService');
 import * as Progress from 'react-native-progress';
-import api from './../../utilities/api';
+var Assignments = require('../assignments/UserAssignment');
+//import api from './../../utilities/api';
 //This is only used to test the list, it has to be removed later
 const userClasses =[
     {
@@ -60,7 +61,7 @@ class AssignmentRank extends Component{
     super(props);
 
     this.state={
-      assignmentID: props.assignmentID,
+      assignmentUrl: this.props.assignmentUrl,
       assignmentProgress: 0.0,
       indeterminate: false,
       datasource: new ListView.DataSource({rowHasChanged: (r1, r2)=> r1 != r2}),
@@ -69,9 +70,14 @@ class AssignmentRank extends Component{
 
  //Before this commponent mount we will reach to the api to get our data.
     componentWillMount(){
-        api.getAssignmentProgress(1).then((response) =>{
+        var id = this.state.assignmentUrl.split("/");
+        authService.getAssignmentProgress(id[5]).then((response) =>{
             this.setState({
                 datasource: this.state.datasource.cloneWithRows(
+
+    //response.sort((a, b) =>
+    //a.percentage.localeCompare(b.percentage))
+
                     response.sort(function (b, a) {
                           if (a.percentage > b.percentage) {
                             return 1;
@@ -82,15 +88,23 @@ class AssignmentRank extends Component{
                           // a must be equal to b
                           return 0;
                     })
+
                 )
             })
         });
     }
 
   render(){
-      console.log("AssigmentProgress: ", this.state.assignments);
+      console.log("AssigmentID: ", this.state.assignmentUrl);
     return(
         <View style={styles.container}>
+        <TouchableHighlight style={styles.button}
+        onPress={() => this._onAssignmentDashPress()}
+        >
+            <Text style={styles.buttonText}>
+                    Assignment Dashboard
+            </Text>
+        </TouchableHighlight>
             <ListView
                 style = {styles.listRow}
                 dataSource = {this.state.datasource}
@@ -116,6 +130,10 @@ class AssignmentRank extends Component{
     }
     return 'white'
 }
+
+  _onAssignmentDashPress(){
+      this.props.navigator.pop();
+    }
 
   _renderClassRow(assignment){
       return(
@@ -182,9 +200,31 @@ const styles = StyleSheet.create({
         paddingLeft:10,
         paddingRight:10,
         paddingBottom:10,
-        paddingTop:40,
+        paddingTop:20,
         backgroundColor: '#FFF',
+    },
+    button: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        borderWidth: 3,
+        marginTop: 20,
+        marginLeft: 70,
+        marginRight: 70,
+        marginBottom: 20,
+        paddingRight: 20,
+        paddingLeft: 20,
+        paddingTop: 5,
+        paddingBottom: 10,
+        backgroundColor: '#FFF',
+        borderColor: '#599D95',
+    },
+    buttonText:{
+        fontSize: 18,
+        color: 'grey',
+        fontWeight: '100',
     },
   })
 
-    export default AssignmentRank;
+    module.exports = AssignmentRank;

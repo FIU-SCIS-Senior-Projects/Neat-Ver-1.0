@@ -106,9 +106,10 @@ class AuthService {
   }//end of register
 
   getAssignmentProgress(assignmentID){
-    var url = CONFIG.server.host + '/api/collab/assig/' + assignmentID + '/';
+    var url = CONFIG.server.host + '/collab/assig/' + assignmentID + '/';
     return fetch(url).then((res)=> res.json());
   }
+
 
   requestCode(creds, cb) {
     //if(!creds){

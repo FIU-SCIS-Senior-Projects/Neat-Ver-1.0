@@ -68,7 +68,7 @@ class NeatMobileApp extends Component {
 
             <Navigator
               initialRoute = {{
-                id: 'AssignmentRank'
+                id: 'Login'
               }}
               renderScene = {
                 this.navigatorRenderScene
@@ -98,7 +98,7 @@ class NeatMobileApp extends Component {
       case 'AssignmentForm':
         return(<AssignmentForm navigator = {navigator} {...route.passProps} title = 'AssignmentForm'/>)
       case 'AssignmentRank':
-          return(<AssignmentRank navigator = {navigator} title = 'AssignmentRank'/>)
+          return(<AssignmentRank navigator = {navigator} {...route.passProps} title = 'AssignmentRank'/>)
       case 'AssignmentView':
           return(< AssignmentView navigator = {navigator}  {...route.passProps} title = 'AssignmentView'/>)
       case 'ClassList':

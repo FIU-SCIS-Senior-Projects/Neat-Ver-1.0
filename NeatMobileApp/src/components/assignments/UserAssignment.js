@@ -16,6 +16,8 @@ import * as Progress from 'react-native-progress';
 
 var AssignmentForm = require('./AssignmentForm');
 var AssignmentView = require('./AssignmentView');
+var AssignmentRank = require('../assignmentRanking/AssignmentRank');
+
 var moment = require('moment'),
     CONFIG = require('../../config.js');
 
@@ -34,14 +36,9 @@ class Assignments extends Component{
         };
       }
 
-      componentDidMount(){
-        this.fetchAssignments();
-      }
-      componentWillReceiveProps(){
-       this.fetchAssignments();
-      }
 
-      fetchAssignments(){
+
+      componentDidMount(){
         return fetch(CONFIG.server.host + '/assignments/', {
             method  : 'GET',
             headers : { 'Content-Type' : 'application/json' }
@@ -74,17 +71,19 @@ class Assignments extends Component{
                 assignmentUrl: rowData.url
             }
         });
+        //console.log("the url:" + rowData.url);
       }
 
       onPressAssignmentProgress(rowData){
-           var id = rowData.url.split("/");
+           //var id = rowData.url.split("/");
 
             this.props.navigator.push({
                id: 'AssignmentRank',
                passProps: {
-                   assignmentID: id[5]
+                   assignmentUrl: rowData.url //id[5]
                }
            });
+
       }
 
 
@@ -103,7 +102,7 @@ class Assignments extends Component{
       }
 
       renderRow(rowData){
-
+         // console.log(rowData.url);
         var progress = Math.random();
         return(
         <TouchableHighlight
