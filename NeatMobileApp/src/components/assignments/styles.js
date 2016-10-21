@@ -3,6 +3,7 @@
 import { StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
+
     button: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -12,10 +13,11 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginLeft: 70,
         marginRight: 70,
+        marginBottom: 20,
         paddingRight: 20,
         paddingLeft: 20,
         paddingTop: 5,
-        paddingBottom: 5,
+        paddingBottom: 10,
         backgroundColor: '#FFF',
         borderColor: '#599D95',
     },
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 1,
+        //marginBottom: ,
     },
     progress: {
         margin: 10,

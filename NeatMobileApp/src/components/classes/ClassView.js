@@ -15,7 +15,7 @@ import {
 
 import styles from './styles';
 
-//TODO uses this variable to 
+//TODO uses this variable to
 var Classes = require('./Classes');
 var CONFIG = require('../../config.js');
 
@@ -35,12 +35,16 @@ class ClassView extends Component{
     }
 
     componentDidMount(){
-            this.fetchTasks();
-          }
+        this.fetchAssignmentsForClass();
+    }
 
-    fetchTasks(){
+    componentWillReceiveProps(){
+        this.fetchAssignmentsForClass();
+    }
 
-    return fetch(CONFIG.server.host +'api/assignments/')
+    fetchAssignmentsForClass(){
+
+    return fetch(CONFIG.server.host +'/assignments/')
               .then((response) => response.json())
               .then((responseJson) => {
                 var display = [];
@@ -70,17 +74,17 @@ class ClassView extends Component{
         });
     }
     pressDashboard(){
-         this.props.navigator.push({
-            id: 'ClassDash'
+         this.props.navigator.pop({
+            id: 'ClassList'
         });
     }
     onPressRow(rowData){
 
-    this.props.navigator.push({
-        id: 'AssignmentView',
-        passProps: {
-        assignmentUrl: rowData.url
-        }
+        this.props.navigator.push({
+            id: 'AssignmentView',
+            passProps: {
+            assignmentUrl: rowData.url
+            }
         });
     }
 
@@ -91,7 +95,7 @@ class ClassView extends Component{
             </View>
         );
         }
-        
+
     renderRow(rowData){
 
         return(
@@ -115,6 +119,7 @@ class ClassView extends Component{
             <ListView
               dataSource={this.state.dataSource}
               renderRow={this.renderRow.bind(this)}
+              enableEmptySections= {true}
             />
 
             <TouchableHighlight style={styles.button}

@@ -29,16 +29,19 @@ class AssignmentForm extends Component{
     this.state = {
       assignmentName:"",
       dueDate: new Date(),
-      classFK: CONFIG.server.host + '/api/classes/1/',
+      classFK: props.classUrl,
       showDatePicker: false,
       errors: [],
 
     }
+    console.log(this.state.classFK);
   }
+
   //POSTS to the api
     async onDonePressed(){
+
         try {
-            let response = await fetch(CONFIG.server.host + 'api/assignments/',{
+            let response = await fetch(CONFIG.server.host + '/assignments/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
@@ -57,8 +60,8 @@ class AssignmentForm extends Component{
 
             //verify if our operation was a success or failure
             if(response.status >= 200 && response.status < 300){
-                console.log("response succes is:" + responseJson);
-                this.props.navigator.push({
+                console.log("response succes is:" + this.state.assignmentName);
+                this.props.navigator.pop({
                   id: 'AssignmentsDash'
                 });
                 console.log('DONE BUTTON WAS PRESSED')

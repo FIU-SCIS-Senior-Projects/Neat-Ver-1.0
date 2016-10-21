@@ -90,7 +90,7 @@ class AuthService {
   register(creds, cb) {
       console.log('creds from register AuthService', creds);
 
-      this.doPost(CONFIG.server.host + 'api/user/', {
+      this.doPost(CONFIG.server.host + '/user/', {
         email     : creds.email,
         first_name: creds.firstname,
         last_name : creds.lastname,
@@ -118,7 +118,7 @@ class AuthService {
     //var encodedAuth = b.toString('base64');
     console.log('creds from requestCode', creds.username);
 
-    this.doGet(CONFIG.server.host + 'api/user/?username='+ creds.username, {
+    this.doGet(CONFIG.server.host + '/user/?username='+ creds.username, {
       //username : creds.username,
     })
     .then(this.handleResponse)
@@ -141,7 +141,7 @@ class AuthService {
     //var encodedAuth = b.toString('base64');
     console.log('creds from login AuthService', creds);
 
-    this.doPost(CONFIG.server.host + 'api/login/',{
+    this.doPost(CONFIG.server.host + '/login/',{
         "username": creds.username,
         "password": creds.password,
       })

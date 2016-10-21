@@ -16,7 +16,7 @@ import styles from './styles';
 var moment = require('moment'),
     CONFIG = require('../../config.js');
 
-/* TODO 
+/* TODO
 change school id to dynamic
 */
 //For demo purposes only
@@ -33,14 +33,14 @@ class ClassForm extends Component{
     this.state = {
       className:"",
       classID: getRandomInt(100,200),
-      school: 'http://localhost:8000/api/schools/1/',
+      school: CONFIG.server.host + '/schools/1/',
 
     }
   }
   //POSTS to the api
     async onDonePressed(){
         try {
-            let response = await fetch(CONFIG.server.host + 'api/classes/',{
+            let response = await fetch(CONFIG.server.host + '/classes/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',
@@ -60,8 +60,8 @@ class ClassForm extends Component{
             //verify if our operation was a success or failure
             if(response.status >= 200 && response.status < 300){
                 console.log("response succes is:" + responseJson);
-                this.props.navigator.push({
-                  id: 'ClassDash'
+                this.props.navigator.pop({
+                  id: 'ClassList'
                 });
                 console.log('DONE BUTTON WAS PRESSED')
             }else{
