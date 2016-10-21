@@ -16,7 +16,6 @@ import { AppRegistry,
     Image } from 'react-native';
 import Icon from '../../../node_modules/react-native-vector-icons/FontAwesome';
 import Logo from './../../assets/img/Logo_Neat.png';
-//const userIcon = (<Icon name="fa-user" size={25} color ={'#900'}/>)
 
 var authService = require('../../utilities/AuthService');
 var Header = require('./../Header');
@@ -25,7 +24,6 @@ var Form = t.form.Form;
 var RegisterForm = t.struct({
   firstname:     t.String,
   lastname:      t.String,
-  username:      t.String,
   email:         t.String,
   password:      t.String,
   passwordAgain: t.String,
@@ -46,10 +44,6 @@ var options = {
       autoCapitalize: 'none',
       keyboardType: 'email-address',
     },
-    username: {
-      autoCapitalize: 'none',
-      //error: 'Enter username'
-    },
     password: {
       secureTextEntry: true,
      // error: 'Enter password'
@@ -61,7 +55,6 @@ var options = {
   }
 }
 
-
 class Register extends Component {
   constructor(props){
     super(props);
@@ -69,7 +62,6 @@ class Register extends Component {
     this.state = {
       value: {
       },
-      //username: "",
       password: "",
       firstname: "",
       lastname: "",
@@ -89,7 +81,6 @@ onRegisterPressed(){
   var value = this.refs.form.getValue();
 
   authService.register({
-      //username:  this.state.value.username,
       password:  this.state.value.password,
       firstname: this.state.value.firstname,
       lastname:  this.state.value.lastname,
@@ -100,7 +91,6 @@ onRegisterPressed(){
           showProgress: false
       }, results));
       if(results.success){
-        //this.props.navigator.pop();
         this.props.navigator.push({
           id: 'StudentDashboard'
         });
@@ -133,21 +123,6 @@ onRegisterPressed(){
             onChange={(value) => this.setState({value})}
           />
         </View>
-        {/*
-        <View style={styles.registerForgotContainer}>
-          <View style={styles.registerContainer}>
-            <Text
-              style={styles.greyFont}
-              onPress={() => this.props.navigator.pop()}>
-              Already have an account
-            </Text>
-          </View>
-          <TouchableHighlight style={styles.forgotContainer}>
-            <Text style={styles.greyFont} >Forgot?</Text>
-          </TouchableHighlight>
-        </View>
-        */}
-
         <TouchableHighlight style = {styles.button} onPress={this.onRegisterPressed.bind(this)} >
           <Text style = {styles.buttonText}>
             Register

@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   Navigator,
   ListView,
   Image,
@@ -82,6 +83,18 @@ class Assignments extends Component{
         });
       }
 
+      onPressAssignmentProgress(rowData){
+           var id = rowData.url.split("/");
+
+            this.props.navigator.push({
+               id: 'AssignmentRank',
+               passProps: {
+                   assignmentID: id[5]
+               }
+           });
+      }
+
+
       changeColor(progress){
       var color = ''
         if(progress < 0.33){
@@ -105,16 +118,17 @@ class Assignments extends Component{
                 underlayColor='#ddd'
               >
             <View style={styles.List}>
-
-                <Progress.Circle
-                    style={styles.progress}
-                    progress={progress}
-                    indeterminate={this.state.indeterminate}
-                    showsText={true}
-                    color={this.changeColor(progress)}
-                    direction="counter-clockwise"
-                />
-
+                <TouchableOpacity onPress={() =>
+                    this.onPressAssignmentProgress(rowData)}>
+                    <Progress.Circle
+                        style={styles.progress}
+                        progress={progress}
+                        indeterminate={this.state.indeterminate}
+                        showsText={true}
+                        color={this.changeColor(progress)}
+                        direction="counter-clockwise"
+                    />
+                </TouchableOpacity>
                 <Text>{rowData.assignmentName}</Text>
                 <Text style={styles.dueInLabel}>
                   Due {moment(rowData.dueDate).from(rowData.startDate)}

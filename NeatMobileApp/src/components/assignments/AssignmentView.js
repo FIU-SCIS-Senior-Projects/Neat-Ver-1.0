@@ -41,13 +41,11 @@ class AssignmentView extends Component{
 
     componentDidMount(){
         this.fetchTasks();
-
     }
     componentWillReceiveProps(){
         this.fetchTasks();
     }
     fetchTasks(){
-
         return fetch(CONFIG.server.host + '/task/')
               .then((response) => response.json())
               .then((responseJson) => {
@@ -59,12 +57,9 @@ class AssignmentView extends Component{
                 for(var i = 0; i < taskList.length; i++){
                     if(taskList[i].user ===  CONFIG.server.host + '/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
                         display[j] = taskList[i];
-
                         j++;
                     }
-
                 }
-
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(display)
                 })
@@ -116,9 +111,14 @@ class AssignmentView extends Component{
 
     }
 
-    async putToogleData(rowData){
+    pressRankings(){
+          this.props.navigator.push({
+             id: 'AssignmentRank'
+         });
     }
 
+    async putToogleData(rowData){
+    }
 
     renderRow(rowData){
         console.log("Before return render, rowData: " + JSON.stringify(rowData));
@@ -143,12 +143,21 @@ class AssignmentView extends Component{
                 renderRow={this.renderRow.bind(this)}
                 enableEmptySections= {true}
               />
+
             </ScrollView>
               <TouchableHighlight style={styles.button}
                   onPress={this.onAddTask.bind(this)}
               >
                   <Text style={styles.buttonText}>
                           Add Task
+                  </Text>
+              </TouchableHighlight>
+
+              <TouchableHighlight style={styles.button}
+                  onPress={this.pressRankings.bind(this)}
+              >
+                  <Text style={styles.buttonText}>
+                          Assignment Rankings
                   </Text>
               </TouchableHighlight>
 
