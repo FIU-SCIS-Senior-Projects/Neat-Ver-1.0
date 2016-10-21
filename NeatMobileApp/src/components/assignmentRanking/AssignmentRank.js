@@ -1,12 +1,13 @@
 'use strict'
 
 import React, { Component } from 'react';
-import { View ,Text ,TextInput, TouchableHighlight ,Alert ,StyleSheet,ListView } from 'react-native';
-import api from './../../utilities/api';
+import { View ,Text ,TextInput, TouchableHighlight ,Alert ,StyleSheet,ListView
+} from 'react-native';
 import _ from 'lodash';
+var authService = require('../../utilities/AuthService');
 import * as Progress from 'react-native-progress';
-
-
+//import api from './../../utilities/api';
+//This is only used to test the list, it has to be removed later
 const userClasses =[
     {
     className: "Calculus I",
@@ -25,12 +26,10 @@ const userClasses =[
          "project I"]
      },
 ]
-
-
-
+//This is only used to test the list, it has to be removed later
 const assignmentProgress =[
   {
-   "name":"nelson",
+   "name":"Nelson",
    "perc":0.9
   },
   {
@@ -55,121 +54,136 @@ const assignmentProgress =[
   }
 ]
 
+
 class AssignmentRank extends Component{
   constructor(props){
     super(props);
 
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> r1 != r2})
-
     this.state={
       assignmentProgress: 0.0,
       indeterminate: false,
-      classesDatasource: ds.cloneWithRows(assignmentProgress)
+      datasource: new ListView.DataSource({rowHasChanged: (r1, r2)=> r1 != r2}),
     }
   }
 
+ //Before this commponent mount we will reach to the api to get our data.
+    componentWillMount(){
+        authService.getAssignmentProgress(1).then((response) =>{
+            this.setState({
+                datasource: this.state.datasource.cloneWithRows(
+                    response.sort(function (b, a) {
+                          if (a.percentage > b.percentage) {
+                            return 1;
+                          }
+                          if (a.percentage < b.percentage) {
+                            return -1;
+                          }
+                          // a must be equal to b
+                          return 0;
+                    })
+                )
+            })
+        });
+    }
+
   render(){
+      console.log("AssigmentProgress: ", this.state.assignments);
     return(
-      <View style={styles.container}>
-        <ListView
-            style = {{marginTop: 100}}
-            dataSource = {this.state.classesDatasource}
-            renderRow = {(assignment) => {return this._renderClassRow(assignment)}}
-        />
-      </View>
+        <View style={styles.container}>
+            <ListView
+                style = {styles.listRow}
+                dataSource = {this.state.datasource}
+                renderRow = {(assignment) => {
+                    return this._renderClassRow(assignment)
+                }}
+                renderSeparator={(sectionId, rowId) =>
+                    <View key={rowId} style={styles.separator} />}
+            />
+        </View>
     )
   }
 
+  _renderCollor(percentage){
+      if(percentage<0.25){
+        return '#EF5350'
+    }else if(percentage<0.50){
+        return '#FFD54F'
+    }else if(percentage<0.75){
+        return '#42A5F5'
+    }else{
+        return '#599D95'
+    }
+    return 'white'
+}
+
   _renderClassRow(assignment){
       return(
-          <View style={styles.container}>
-            <Text style = {styles.assignmentName}>
-                {assignment.name + " " + (assignment.perc * 100) + "%"}
-            </Text>
-            <Progress.Bar progress={assignment.perc}
-                          width={200}
+          <View style={styles.assignmentRow}>
+            <View style = {styles.nameAndPercentageTextContainer}>
+                <Text style = {styles.rowStudentName}>
+                    {assignment.name}
+                </Text>
+
+                <Text style = {styles.rowPercentageCompletion}>
+                    {(assignment.percentage * 100) + "%"}
+                </Text>
+            </View>
+            <Progress.Bar progress={assignment.percentage}
+                          width={300}
                           height={10}
-                          color ={'#599D95'}/>
+                          color ={this._renderCollor(assignment.percentage)}/>
           </View>
       )
   }
 }
 
 const styles = StyleSheet.create({
-    classRow:{
+    separator: {
+      flex: 1,
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: '#8E8E8E',
+    },
+    nameAndPercentageTextContainer:{
+        flex: 1,
         flexDirection: 'row',
-        justifyContent: 'center',
+    },
+    rowStudentName:{
+        flex:1,
+        alignItems: 'flex-start',
+        fontSize: 20,
+        fontWeight: '200',
+        alignSelf: 'center',
+    },
+    rowPercentageCompletion:{
+        alignItems: 'flex-end',
+        fontSize: 20,
+        fontWeight: '100',
+        alignSelf: 'center',
+    },
+    assignmentRow:{
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        marginTop: 10,
+        borderColor: '#599D95',
+        paddingBottom: 10,
     },
     assignmentName:{
         borderColor: '#599D95',
-        //borderWidth: 1,
-        //width: 175,
-        //height: 40,
+
+    },
+    assignmentView:{
+        flex: 1,
+        borderColor: 'blue',
+
     },
     container: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#FFF',
-        //padding: 35,
         flex: 1,
-      },
-      logo: {
-        alignSelf: 'center',
-        width: 175,
-        height: 175,
-      },
-      heading: {
-        fontSize: 65,
-        fontWeight: '300',
-        alignSelf: 'center',
-      },
-      button: {
-        height: 80,
-        width:80,
+        paddingLeft:10,
+        paddingRight:10,
+        paddingBottom:10,
+        paddingTop:40,
         backgroundColor: '#FFF',
-        borderColor: '#599D95',
-        alignSelf: 'center',
-        marginBottom: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 40,
-        borderWidth: 4
-      },
-      textButton:{
-        color: 'white',
-      },
-      buttonText:{
-        fontSize: 50,
-        color: '#599D95',
-        alignSelf: 'center',
-        fontWeight: '200',
-        paddingBottom: 5
-      },
-      input:{
-        height: 40,
-        fontSize: 18,
-        borderWidth: 2,
-        borderColor: '#48bbec',
-        borderRadius: 0,
-        color: '#48BBEC',
     },
-      inputs: {
-          flexDirection: 'column',
-          alignItems: 'stretch'
-      },
-      inputContainer: {
-          alignItems: 'stretch',
-      },
-      input: {
-          position: 'absolute',
-          left: 61,
-          height: 20,
-          fontSize: 16,
-          paddingLeft: 10
-      },
-      whiteFont: {
-        color: '#FFF'
-      }
   })
 
     export default AssignmentRank;

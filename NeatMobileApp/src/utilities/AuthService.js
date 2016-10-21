@@ -105,6 +105,10 @@ class AuthService {
       .catch(err     => cb(err));
   }//end of register
 
+  getAssignmentProgress(assNum){
+    var url = CONFIG.server.host + '/api/collab/assig/' + assNum + '/';
+    return fetch(url).then((res)=> res.json());
+  }
 
   requestCode(creds, cb) {
     //if(!creds){
@@ -133,8 +137,8 @@ class AuthService {
 
 
   login(creds, cb){
-    var b           = new buffer.Buffer(creds.username + ':' + creds.password);
-    var encodedAuth = b.toString('base64');
+    //var b           = new buffer.Buffer(creds.username + ':' + creds.password);
+    //var encodedAuth = b.toString('base64');
     console.log('creds from login AuthService', creds);
 
     this.doPost(CONFIG.server.host + 'api/login/',{
