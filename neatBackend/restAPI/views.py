@@ -18,6 +18,7 @@ from rest_framework.decorators import detail_route, list_route, api_view, authen
 from rest_framework import generics
 #authentication
 from django.contrib.auth import authenticate
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.authentication import TokenAuthentication
 #permissions
 from rest_framework import permissions
@@ -230,7 +231,8 @@ class AssignmentRosterViewSet(viewsets.ModelViewSet):
     serializer_class = AssignmentRosterSerializer
 
 class AssignmentViewSet(viewsets.ModelViewSet):
-    authentication_classes = (TokenAuthentication,)
+    authentication_classes = (TokenAuthentication, BasicAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
     queryset = Assignment.objects.all()
