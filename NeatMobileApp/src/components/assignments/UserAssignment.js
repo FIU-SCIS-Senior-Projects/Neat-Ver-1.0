@@ -89,6 +89,19 @@ class Assignments extends Component{
         return color;
       }
 
+      displayDueDate(start, due){
+        var str = ''
+
+        if(moment().isAfter(due)){
+            str = 'Passed Due'
+        }
+        else{
+            str = 'Due ' + moment(due).from(start)
+        }
+
+        return str;
+      }
+
       renderRow(rowData){
 
         var progress = Math.random();
@@ -109,7 +122,7 @@ class Assignments extends Component{
                 />
 
                 <Text>{rowData.assignmentName}</Text>
-                <Text style={{paddingLeft: 20}}>Due {moment(rowData.dueDate).from(rowData.startDate)}</Text>
+                <Text style={{paddingLeft: 20}}>{this.displayDueDate(rowData.start, rowData.dueDate)}</Text>
 
             </View>
          </TouchableHighlight>
