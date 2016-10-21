@@ -47,7 +47,7 @@ class AssignmentView extends Component{
     }
     fetchTasks(){
 
-        return fetch(CONFIG.server.host + 'api/task/')
+        return fetch(CONFIG.server.host + '/task/')
               .then((response) => response.json())
               .then((responseJson) => {
                 var taskList = responseJson;
@@ -56,7 +56,7 @@ class AssignmentView extends Component{
                 var j = 0
 
                 for(var i = 0; i < taskList.length; i++){
-                    if(taskList[i].user ===  CONFIG.server.host + 'api/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
+                    if(taskList[i].user ===  CONFIG.server.host + '/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
                         display[j] = taskList[i];
 
                         j++;

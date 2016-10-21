@@ -41,7 +41,7 @@ class AssignmentForm extends Component{
     async onDonePressed(){
 
         try {
-            let response = await fetch(CONFIG.server.host + 'api/assignments/',{
+            let response = await fetch(CONFIG.server.host + '/assignments/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',

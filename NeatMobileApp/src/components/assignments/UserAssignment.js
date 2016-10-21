@@ -41,7 +41,7 @@ class Assignments extends Component{
       }
 
       fetchAssignments(){
-        return fetch(CONFIG.server.host + 'api/assignments/', {
+        return fetch(CONFIG.server.host + '/assignments/', {
             method  : 'GET',
             headers : { 'Content-Type' : 'application/json' }
             })
