@@ -6,7 +6,7 @@ import { View ,Text ,TextInput, TouchableHighlight ,Alert ,StyleSheet,ListView
 import _ from 'lodash';
 var authService = require('../../utilities/AuthService');
 import * as Progress from 'react-native-progress';
-//import api from './../../utilities/api';
+import api from './../../utilities/api';
 //This is only used to test the list, it has to be removed later
 const userClasses =[
     {
@@ -60,6 +60,7 @@ class AssignmentRank extends Component{
     super(props);
 
     this.state={
+      assignmentID: props.assignmentID,
       assignmentProgress: 0.0,
       indeterminate: false,
       datasource: new ListView.DataSource({rowHasChanged: (r1, r2)=> r1 != r2}),
@@ -68,7 +69,7 @@ class AssignmentRank extends Component{
 
  //Before this commponent mount we will reach to the api to get our data.
     componentWillMount(){
-        authService.getAssignmentProgress(1).then((response) =>{
+        api.getAssignmentProgress(1).then((response) =>{
             this.setState({
                 datasource: this.state.datasource.cloneWithRows(
                     response.sort(function (b, a) {
