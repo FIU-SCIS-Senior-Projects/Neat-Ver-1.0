@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
   Navigator,
   ListView,
+  Image,
 } from 'react-native';
 
 import styles from './styles';
@@ -49,7 +50,13 @@ class Assignments extends Component{
               .then((responseJson) => {
 
                 var assignmentList = responseJson;
-                console.log('my print state: ' + responseJson.assignmentName)
+
+                //Sort by due date first
+                assignmentList.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+
+                //console log every assignment's name
+                responseJson.map((assignment) => console.log(assignment.assignmentName));
+
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(assignmentList)
                 })
@@ -109,7 +116,9 @@ class Assignments extends Component{
                 />
 
                 <Text>{rowData.assignmentName}</Text>
-                <Text style={{paddingLeft: 20}}>Due {moment(rowData.dueDate).from(rowData.startDate)}</Text>
+                <Text style={styles.dueInLabel}>
+                  Due {moment(rowData.dueDate).from(rowData.startDate)}
+                </Text>
 
             </View>
          </TouchableHighlight>
@@ -118,13 +127,19 @@ class Assignments extends Component{
 
     render(){
         return(
-            <ScrollView style={styles.container}>
-                <Text style={{ padding: 20, justifyContent: 'center'}}>Assignment Dashboard</Text>
-                <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRow.bind(this)}
-                    enableEmptySections= {true}
-                />
+          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
+            <View style={styles.container}>
+                <Text style={styles.label}>Dashboard</Text>
+                <Text style={styles.heading}>
+                  Hello Ronica!
+                </Text>
+                  <ListView
+                      style={{backgroundColor: 'transparent'}}
+                      dataSource={this.state.dataSource}
+                      renderRow={this.renderRow.bind(this)}
+                      enableEmptySections= {true}
+                  />
+
 
                 <TouchableHighlight style={styles.button}
                     onPress={this.onAddPressed.bind(this)}
@@ -133,7 +148,8 @@ class Assignments extends Component{
                             Add
                     </Text>
                 </TouchableHighlight>
-            </ScrollView>
+            </View>
+          </Image>
         );
     }
 }

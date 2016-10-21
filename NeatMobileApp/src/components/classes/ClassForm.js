@@ -8,7 +8,8 @@ import {
   Navigator,
   TextInput,
   DatePickerIOS,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 
 import styles from './styles';
@@ -97,30 +98,33 @@ class ClassForm extends Component{
 render(){
 
         return(
-        <View style={{ marginTop: 65 }}>
+          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
+          <View style={{ marginTop: 65 }}>
 
-            <TextInput
-                    style={styles.input}
-                    onChangeText={(val) => this.setState({className: val})}
-                    placeholder="Class Name">
-            </TextInput>
+              <TextInput
+                      style={styles.input}
+                      onChangeText={(val) => this.setState({className: val})}
+                      placeholder="Class Name">
+              </TextInput>
 
-            <TouchableHighlight
-                onPress={this.onDonePressed.bind(this)}
-                style={styles.button}>
-                    <Text style={styles.buttonText}>
-                        Done
-                    </Text>
-            </TouchableHighlight>
+              <TouchableHighlight
+                  onPress={this.onDonePressed.bind(this)}
+                  style={styles.button}>
+                      <Text style={styles.buttonText}>
+                          Done
+                      </Text>
+              </TouchableHighlight>
 
-            <TouchableHighlight
-                onPress={this.onBackPressed.bind(this)}
-                style={styles.button}>
-                    <Text style={styles.buttonText}>
-                        Back
-                    </Text>
-            </TouchableHighlight>
-        </View>
+              <TouchableHighlight
+                  onPress={this.onBackPressed.bind(this)}
+                  style={styles.button}>
+                      <Text style={styles.buttonText}>
+                          Back
+                      </Text>
+              </TouchableHighlight>
+          </View>
+          </Image>
+
         );
     }
 }

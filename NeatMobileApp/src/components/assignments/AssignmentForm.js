@@ -8,7 +8,8 @@ import {
   Navigator,
   TextInput,
   DatePickerIOS,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 
 import styles from './styles';
@@ -103,30 +104,33 @@ class AssignmentForm extends Component{
                         mode="date"/> : <View />
 
         return(
-        <View style={{ marginTop: 65 }}>
+          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
+            <View style={{ marginTop: 65 }}>
 
-            <TextInput
-                    style={styles.input}
-                    onChangeText={(val) => this.setState({assignmentName: val})}
-                    placeholder="Assignment Name">
-            </TextInput>
-                <Text style={{paddingTop: 20}}>Due Date</Text>
-                <TouchableOpacity style={styles.input}
-                    onPress={() => this.setState({showDatePicker: !this.state.showDatePicker})}>
+                <TextInput
+                        style={styles.input}
+                        onChangeText={(val) => this.setState({assignmentName: val})}
+                        placeholder="Assignment Name">
+                </TextInput>
+                    <Text style={{paddingTop: 20}}>Due Date</Text>
+                    <TouchableOpacity style={styles.input}
+                        onPress={() => this.setState({showDatePicker: !this.state.showDatePicker})}>
 
-                    <Text>{moment(this.state.dueDate).format('DD/MM/YYYY')}</Text>
+                        <Text>{moment(this.state.dueDate).format('DD/MM/YYYY')}</Text>
 
-                </TouchableOpacity>
-                {showDatePicker}
+                    </TouchableOpacity>
+                    {showDatePicker}
 
-            <TouchableHighlight
-                onPress={this.onDonePressed.bind(this)}
-                style={styles.button}>
-                    <Text style={styles.buttonText}>
-                        Done
-                    </Text>
-            </TouchableHighlight>
-        </View>
+                <TouchableHighlight
+                    onPress={this.onDonePressed.bind(this)}
+                    style={styles.button}>
+                        <Text style={styles.buttonText}>
+                            Done
+                        </Text>
+                </TouchableHighlight>
+            </View>
+          </Image>
+
         );
     }
 }

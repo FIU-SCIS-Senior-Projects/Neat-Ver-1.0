@@ -8,6 +8,7 @@ import {
   Navigator,
   ListView,
   ScrollView,
+  Image
 } from 'react-native';
 
 import styles from './styles';
@@ -67,7 +68,8 @@ class Classes extends Component{
         this.props.navigator.push({
             id: 'ClassView',
             passProps: {
-                classUrl: rowData.url
+                classUrl: rowData.url,
+                className: rowData.className
             }
         });
       }
@@ -76,27 +78,29 @@ class Classes extends Component{
       renderRow(rowData){
 
         return(
-        <TouchableHighlight
-                onPress={() => this.onPressRow(rowData)}
-                underlayColor='#ddd'
-              >
-            <View style={styles.List}>
-
-                <Text>{rowData.className}</Text>
-            </View>
+          <TouchableHighlight
+            onPress={() => this.onPressRow(rowData)}
+            underlayColor='#ddd'
+          >
+          <View style={styles.List}>
+            <Text style={styles.rowLabel}>{rowData.className}</Text>
+          </View>
          </TouchableHighlight>
         )
       }
 
     render(){
         return(
-            <ScrollView>
-                <Text style={{ padding: 20, justifyContent: 'center'}}>Class Dashboard</Text>
-                <ListView
+          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
+            <View style={styles.container}>
+                <Text style={styles.label}>Class Dashboard</Text>
+                  <ListView
+                    style={{flex: 1, alignSelf: 'stretch'}}
                     dataSource={this.state.dataSource}
                     renderRow={this.renderRow.bind(this)}
                     enableEmptySections= {true}
-                />
+                  />
+
 
                 <TouchableHighlight style={styles.button}
                     onPress={this.onAddPressed.bind(this)}
@@ -113,7 +117,8 @@ class Classes extends Component{
                             Back
                     </Text>
                 </TouchableHighlight>
-            </ScrollView>
+            </View>
+          </Image>
         );
     }
 }

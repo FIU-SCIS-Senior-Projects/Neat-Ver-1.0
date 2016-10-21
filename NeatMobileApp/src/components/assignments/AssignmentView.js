@@ -12,6 +12,7 @@ import {
   ListView,
   ScrollView,
   Switch,
+  Image,
 } from 'react-native';
 
 import styles from './styles';
@@ -91,7 +92,7 @@ class AssignmentView extends Component{
         rowData.isDone = !rowData.isDone;
         this.forceUpdate();
         console.log("rowData is: " + JSON.stringify(rowData));
-        
+
         fetch(rowData.url, {
               method: "PUT",
               headers: {
@@ -112,7 +113,7 @@ class AssignmentView extends Component{
         .then((response) => response.json())
         .then((responseData) => console.log("PUT success with response: " + JSON.stringify(responseData)))
         .catch((errpr) => console.error(error));
-        
+
     }
 
     async putToogleData(rowData){
@@ -134,31 +135,32 @@ class AssignmentView extends Component{
 
     render(){
         return(
-
+          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
+            <View style={styles.container}>
             <ScrollView>
-            <ListView
-              dataSource={this.state.dataSource}
-              renderRow={this.renderRow.bind(this)}
-              enableEmptySections= {true}
-            />
-
-            <TouchableHighlight style={styles.button}
-                onPress={this.onAddTask.bind(this)}
-            >
-                <Text style={styles.buttonText}>
-                        Add Task
-                </Text>
-            </TouchableHighlight>
-
-            <TouchableHighlight style={styles.button}
-                onPress={this.pressDashboard.bind(this)}
-            >
-                <Text style={styles.buttonText}>
-                        Assignment Dashboard
-                </Text>
-            </TouchableHighlight>
+              <ListView
+                dataSource={this.state.dataSource}
+                renderRow={this.renderRow.bind(this)}
+                enableEmptySections= {true}
+              />
             </ScrollView>
+              <TouchableHighlight style={styles.button}
+                  onPress={this.onAddTask.bind(this)}
+              >
+                  <Text style={styles.buttonText}>
+                          Add Task
+                  </Text>
+              </TouchableHighlight>
 
+              <TouchableHighlight style={styles.button}
+                  onPress={this.pressDashboard.bind(this)}
+              >
+                  <Text style={styles.buttonText}>
+                          Assignment Dashboard
+                  </Text>
+              </TouchableHighlight>
+            </View>
+          </Image>
         );
     }
 }

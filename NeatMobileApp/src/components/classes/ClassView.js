@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   ListView,
   ScrollView,
+  Image
 } from 'react-native';
 
 import styles from './styles';
@@ -113,32 +114,33 @@ class ClassView extends Component{
 
     render(){
         return(
+          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
+          <Text style={styles.label}>{this.props.className}</Text>
+          <View style={styles.container}>
 
-            <ScrollView>
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow.bind(this)}
+            enableEmptySections= {true}
+          />
 
-            <ListView
-              dataSource={this.state.dataSource}
-              renderRow={this.renderRow.bind(this)}
-              enableEmptySections= {true}
-            />
+          <TouchableHighlight style={styles.button}
+              onPress={this.onAddAssignment.bind(this)}
+          >
+              <Text style={styles.buttonText}>
+                      Add Assignment
+              </Text>
+          </TouchableHighlight>
 
-            <TouchableHighlight style={styles.button}
-                onPress={this.onAddAssignment.bind(this)}
-            >
-                <Text style={styles.buttonText}>
-                        Add Assignment
-                </Text>
-            </TouchableHighlight>
-
-            <TouchableHighlight style={styles.button}
-                onPress={this.pressDashboard.bind(this)}
-            >
-                <Text style={styles.buttonText}>
-                        Class Dashboard
-                </Text>
-            </TouchableHighlight>
-            </ScrollView>
-
+          <TouchableHighlight style={styles.button}
+              onPress={this.pressDashboard.bind(this)}
+          >
+              <Text style={styles.buttonText}>
+                      Class Dashboard
+              </Text>
+          </TouchableHighlight>
+          </View>
+          </Image>
         );
     }
 }

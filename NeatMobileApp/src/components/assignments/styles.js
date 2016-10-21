@@ -1,9 +1,15 @@
 'use strict'
 /*This are the styles for the Assignment view screen*/
-import { StyleSheet} from 'react-native';
+import { StyleSheet, Image} from 'react-native';
 
 const styles = StyleSheet.create({
-
+    container: {
+      paddingTop: 20,
+      paddingBottom: 20,
+      flex: 1,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
     button: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -18,7 +24,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingTop: 5,
         paddingBottom: 10,
-        backgroundColor: '#FFF',
+        backgroundColor: 'transparent',
         borderColor: '#599D95',
     },
     buttonText:{
@@ -27,7 +33,7 @@ const styles = StyleSheet.create({
         fontWeight: '100',
     },
     List: {
-        borderColor: '#599D95',
+        borderColor: '#f5fcff',
         borderWidth: 1,
         height: 70,
         paddingLeft: 10,
@@ -49,7 +55,28 @@ const styles = StyleSheet.create({
         borderRadius: 0,
 
     },
-
+    backgroundImage: {
+    flex: 1,
+    resizeMode: 'stretch', // or 'stretch'
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+    width: null,
+    height: null,
+  },
+  heading: {
+    padding: 10,
+    fontSize: 36,
+    fontWeight: '300',
+    alignSelf: 'center',
+  },
+  label: {
+    paddingTop: 20,
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  dueInLabel: {
+    paddingLeft: 20,
+  }
 });
 
   module.exports = styles;

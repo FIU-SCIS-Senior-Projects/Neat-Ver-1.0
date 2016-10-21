@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-    marginTop: 10
+    // marginTop: 10
   },
   welcome: {
     fontSize: 20,
