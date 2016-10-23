@@ -13,11 +13,13 @@ import {
 
 import styles from './styles';
 import * as Progress from 'react-native-progress';
+import NavigationBar from 'react-native-navbar';
 
 import AssignmentForm from './AssignmentForm';
 import AssignmentView from './AssignmentView';
 import moment from 'moment';
 import CONFIG from '../../config.js';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 class Assignments extends Component {
   constructor(props) {
@@ -28,6 +30,7 @@ class Assignments extends Component {
     });
 
     this.state = {
+      levels: 0,
       dataSource: ds,
       //progress: 0.58,
       indeterminate: false
@@ -35,6 +38,7 @@ class Assignments extends Component {
   }
 
   componentDidMount() {
+    // this.setState({levels: (this.props.navigator.getCurrentRoutes(0).length)})
     this.fetchAssignments();
   }
   componentWillReceiveProps() {
@@ -57,7 +61,7 @@ class Assignments extends Component {
       assignmentList.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
 
       //console log every assignment's name
-      responseJson.map((assignment) => console.log(assignment.assignmentName));
+      // responseJson.map((assignment) => console.log(assignment.assignmentName));
 
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(assignmentList)
@@ -108,7 +112,7 @@ class Assignments extends Component {
       <TouchableHighlight
         onPress={() => this.onPressRow(rowData)}
         underlayColor="#ddd">
-        <View style={styles.List}>
+        {/* <View style={styles.List}>
 
           <Progress.Circle
             style={styles.progress}
@@ -130,18 +134,61 @@ class Assignments extends Component {
           </View>
 
 
+        </View> */}
+
+        <View style={{flexDirection: 'row', borderColor: '#f5fcff', borderBottomWidth: 1}}>
+          <View style={{flex: 1, flexDirection: 'column'}}>
+            <Progress.Circle
+              style={{alignSelf: 'center', justifyContent: 'center', paddingTop: 5}}
+              progress={progress}
+              size={55}
+              indeterminate={this.state.indeterminate}
+              showsText={true}
+              color={this.changeColor(progress)}
+              direction="counter-clockwise"/>
+            <Text style={{alignItems: 'flex-start', alignSelf: 'center', fontSize: 12, fontWeight: '300', paddingTop: 5}}>{rowData.assignmentName}</Text>
+          </View>
+
+          <View style={{flex: 1, alignItems: 'center', alignSelf: 'auto'}}>
+            <Text style={{fontSize: 20}}>
+              {(numberOfTaskLeft > 0) ? numberOfTaskLeft + '  ' : null}
+            </Text>
+            <Text>Open Task</Text>
+            <FontAwesome
+              name='puzzle-piece'
+              size={50}
+              color='#4EC0B2' />
+          </View>
+
+          <View style={{flex: 1, alignItems: 'center', alignSelf: 'center'}}>
+            <Text>
+              {moment().isAfter(rowData.dueDate)
+                ? 'Passed Due' : 'Due ' + moment(rowData.dueDate).from(rowData.startDate, true)}
+            </Text>
+          </View>
+
         </View>
       </TouchableHighlight>
     );
   }
 
   render() {
+    // console.log('current routes', this.props.navigator.getCurrentRoutes(0));
     return (
       <Image
         source={require('../../assets/img/blurback.jpg')}
         style={styles.backgroundImage}>
         <View style={styles.container}>
-          <Text style={styles.label}>Dashboard</Text>
+          <NavigationBar
+          title={{title: 'Dashboard'}}
+          rightButton={{
+            // title: <FontAwesome name='plus-circle' />,
+            title: 'Add',
+            handler: () => this.onAddPressed()
+          }}
+          tintColor='#4EC0B2'
+           />
+          {/* <Text style={styles.label}>Dashboard</Text> */}
           <Text style={styles.heading}>
             Hello Ronica!
           </Text>
@@ -151,13 +198,13 @@ class Assignments extends Component {
             renderRow={this.renderRow.bind(this)}
             enableEmptySections={true}/>
 
-          <TouchableHighlight
+          {/* <TouchableHighlight
             style={styles.button}
             onPress={this.onAddPressed.bind(this)}>
             <Text style={styles.buttonText}>
               Add
             </Text>
-          </TouchableHighlight>
+          </TouchableHighlight> */}
         </View>
       </Image>
     );

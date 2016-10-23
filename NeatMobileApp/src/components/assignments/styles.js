@@ -4,7 +4,7 @@ import { StyleSheet, Image} from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
-      paddingTop: 20,
+      // paddingTop: 20,
       paddingBottom: 20,
       flex: 1,
       flexDirection: 'column',

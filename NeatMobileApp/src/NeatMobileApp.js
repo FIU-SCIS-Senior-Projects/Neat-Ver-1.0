@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator, TouchableHighlight} from 'react-native';
+import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator, TouchableHighlight, TabBarIOS} from 'react-native';
 
 const Login = require('./components/loginView');
 
@@ -22,12 +22,15 @@ import Splash from './components/neatsplash';
 var AuthService = require('./utilities/AuthService');
 import { AsyncStorage } from 'react-native';
 
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 class NeatMobileApp extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isLoggedIn: false
+      isLoggedIn: false,
+      selectedTab: 'Assignments'
     }
   }
   componentDidMount(){
@@ -52,20 +55,74 @@ class NeatMobileApp extends Component {
     if(this.state.isLoggedIn) {
       return (
         <Splash duration={3000} backgroundColor={styles.splashContainer}>
-          <View style ={styles.container}>
-
+        <TabBarIOS
+          tintColor='black'
+          // barTintColor='#3abeff'
+          >
+          <Icon.TabBarItemIOS
+          title='Assignments'
+          iconName="ios-paper-outline"
+          selectedIconName="ios-paper"
+          selected={this.state.selectedTab ==='Assignments'}
+          onPress={() => {
+            // this.navigator.popToTop(0);//reset when pressed
+            this.setState({selectedTab: 'Assignments'})}}
+          >
+          <Navigator
+            configureScene={ this.configureScene }
+            initialRoute = {{
+              id: 'AssignmentsDash',
+              title: 'Dashboard',
+            }}
+            renderScene = {
+              this.navigatorRenderScene
+            }
+            onLogin={() => this.onLogin}
+          />
+          </Icon.TabBarItemIOS>
+          <Icon.TabBarItemIOS
+            title='Classes'
+            iconName="ios-school-outline"
+            selectedIconName="ios-school"
+            selected={this.state.selectedTab === 'Classes'}
+            onPress={()=> this.setState({selectedTab: 'Classes'})}
+            >
             <Navigator
-              configureScene={ this.configureScene }
-              initialRoute = {{
-                id: 'AssignmentsDash',
-                title: 'Dashboard',
-              }}
-              renderScene = {
-                this.navigatorRenderScene
-              }
-              onLogin={() => this.onLogin}
+            configureScene={ this.configureScene }
+            initialRoute = {{
+              id: 'ClassList',
+              title: 'Classes',
+            }}
+            renderScene = {
+              this.navigatorRenderScene
+            }
+            onLogin={() => this.onLogin}
+              />
+          </Icon.TabBarItemIOS>
+          <Icon.TabBarItemIOS
+          title="Settings"
+          iconName="ios-settings-outline"
+          selectedIconName="ios-settings"
+          selected={this.state.selectedTab === 'settings'}
+          // renderAsOriginal={true}
+          onPress={() => {
+            this.setState({
+              selectedTab: 'settings',
+            });
+          }}>
+          <Navigator
+          configureScene={ this.configureScene }
+          initialRoute = {{
+            id: 'ClassList',
+            title: 'Classes',
+          }}
+          renderScene = {
+            this.navigatorRenderScene
+          }
+          onLogin={() => this.onLogin}
             />
-          </View>
+        </Icon.TabBarItemIOS>
+        </TabBarIOS>
         </Splash>
       );
     }
@@ -131,6 +188,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   splashContainer:{
+    flex: 1,
     backgroundColor: 'white'
   }
 });

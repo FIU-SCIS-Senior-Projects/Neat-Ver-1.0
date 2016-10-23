@@ -1,18 +1,14 @@
 import React, {Component} from 'react';
 import {
-  AppRegistry,
   Text,
   View,
-  StyleSheet,
   TouchableHighlight,
-  Navigator,
   ListView,
-  ScrollView,
   Image
 } from 'react-native';
 
 import styles from './styles';
-import * as Progress from 'react-native-progress';
+import NavigationBar from 'react-native-navbar';
 
 var ClassForm = require('./ClassForm');
 var ClassView = require('./ClassView');
@@ -28,11 +24,13 @@ class Classes extends Component{
         });
 
         this.state = {
+          levels: 0,
           dataSource: ds
         };
       }
 
       componentDidMount(){
+        this.setState({levels: (this.props.navigator.getCurrentRoutes(0).length)})
         this.fetchClasss();
       }
       componentWillReceiveProps(){
@@ -91,33 +89,44 @@ class Classes extends Component{
       }
 
     render(){
+      // console.log('current routes', this.props.navigator.getCurrentRoutes(0));
         return(
           <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
             <View style={styles.container}>
-                <Text style={styles.label}>Class Dashboard</Text>
+            <NavigationBar
+              title={{title: 'Classes'}}
+              leftButton={(this.state.levels <2)? {title: ''} :{
+                title: 'Back',
+                handler: () => this.onBackPressed()
+              }}
+              rightButton={{
+                title: 'Add',
+                handler: () => this.onAddPressed()
+              }}
+              tintColor='#4EC0B2'
+               />
+                {/* <Text style={styles.label}>Class Dashboard</Text> */}
                   <ListView
                     style={{flex: 1, alignSelf: 'stretch'}}
                     dataSource={this.state.dataSource}
                     renderRow={this.renderRow.bind(this)}
                     enableEmptySections= {true}
                   />
-
-
-                <TouchableHighlight style={styles.button}
+                {/* <TouchableHighlight style={styles.button}
                     onPress={this.onAddPressed.bind(this)}
                     >
                     <Text style={styles.buttonText}>
                             Add Class
                     </Text>
-                </TouchableHighlight>
+                </TouchableHighlight> */}
 
-                <TouchableHighlight style={styles.button}
+                {/* {(this.state.levels < 2) ? null : (<TouchableHighlight style={styles.button}
                     onPress={this.onBackPressed.bind(this)}
                     >
                     <Text style={styles.buttonText}>
                             Back
                     </Text>
-                </TouchableHighlight>
+                </TouchableHighlight>)} */}
             </View>
           </Image>
         );

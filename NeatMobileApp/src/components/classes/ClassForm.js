@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import styles from './styles';
+import NavigationBar from 'react-native-navbar';
 
 var moment = require('moment'),
     CONFIG = require('../../config.js');
@@ -99,15 +100,28 @@ render(){
 
         return(
           <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
-          <View style={{ marginTop: 65 }}>
-
+          <View
+            // style={{ marginTop: 65 }}
+            >
+          <NavigationBar
+            title={{title: 'Add a New Class'}}
+            leftButton={{
+              title: 'Cancel',
+              handler: () => this.onBackPressed()
+            }}
+            rightButton={{
+              title: 'Done',
+              handler: () => this.onDonePressed()
+            }}
+            tintColor='#4EC0B2'
+             />
               <TextInput
                       style={styles.input}
                       onChangeText={(val) => this.setState({className: val})}
                       placeholder="Class Name">
               </TextInput>
 
-              <TouchableHighlight
+              {/* <TouchableHighlight
                   onPress={this.onDonePressed.bind(this)}
                   style={styles.button}>
                       <Text style={styles.buttonText}>
@@ -121,7 +135,7 @@ render(){
                       <Text style={styles.buttonText}>
                           Back
                       </Text>
-              </TouchableHighlight>
+              </TouchableHighlight> */}
           </View>
           </Image>
 
