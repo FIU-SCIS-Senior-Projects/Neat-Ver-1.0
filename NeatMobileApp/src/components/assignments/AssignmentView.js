@@ -77,6 +77,7 @@ class AssignmentView extends Component{
     onAddTask(){
         this.props.navigator.push({
             id: 'TaskForm',
+            type: 'Pop',
             passProps:{
                 assignmentUrl: this.state.assignmentUrl
             }
@@ -128,7 +129,9 @@ class AssignmentView extends Component{
                         onValueChange={() => {this.toogleSwitched(rowData); console.log("clicked on voluechange")}}
                         style={{paddingLeft: 80, marginBottom: 5}}
                         value={rowData.isDone} />
+              <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center'}}>
                <Text>{rowData.taskName}</Text>
+               </View>
             </View>
         );
     }
@@ -136,6 +139,7 @@ class AssignmentView extends Component{
     render(){
         return(
           <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
+          <Text style={styles.label}>{this.props.assignmentName}</Text>
             <View style={styles.container}>
             <ScrollView>
               <ListView

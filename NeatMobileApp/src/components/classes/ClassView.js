@@ -69,6 +69,7 @@ class ClassView extends Component{
     onAddAssignment(){
         this.props.navigator.push({
             id: 'AssignmentForm',
+            type: 'Pop',
             passProps:{
                 classUrl: this.state.classUrl
             }
@@ -84,18 +85,13 @@ class ClassView extends Component{
         this.props.navigator.push({
             id: 'AssignmentView',
             passProps: {
-            assignmentUrl: rowData.url
+              assignmentUrl: rowData.url,
+              assignmentName: rowData.assignmentName
             }
         });
     }
 
-    renderRow(rowData){
-        return(
-            <View style={styles.List}>
-                <Text>{rowData.assignmentName}</Text>
-            </View>
-        );
-        }
+
 
     renderRow(rowData){
 

@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     },
     List: {
         borderColor: '#f5fcff',
-        borderWidth: 1,
+        borderBottomWidth: 1,
         height: 70,
         paddingLeft: 10,
         flexDirection: 'row',

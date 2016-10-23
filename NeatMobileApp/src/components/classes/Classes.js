@@ -56,6 +56,7 @@ class Classes extends Component{
 
       onAddPressed(){
         this.props.navigator.push({
+            type: 'Pop',
             id: 'ClassForm'
         });
       }

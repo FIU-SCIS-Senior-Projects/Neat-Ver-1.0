@@ -128,6 +128,14 @@ class AssignmentForm extends Component{
                             Done
                         </Text>
                 </TouchableHighlight>
+
+                <TouchableHighlight
+                    onPress={() => this.props.navigator.pop()}
+                    style={styles.button}>
+                        <Text style={styles.buttonText}>
+                            Back
+                        </Text>
+                </TouchableHighlight>
             </View>
           </Image>
 

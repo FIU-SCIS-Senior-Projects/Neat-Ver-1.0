@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator,} from 'react-native';
+import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator, TouchableHighlight} from 'react-native';
 
 const Login = require('./components/loginView');
 
@@ -41,6 +41,13 @@ class NeatMobileApp extends Component {
   onLogin(){
     this.setState({isLoggedIn: true});
   }
+
+  configureScene(route, routeStack){
+    if(route.type === 'Pop') {
+      return Navigator.SceneConfigs.FloatFromBottom
+    }
+    return Navigator.SceneConfigs.PushFromRight
+  }
   render() {
     if(this.state.isLoggedIn) {
       return (
@@ -48,8 +55,10 @@ class NeatMobileApp extends Component {
           <View style ={styles.container}>
 
             <Navigator
+              configureScene={ this.configureScene }
               initialRoute = {{
-                id: 'AssignmentsDash'
+                id: 'AssignmentsDash',
+                title: 'Dashboard',
               }}
               renderScene = {
                 this.navigatorRenderScene
@@ -66,12 +75,9 @@ class NeatMobileApp extends Component {
           <View style ={styles.container}>
 
             <Navigator
-              initialRoute = {{
-                id: 'Login'//'Login'
-              }}
-              renderScene = {
-                this.navigatorRenderScene
-              }
+              configureScene={this.configureScene}
+              initialRoute = {{id: 'Login'}}
+              renderScene = {this.navigatorRenderScene}
             />
           </View>
         </Splash>
@@ -90,10 +96,8 @@ class NeatMobileApp extends Component {
         return(<ResetPassword navigator = {navigator} title = 'ResetPassword'/>)
       case 'UpdatePassword':
         return(<UpdatePassword navigator = {navigator} title = 'UpdatePassword'/>)
-      case 'ClassList':
-        return(<ClassList navigator = {navigator} title = 'ClassList'/>)
       case 'AssignmentsDash':
-        return(<AssignmentsDash navigator = {navigator} title = 'AssignmentsDash'/>)
+        return(<AssignmentsDash navigator = {navigator} {...route.passProps} title = 'AssignmentsDash'/>)
       case 'AssignmentForm':
         return(<AssignmentForm navigator = {navigator} {...route.passProps} title = 'AssignmentForm'/>)
       case 'AssignmentView':
