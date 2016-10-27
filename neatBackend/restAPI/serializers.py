@@ -115,10 +115,24 @@ class ClassRosterSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        view_name='user-detail'
+    )
 
     class Meta:
         model = Task
         fields = ('url', 'assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate')
+
+    def create(self, validated_data):
+        usr = self.context['request'].user
+        task = Task.objects.create(user=usr, **validated_data)
+        assign_perm('view_task', usr, task)
+        assign_perm('change_task', usr, task)
+        assign_perm('delete_task', usr, task)
+        return task
+
+    
 
 class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
     tasks = TaskSerializer(many=True, required=False, read_only=True)

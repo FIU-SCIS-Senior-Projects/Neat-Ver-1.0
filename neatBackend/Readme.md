@@ -17,7 +17,7 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 `http GET http://127.0.0.1:8000/api/getAssigProgress/1/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
 
 ####Add user to assignment
-`http POST http://127.0.0.1:8000/api/assignmentrosters/ user=http://localhost:8000/api/user/4/ school=http://localhost:8000/api/assignment/1/ 'Authorization: Token e68dff15c0f0f6f87ff8d7fac2f3f4f8ec947dd1'`
+`http POST http://127.0.0.1:8000/api/assignmentroster/ user=http://localhost:8000/api/user/3/ assignment=http://localhost:8000/api/assignments/1/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
 
 ####Add user to school
 `http POST http://127.0.0.1:8000/api/schoolrosters/ user=http://localhost:8000/api/user/4/ school=http://localhost:8000/api/schools/1/ 'Authorization: Token e68dff15c0f0f6f87ff8d7fac2f3f4f8ec947dd1'`

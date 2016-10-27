@@ -6,16 +6,16 @@ from rest_framework.authtoken import views as authviews
 from rest_framework.urlpatterns import format_suffix_patterns
 
 router = routers.DefaultRouter()
-router.register(r'schools', views.SchoolViewSet)
-router.register(r'schoolrosters', views.SchoolRosterViewSet)
+router.register(r'school', views.SchoolViewSet)
+router.register(r'schoolRoster', views.SchoolRosterViewSet)
 router.register(r'profile', views.ProfileViewSet)
-router.register(r'classes', views.ClassViewSet)
-router.register(r'classrosters', views.ClassRosterViewSet)
-router.register(r'assignments', views.AssignmentViewSet)
+router.register(r'class', views.ClassViewSet)
+router.register(r'classRoster', views.ClassRosterViewSet)
+router.register(r'assignment', views.AssignmentViewSet)
 router.register(r'task', views.TaskViewSet)
 router.register(r'user', views.UserViewSet)
 router.register(r'group', views.GroupViewSet)
-router.register(r'assignmentroster', views.AssignmentRosterViewSet)
+router.register(r'assignmentRoster', views.AssignmentRosterViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

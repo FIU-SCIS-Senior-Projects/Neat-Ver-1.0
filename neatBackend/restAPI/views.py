@@ -13,7 +13,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import detail_route, list_route, api_view, authentication_classes
+from rest_framework.decorators import detail_route, list_route, api_view, authentication_classes, permission_classes
 #generic classes
 from rest_framework import generics
 #authentication
@@ -32,12 +32,13 @@ import datetime
 #email
 from django.core.mail import send_mail
 import hashlib, random
+#For converting google oAuth code
+from rest_framework_social_oauth2.views import ConvertTokenView
 
 
 
 #verify a user's e-mail given a code
 @api_view(['post'])
-@authentication_classes([TokenAuthentication])
 def receiveEmailCode(request, code):
     user = request.user
     profile = user.profile
@@ -50,7 +51,6 @@ def receiveEmailCode(request, code):
 
 #send a user a new code to verify their e-mail
 @api_view(['post'])
-@authentication_classes([TokenAuthentication])
 def sendEmailCode(request):
     user = request.user
     profile = user.profile
@@ -72,6 +72,8 @@ def sendEmailCode(request):
 
 #send a user a new code to reset or change their password
 @api_view(['post'])
+@authentication_classes([])
+@permission_classes([])
 def sendPasswordCode(request, email):
     user = User.objects.filter(email=email)
     if user.count() is 0:
@@ -96,6 +98,8 @@ def sendPasswordCode(request, email):
 
 #change user's password given a code
 @api_view(['post'])
+@authentication_classes([])
+@permission_classes([])
 def changePassword(request, code):
     serializer = SimpleUserSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
@@ -121,7 +125,6 @@ def genCode(username):
 
 #Get user progress for an assignment, given assignment pk
 @api_view(['get'])
-@authentication_classes([TokenAuthentication])
 def getAssigProgressView(request, pk):
     taskNum, taskProg = 0, 0
     assig = Assignment.objects.filter(pk=pk)
@@ -139,7 +142,6 @@ def getAssigProgressView(request, pk):
 
 #Get assignment statistics, given assignment pk
 @api_view(['get'])
-@authentication_classes([TokenAuthentication])
 def CollabView(request, pk):
     assig = Assignment.objects.filter(pk=pk)
     array = []
@@ -157,31 +159,21 @@ def CollabView(request, pk):
                 array.append({'user': rosterObj.user.email, 'name': rosterObj.user.first_name, 'percentage': (taskProg/taskNum)})
         return Response(array)
 
-
-#For converting google oAuth code
-from rest_framework_social_oauth2.views import ConvertTokenView
-
 class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows School to be viewed or posted.
-    """
-    #authentication_classes = (TokenAuthentication,)
+    #No authentication required
+    authentication_classes = ()
+    permission_classes = ()
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('email', 'first_name', 'last_name', 'groups', 'profile')
-    #permission_classes = (CustomObjectPermissions,)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
-    @list_route(methods=['get'],authentication_classes=[TokenAuthentication])
+    @list_route(methods=['get'],authentication_classes=[TokenAuthentication],permission_classes=[permissions.IsAuthenticated])
     def getFromToken(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
 class SchoolViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows School to be viewed or posted.
-    """
-    authentication_classes = (TokenAuthentication,)
     #filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('schoolName', 'schoolID')
@@ -190,10 +182,6 @@ class SchoolViewSet(viewsets.ModelViewSet):
     serializer_class = SchoolSerializer
 
 class SchoolRosterViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows SchoolRosters to be viewed
-    """
-    authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('school', 'user', 'schoolYear')
     queryset = SchoolRoster.objects.all()
@@ -209,7 +197,6 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 class ClassViewSet(viewsets.ModelViewSet):
     #permission_classes = (IsOwnerCanEditAnyCanCreate,)
-    authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('className', 'classID', 'school', 'roster')
     queryset = Class.objects.all()
@@ -217,21 +204,18 @@ class ClassViewSet(viewsets.ModelViewSet):
 
 
 class ClassRosterViewSet(viewsets.ModelViewSet):
-    authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('classFK', 'user')
     queryset = ClassRoster.objects.all()
     serializer_class = ClassRosterSerializer
 
 class AssignmentRosterViewSet(viewsets.ModelViewSet):
-    authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('assignment', 'user')
     queryset = AssignmentRoster.objects.all()
     serializer_class = AssignmentRosterSerializer
 
 class AssignmentViewSet(viewsets.ModelViewSet):
-    authentication_classes = (TokenAuthentication, BasicAuthentication)
     #permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
@@ -239,8 +223,8 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     serializer_class = AssignmentSerializer
 
 class TaskViewSet(viewsets.ModelViewSet):
-    authentication_classes = (TokenAuthentication,)
-    filter_backends = (filters.DjangoFilterBackend,)
+    permission_classes = (permissions.IsAuthenticated, CustomObjectPermissions,)
+    filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
     filter_fields = ('assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate')
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
