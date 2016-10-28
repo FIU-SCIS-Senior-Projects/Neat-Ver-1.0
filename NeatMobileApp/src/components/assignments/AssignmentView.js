@@ -17,7 +17,7 @@ import {
 import styles from './styles';
 
 var Assignments = require('./UserAssignment');
-
+var authService = require('./../../utilities/AuthService');
     CONFIG = require('../../config.js');
 
 
@@ -119,6 +119,12 @@ class AssignmentView extends Component{
     async putToogleData(rowData){
     }
 
+    onLogoutPressed(){
+        authService.logout(err => console.log(err));
+        this.props.navigator.pop();
+        console.log('Logout button pressed');
+      }
+
     renderRow(rowData){
         console.log("Before return render, rowData: " + JSON.stringify(rowData));
         return(
@@ -152,10 +158,10 @@ class AssignmentView extends Component{
             </TouchableHighlight>
 
             <TouchableHighlight style={styles.button}
-                onPress={this.pressRankings.bind(this)}
+                onPress={this.onLogoutPressed.bind(this)}
             >
                 <Text style={styles.buttonText}>
-                        Assignment Rankings
+                        logout
                 </Text>
             </TouchableHighlight>
 

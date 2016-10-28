@@ -50,7 +50,7 @@ class NeatMobileApp extends Component {
 
             <Navigator
               initialRoute = {{
-                id: 'AssignmentsDash'
+                id: 'Login'
               }}
               renderScene = {
                 this.navigatorRenderScene
@@ -88,7 +88,7 @@ class NeatMobileApp extends Component {
       case 'Register':
         return(<Register navigator = {navigator} title = 'Register' />)
       case 'ResetPassword':
-        return(<ResetPassword navigator = {navigator} title = 'ResetPassword'/>)
+        return(<ResetPassword navigator = {navigator} {...route.passProps} title = 'ResetPassword'/>)
       case 'UpdatePassword':
         return(<UpdatePassword navigator = {navigator} title = 'UpdatePassword'/>)
       case 'ClassList':

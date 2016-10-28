@@ -74,10 +74,16 @@ class AssignmentRank extends Component{
         authService.getAssignmentProgress(id[5]).then((response) =>{
             this.setState({
                 datasource: this.state.datasource.cloneWithRows(
+    /*
+    response.sort(function(a, b) {
+        return a.percentage.localeCompare(b.percentage));
+    }
 
-    //response.sort((a, b) =>
-    //a.percentage.localeCompare(b.percentage))
 
+    response.sort(function(a, b) {
+    return a.percentage.localeCompare(b.percentage));
+    }
+    */
                     response.sort(function (b, a) {
                           if (a.percentage > b.percentage) {
                             return 1;

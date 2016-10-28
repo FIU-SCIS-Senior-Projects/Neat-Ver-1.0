@@ -19,47 +19,30 @@ var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
 var ResetPasswordForm = t.struct({
-  username: t.String,
-  //email: t.String,
-  //password: t.String,
-  //passwordAgain: t.String,
+  //username: t.String,
+  email: t.String,
 });
 
 var options = {
   auto: 'placeholders',
-  fields: {
-/*    email: {
-      autoCapitalize: 'none',
-      keyboardType: 'email-address',
-  },*/
-    username: {
+      fields: {
+        email: {
           autoCapitalize: 'none',
-          error: 'Enter username'
-    },
-    /*password: {
-      secureTextEntry: true,
-      error: 'Enter password'
-    },
-    passwordAgain: {
-      secureTextEntry: true,
-      error: 'Enter password'
-  },*/
+          keyboardType: 'email-address',
+      }
   }
 }
 
 
 class ResetPassword extends Component {
-  constructor(){
-    super();
-
+  constructor(props){
+    super(props);
     this.state = {
       value: {
       },
       showValidation: false,
-      //username: [],
-      //email: "",
-      //password: "",
-      //password_confirmation: "",
+      email: "",
+      showProgress: false,
       errors: [],
       success: false,
     }
@@ -67,21 +50,23 @@ class ResetPassword extends Component {
 
 onRequestPressed(){
 
-  console.log("show progress bar..");
+  //console.log("show progress bar..");
   this.setState({showProgress: true});
   var value = this.refs.form.getValue();
-
+  var email = this.state.value.email;
   authService.requestCode({
-      username: this.state.value.username,
+
+      email //email: value.email, //this.state.value.email,
 
     }, (results)=> {
         console.log("inside results");
           this.setState(Object.assign({
-              showProgress: false
+             showProgress: false
           }, results));
       if(results.success){
-        //this.validateCode();
+        this.validateCode();
         console.log('Valid user');
+
         this.setState({
           value : {},
           success: false,
@@ -89,10 +74,11 @@ onRequestPressed(){
           unknownError: false
         })
     }else{
-        console.log('error during codeRequest: ', results);
+        console.log('error during codeRequest: ', results.success);
     }
   });
 }
+
 onValidate(){
     this.props.navigator.push({
       id: 'UpdatePassword'
