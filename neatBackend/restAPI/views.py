@@ -35,8 +35,6 @@ import hashlib, random
 #For converting google oAuth code
 from rest_framework_social_oauth2.views import ConvertTokenView
 
-
-
 #verify a user's e-mail given a code
 @api_view(['post'])
 def receiveEmailCode(request, code):
@@ -174,15 +172,15 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class SchoolViewSet(viewsets.ModelViewSet):
-    #filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
+    permission_classes = (permissions.IsAuthenticated, IsCreatorCanEdit,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('schoolName', 'schoolID')
-    #permission_classes = (CustomObjectPermissions,)
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
 
 class SchoolRosterViewSet(viewsets.ModelViewSet):
-    filter_backends = (filters.DjangoFilterBackend,)
+    permission_classes = (permissions.IsAuthenticated, IsCreatorCanView,)
+    filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
     filter_fields = ('school', 'user', 'schoolYear')
     queryset = SchoolRoster.objects.all()
     serializer_class = SchoolRosterSerializer
@@ -196,7 +194,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     
 
 class ClassViewSet(viewsets.ModelViewSet):
-    #permission_classes = (IsOwnerCanEditAnyCanCreate,)
+    permission_classes = (permissions.IsAuthenticated, IsCreatorCanEdit,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('className', 'classID', 'school', 'roster')
     queryset = Class.objects.all()
@@ -204,28 +202,30 @@ class ClassViewSet(viewsets.ModelViewSet):
 
 
 class ClassRosterViewSet(viewsets.ModelViewSet):
-    filter_backends = (filters.DjangoFilterBackend,)
+    permission_classes = (permissions.IsAuthenticated, IsCreatorCanView,)
+    filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
     filter_fields = ('classFK', 'user')
     queryset = ClassRoster.objects.all()
     serializer_class = ClassRosterSerializer
 
 class AssignmentRosterViewSet(viewsets.ModelViewSet):
-    filter_backends = (filters.DjangoFilterBackend,)
+    permission_classes = (permissions.IsAuthenticated, IsCreatorCanView,)
+    filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
     filter_fields = ('assignment', 'user')
     queryset = AssignmentRoster.objects.all()
     serializer_class = AssignmentRosterSerializer
 
 class AssignmentViewSet(viewsets.ModelViewSet):
-    #permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsCreatorCanEdit,)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('assignmentName', 'startDate', 'dueDate', 'classFK', 'tasks')
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
 
 class TaskViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated, CustomObjectPermissions,)
+    permission_classes = (permissions.IsAuthenticated, IsCreatorCanView,)
     filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
-    filter_fields = ('assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate')
+    filter_fields = ('assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'isApproved')
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
