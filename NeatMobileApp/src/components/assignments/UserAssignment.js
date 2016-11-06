@@ -65,6 +65,12 @@ class Assignments extends Component{
         });
       }
 
+      onChatRoomPressed(){
+        this.props.navigator.push({
+            id: 'ChatRoom'
+        });
+      }
+
       onPressRow(rowData){
 
         this.props.navigator.push({
@@ -144,6 +150,14 @@ class Assignments extends Component{
                     >
                     <Text style={styles.buttonText}>
                             Add
+                    </Text>
+                </TouchableHighlight>
+
+                <TouchableHighlight style={styles.button}
+                    onPress={this.onChatRoomPressed.bind(this)}
+                    >
+                    <Text style={styles.buttonText}>
+                            Chat Room
                     </Text>
                 </TouchableHighlight>
             </ScrollView>

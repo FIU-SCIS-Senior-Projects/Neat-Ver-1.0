@@ -14,6 +14,7 @@ const AssignmentForm = require('./components/assignments/AssignmentForm');
 const AssignmentView = require('./components/assignments/AssignmentView');
 const TaskForm = require('./components/assignments/TaskForm');
 
+import ChatRoom from './components/ChatRoom';
 import Register from './components/registration/register';
 import ResetPassword from './components/credentials/reset';
 import UpdatePassword from './components/credentials/updatePassword';
@@ -106,6 +107,8 @@ class NeatMobileApp extends Component {
           return(< ClassView navigator = {navigator}  {...route.passProps} title = 'ClassView'/>)
       case 'TaskForm':
           return(<TaskForm navigator = {navigator} {...route.passProps} title = 'TaskForm'/>)
+      case 'ChatRoom':
+          return(<ChatRoom navigator = {navigator} {...route.passProps} title = 'ChatRoom'/>) 
     }
   }
 }
