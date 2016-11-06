@@ -19,38 +19,45 @@ var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
 var UpdatePasswordForm = t.struct({
-  password: t.String,
-  passwordAgain: t.String,
+  code         : t.String,
+  newPassword     : t.String,
+  email        : t.String,
 });
 
 var options = {
   auto: 'placeholders',
-  fields: {
-    password: {
-      secureTextEntry: true,
-      error: 'Enter password'
-    },
-    passwordAgain: {
-      secureTextEntry: true,
-      error: 'Enter password'
-  }
-  }
+    fields: {
+        code: {
+            autoCapitalize: 'none',
+            error         : 'Enter valid code',
+        },
+        email:{
+            autoCapitalize: 'none',
+            keyboardType  : 'email-address',
+            error         : 'Enter email address',
+        },
+        newPassword: {
+            secureTextEntry: true,
+            error          : 'Enter new password'
+        },
+    }
 }
 
 
 class UpdatePassword extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
 
     this.state = {
       value: {
-
       },
+      code:"",
       showValidation: false,
-      //username: [],
-      //email: "",
-      //password: "",
-      //password_confirmation: "",
+      email: "",
+      password: "",
+      errors: [],
+      showProgress: false,
+      success: false,
       errors: [],
     }
   }
@@ -59,46 +66,34 @@ onUpdatePasswordPressed(){
   this.setState({showProgess: true});
   var value = this.refs.form.getValue();
 
-  authService.register({
+  authService.changePassword({
       //value
-      password: this.state.value.password,
+      newPassword: this.state.value.newPassword,
+      code: this.state.value.code,
+      email: this.state.value.email,
     }, (results)=> {
           this.setState(Object.assign({
               showProgress: false
           }, results));
 
-      if(results.success){
-        //this.props.navigator.pop();//back to login
-        console.log('Valid password');
-        this.setState({value: null})
+        if(results.success){
+            console.log('Valid password');
+            this.setState({
+                value : {},
+                success: false,
+                badCredentials: false,
+                unknownError: false
+            });
+            this.props.navigator.push({
+                id: 'Login'
+            });
 
-    }else{
-        console.log('Invalid password');
-        this.validateCode()
-        //this.props.navigator.pop();//back to login
-
-
-    }
+        }else{
+            console.log('Invalid password' + results);
+        }
   });
 }
-onValidate(){
-    this.props.navigator.push({
-      id: 'StudentDashboard'
-    });
-}
-validateCode(){
-    //It is recommended using the Alert.alert method for cross-platform
-    //support if you don't need to create iOS-only prompts.
-    AlertIOS.alert(
-        'Password Updated',
-        'Your password has been updated!',
-        [
-            //{text: 'Cancel', onPress: () => console.log('Cancel Pressed'),
-            //style: 'cancel'},
-            {text: 'Ok', onPress: () => this.onValidate()},
-        ],
-    );
-}
+
 
   render() {
     return (
@@ -135,7 +130,7 @@ const Errors = (props) => {
     </View>
   );
 }
-
+/*
 const styles = StyleSheet.create({
   container: {
       backgroundColor: '#FFF',
@@ -228,5 +223,5 @@ const styles = StyleSheet.create({
       color: '#FFF'
     }
 })
-
+*/
 export default UpdatePassword;

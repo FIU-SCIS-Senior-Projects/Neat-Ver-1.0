@@ -113,18 +113,30 @@ class AuthService {
 
   requestCode(creds, cb) {
       this.doPost(CONFIG.server.host + '/send/passwordCode/' + creds.email +'/', {
-        email     : creds.email + '/',
+        email     : creds.email,
       })
       .then(this.handleResponse)
       .then(response =>response.json())
       .then((results)=> {
-        //console.log("Request success");
+        console.log("Request success");
         cb({success: true});
       })
       .catch(err     => cb(err));
 }//end of requestCode
 
-
+changePassword(creds, cb) {
+    this.doPost(CONFIG.server.host + '/changePassword/' + creds.code + '/', {
+      email     : creds.email,
+      password  : creds.newPassword,
+    })
+    .then(this.handleResponse)
+    .then(response =>response.json())
+    .then((results)=> {
+      console.log("Password update success");
+      cb({success: true});
+    })
+    .catch(err     => cb(err));
+}//end of requestCode
 
 
   login(creds, cb){
