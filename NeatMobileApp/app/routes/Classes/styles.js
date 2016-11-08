@@ -1,13 +1,15 @@
-/* This are the styles for the Assignment view screen*/
-import { StyleSheet } from 'react-native';
+'use strict'
+/*This are the styles for the Assignment view screen*/
+import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-      // paddingTop: 20,
-    paddingBottom: 20,
+    // paddingTop: 20,
+    paddingBottom: 40,
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
+    alignItems: 'stretch'
   },
   button: {
     flexDirection: 'row',
@@ -22,37 +24,41 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingLeft: 20,
     paddingTop: 5,
-    paddingBottom: 10,
-    backgroundColor: 'transparent',
-    borderColor: '#599D95',
+    paddingBottom: 5,
+    backgroundColor: '#FFF',
+    borderColor: '#599D95'
   },
   buttonText: {
     fontSize: 18,
     color: 'grey',
-    fontWeight: '100',
+    fontWeight: '100'
   },
   List: {
-    borderColor: '#f5fcff',
+    borderColor: '#599D95',
     borderBottomWidth: 1,
     height: 70,
     paddingLeft: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    //marginBottom: ,
+    marginBottom: 1
   },
   progress: {
-    margin: 10,
+    margin: 10
   },
-  circles: {
-
-  },
+  circles: {},
   input: {
     height: 50,
     padding: 4,
     borderWidth: 1,
     borderColor: '#48bbec',
-    borderRadius: 0,
-
+    borderRadius: 0
+  },
+  label: {
+    padding: 20,
+    fontSize: 25,
+    fontWeight: '300',
+    justifyContent: 'center',
+    alignSelf: 'center'
   },
   backgroundImage: {
     flex: 1,
@@ -60,22 +66,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'stretch',
     width: null,
-    height: null,
+    height: null
   },
-  heading: {
-    padding: 10,
-    fontSize: 36,
-    fontWeight: '300',
-    alignSelf: 'center',
-  },
-  label: {
-    paddingTop: 20,
-    justifyContent: 'center',
-    alignSelf: 'center',
-  },
-  dueInLabel: {
-    paddingLeft: 20,
-  },
+  // rowLabel: {   fontSize: 14,   fontWeight: '200',   alignSelf: 'center',
+  // justifyContent: 'center',   flexDirection: 'row', },
 });
 
 module.exports = styles;

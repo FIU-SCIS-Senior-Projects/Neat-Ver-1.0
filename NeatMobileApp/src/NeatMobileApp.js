@@ -1,140 +1,132 @@
 import React, { Component } from 'react';
-import { AppRegistry, Text, StyleSheet, View,Image, Navigator, ActivityIndicator, TouchableHighlight, TabBarIOS} from 'react-native';
+import { StyleSheet, View, Navigator, TabBarIOS } from 'react-native';
 
-const Login = require('./components/loginView');
-
-//Classes
-const ClassList = require('./components/classes/Classes');
-const ClassForm = require('./components/classes/ClassForm');
-const ClassView = require('./components/classes/ClassView');
-
-//Assignment
-const AssignmentsDash = require('./components/assignments/UserAssignment');
-const AssignmentForm = require('./components/assignments/AssignmentForm');
-const AssignmentView = require('./components/assignments/AssignmentView');
-const TaskForm = require('./components/assignments/TaskForm');
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import Register from './components/registration/register';
 import ResetPassword from './components/credentials/reset';
 import UpdatePassword from './components/credentials/updatePassword';
 import Splash from './components/neatsplash';
 
-var AuthService = require('./utilities/AuthService');
-import { AsyncStorage } from 'react-native';
+import AuthService from './utilities/AuthService';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Login from './components/loginView';
 
+// Classes
+import ClassList from './components/classes/Classes';
+import ClassForm from './components/classes/ClassForm';
+import ClassView from './components/classes/ClassView';
+
+// Assignment
+import AssignmentsDash from './components/assignments/UserAssignment';
+import AssignmentForm from './components/assignments/AssignmentForm';
+import AssignmentView from './components/assignments/AssignmentView';
+import TaskForm from './components/assignments/TaskForm';
 
 class NeatMobileApp extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       isLoggedIn: false,
-      selectedTab: 'Assignments'
-    }
+      selectedTab: 'Assignments',
+    };
   }
-  componentDidMount(){
-    AuthService.getLoginToken((err, authInfo)=> {
+  componentDidMount() {
+    AuthService.getLoginToken((err, authInfo) => {
       this.setState({
-        isLoggedIn: authInfo != null
-      })
+        isLoggedIn: authInfo != null,
+      });
     });
   }
 
-  onLogin(){
-    this.setState({isLoggedIn: true});
+  onLogin() {
+    this.setState({ isLoggedIn: true });
   }
 
-  configureScene(route, routeStack){
+  configureScene(route, routeStack) {
     if(route.type === 'Pop') {
       return Navigator.SceneConfigs.FloatFromBottom
     }
     return Navigator.SceneConfigs.PushFromRight
   }
   render() {
-    if(this.state.isLoggedIn) {
+    if (this.state.isLoggedIn) {
       return (
         <Splash duration={3000} backgroundColor={styles.splashContainer}>
-        <TabBarIOS
-          tintColor='black'
+          <TabBarIOS
+            tintColor='black'
           // barTintColor='#3abeff'
           >
-          <Icon.TabBarItemIOS
-          title='Assignments'
-          iconName="ios-paper-outline"
-          selectedIconName="ios-paper"
-          selected={this.state.selectedTab ==='Assignments'}
-          onPress={() => {
-            // this.navigator.popToTop(0);//reset when pressed
-            this.setState({selectedTab: 'Assignments'})}}
-          >
-          <Navigator
-            configureScene={ this.configureScene }
-            initialRoute = {{
-              id: 'AssignmentsDash',
-              title: 'Dashboard',
-            }}
-            renderScene = {
-              this.navigatorRenderScene
-            }
-            onLogin={() => this.onLogin}
-          />
-          </Icon.TabBarItemIOS>
-          <Icon.TabBarItemIOS
-            title='Classes'
-            iconName="ios-school-outline"
-            selectedIconName="ios-school"
-            selected={this.state.selectedTab === 'Classes'}
-            onPress={()=> this.setState({selectedTab: 'Classes'})}
+            <Icon.TabBarItemIOS
+              title='Assignments'
+              iconName='ios-paper-outline'
+              selectedIconName='ios-paper'
+              selected={this.state.selectedTab === 'Assignments'}
+              onPress={() => this.setState({ selectedTab: 'Assignments' })}
             >
-            <Navigator
-            configureScene={ this.configureScene }
-            initialRoute = {{
-              id: 'ClassList',
-              title: 'Classes',
-            }}
-            renderScene = {
-              this.navigatorRenderScene
-            }
-            onLogin={() => this.onLogin}
+              <Navigator
+                configureScene={this.configureScene}
+                initialRoute={{
+                  id: 'AssignmentsDash',
+                  title: 'Dashboard',
+                }}
+                renderScene={this.navigatorRenderScene}
+                onLogin={() => this.onLogin}
               />
-          </Icon.TabBarItemIOS>
-          <Icon.TabBarItemIOS
-          title="Settings"
-          iconName="ios-settings-outline"
-          selectedIconName="ios-settings"
-          selected={this.state.selectedTab === 'settings'}
-          // renderAsOriginal={true}
-          onPress={() => {
-            this.setState({
-              selectedTab: 'settings',
-            });
-          }}>
-          <Navigator
-          configureScene={ this.configureScene }
-          initialRoute = {{
-            id: 'ClassList',
-            title: 'Classes',
-          }}
-          renderScene = {
-            this.navigatorRenderScene
-          }
-          onLogin={() => this.onLogin}
-            />
-        </Icon.TabBarItemIOS>
-        </TabBarIOS>
+            </Icon.TabBarItemIOS>
+            <Icon.TabBarItemIOS
+              title='Classes'
+              iconName="ios-school-outline"
+              selectedIconName="ios-school"
+              selected={this.state.selectedTab === 'Classes'}
+              onPress={() => this.setState({ selectedTab: 'Classes' })}
+            >
+              <Navigator
+                configureScene={this.configureScene}
+                initialRoute={{
+                  id: 'ClassList',
+                  title: 'Classes',
+                }}
+                renderScene={
+                this.navigatorRenderScene
+              }
+                onLogin={() => this.onLogin}
+              />
+            </Icon.TabBarItemIOS>
+            <Icon.TabBarItemIOS
+              title="Settings"
+              iconName="ios-settings-outline"
+              selectedIconName="ios-settings"
+              selected={this.state.selectedTab === 'settings'}
+              // renderAsOriginal={true}
+              onPress={() => {
+                this.setState({
+                  selectedTab: 'settings',
+                });
+              }}
+            >
+              <Navigator
+                configureScene={this.configureScene}
+                initialRoute={{
+                  id: 'ClassList',
+                  title: 'Classes',
+                }}
+                renderScene={this.navigatorRenderScene}
+                onLogin={() => this.onLogin}
+              />
+            </Icon.TabBarItemIOS>
+          </TabBarIOS>
         </Splash>
       );
     }
     else {
       return (
         <Splash duration={500} backgroundColor={styles.splashContainer}>
-          <View style ={styles.container}>
+          <View style={styles.container}>
 
             <Navigator
               configureScene={this.configureScene}
-              initialRoute = {{id: 'Login'}}
-              renderScene = {this.navigatorRenderScene}
+              initialRoute={{id: 'Login'}}
+              renderScene={this.navigatorRenderScene}
             />
           </View>
         </Splash>
@@ -142,31 +134,31 @@ class NeatMobileApp extends Component {
     }
   }
 
-  navigatorRenderScene(route,navigator){
-    _navigator = navigator;
-    switch(route.id){
+  navigatorRenderScene(route, navigator) {
+    // _navigator = navigator;
+    switch (route.id) {
       case 'Login':
-        return(<Login navigator = {navigator} title = 'Login'/>)
+        return (<Login navigator={navigator} title='Login' />);
       case 'Register':
-        return(<Register navigator = {navigator} title = 'Register' />)
+        return (<Register navigator={navigator} title='Register' />);
       case 'ResetPassword':
-        return(<ResetPassword navigator = {navigator} title = 'ResetPassword'/>)
+        return (<ResetPassword navigator={navigator} title='ResetPassword' />);
       case 'UpdatePassword':
-        return(<UpdatePassword navigator = {navigator} title = 'UpdatePassword'/>)
+        return (<UpdatePassword navigator={navigator} title='UpdatePassword' />);
       case 'AssignmentsDash':
-        return(<AssignmentsDash navigator = {navigator} {...route.passProps} title = 'AssignmentsDash'/>)
+        return (<AssignmentsDash navigator={navigator} {...route.passProps} title='AssignmentsDash'/>);
       case 'AssignmentForm':
-        return(<AssignmentForm navigator = {navigator} {...route.passProps} title = 'AssignmentForm'/>)
+        return (<AssignmentForm navigator={navigator} {...route.passProps} title='AssignmentForm'/>);
       case 'AssignmentView':
-          return(< AssignmentView navigator = {navigator}  {...route.passProps} title = 'AssignmentView'/>)
+        return (<AssignmentView navigator={navigator} {...route.passProps} title='AssignmentView'/>);
       case 'ClassList':
-        return(<ClassList navigator = {navigator} {...route.passProps} title = 'ClassList'/>)
+        return (<ClassList navigator={navigator} {...route.passProps} title='ClassList'/>);
       case 'ClassForm':
-        return(<ClassForm navigator = {navigator} title = 'ClassForm'/>)
+        return (<ClassForm navigator={navigator} title='ClassForm'/>);
       case 'ClassView':
-          return(< ClassView navigator = {navigator}  {...route.passProps} title = 'ClassView'/>)
+        return (<ClassView navigator={navigator} {...route.passProps} title='ClassView'/>);;
       case 'TaskForm':
-          return(<TaskForm navigator = {navigator} {...route.passProps} title = 'TaskForm'/>)
+        return (<TaskForm navigator={navigator} {...route.passProps} title='TaskForm'/>);
     }
   }
 }
@@ -187,10 +179,10 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
-  splashContainer:{
+  splashContainer: {
     flex: 1,
-    backgroundColor: 'white'
-  }
+    backgroundColor: 'white',
+  },
 });
 
 export default NeatMobileApp;

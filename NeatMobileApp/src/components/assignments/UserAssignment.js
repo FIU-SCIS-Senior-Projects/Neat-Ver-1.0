@@ -1,39 +1,32 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-  AppRegistry,
   Text,
-  ScrollView,
   View,
-  StyleSheet,
   TouchableHighlight,
-  Navigator,
   ListView,
-  Image
+  Image,
 } from 'react-native';
 
-import styles from './styles';
 import * as Progress from 'react-native-progress';
 import NavigationBar from 'react-native-navbar';
-
-import AssignmentForm from './AssignmentForm';
-import AssignmentView from './AssignmentView';
-import moment from 'moment';
-import CONFIG from '../../config.js';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import moment from 'moment';
+import styles from './styles';
+import CONFIG from '../../config';
 
 class Assignments extends Component {
   constructor(props) {
     super(props);
 
-    var ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
     });
 
     this.state = {
       levels: 0,
       dataSource: ds,
-      //progress: 0.58,
-      indeterminate: false
+      // progress: 0.58,
+      indeterminate: false,
     };
   }
 
@@ -45,6 +38,25 @@ class Assignments extends Component {
     this.fetchAssignments();
   }
 
+  onPressRow(rowData) {
+    this.props.navigator.push({
+      id: 'AssignmentView',
+      title: rowData.assignmentName,
+      passProps: {
+        assignmentUrl: rowData.url,
+        // title: rowData.assignmentName,
+        onPress: this.AddPressed,
+        rightText: '+',
+      },
+    });
+  }
+
+  onAddPressed() {
+    this.props.navigator.push({
+      id: 'ClassList',
+    });
+  }
+
   fetchAssignments() {
     return fetch(CONFIG.server.host + '/assignments/', {
       method: 'GET',
@@ -54,10 +66,9 @@ class Assignments extends Component {
     })
     .then((response) => response.json())
     .then((responseJson) => {
+      const assignmentList = responseJson;
 
-      var assignmentList = responseJson;
-
-      //Sort by due date first
+      // Sort by due date first
       assignmentList.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
 
       //console log every assignment's name
@@ -70,28 +81,7 @@ class Assignments extends Component {
     .catch((error) => console.error(error));
   }
 
-  onAddPressed() {
-    this.props.navigator.push({
-      id: 'ClassList',
-      onPress: this.AddPressed,
-      rightText: '+'
 
-    });
-  }
-
-  onPressRow(rowData) {
-
-    this.props.navigator.push({
-        id: 'AssignmentView',
-        title: rowData.assignmentName,
-        passProps: {
-          assignmentUrl: rowData.url,
-          // title: rowData.assignmentName,
-          onPress: this.AddPressed,
-          rightText: '+'
-        }
-      });
-  }
 
   changeColor(progress) {
     var color = '';
@@ -106,12 +96,13 @@ class Assignments extends Component {
   }
 
   renderRow(rowData) {
-    let numberOfTaskLeft = rowData.tasks.filter((task) => !task.isDone).length;
-    var progress = Math.random();
+    const numberOfTaskLeft = rowData.tasks.filter((task) => !task.isDone).length;
+    const progress = Math.random();
     return (
       <TouchableHighlight
         onPress={() => this.onPressRow(rowData)}
-        underlayColor="#ddd">
+        underlayColor="#ddd"
+      >
         {/* <View style={styles.List}>
 
           <Progress.Circle
@@ -136,10 +127,10 @@ class Assignments extends Component {
 
         </View> */}
 
-        <View style={{flexDirection: 'row', borderColor: '#f5fcff', borderBottomWidth: 1}}>
-          <View style={{flex: 1, flexDirection: 'column'}}>
+        <View style={{ flexDirection: 'row', borderColor: '#f5fcff', borderBottomWidth: 1 }}>
+          <View style={{ flex: 1, flexDirection: 'column' }}>
             <Progress.Circle
-              style={{alignSelf: 'center', justifyContent: 'center', paddingTop: 5}}
+              style={{ alignSelf: 'center', justifyContent: 'center', paddingTop: 5 }}
               progress={progress}
               size={55}
               indeterminate={this.state.indeterminate}
@@ -163,7 +154,7 @@ class Assignments extends Component {
           <View style={{flex: 1, alignItems: 'center', alignSelf: 'center'}}>
             <Text>
               {moment().isAfter(rowData.dueDate)
-                ? 'Passed Due' : 'Due ' + moment(rowData.dueDate).from(rowData.startDate, true)}
+                ? 'Past Due' : 'Due ' + moment(rowData.dueDate).from(rowData.startDate)}
             </Text>
           </View>
 
@@ -177,26 +168,28 @@ class Assignments extends Component {
     return (
       <Image
         source={require('../../assets/img/blurback.jpg')}
-        style={styles.backgroundImage}>
+        style={styles.backgroundImage}
+      >
         <View style={styles.container}>
           <NavigationBar
-          title={{title: 'Dashboard'}}
-          rightButton={{
+            title={{ title: 'Dashboard' }}
+            rightButton={{
             // title: <FontAwesome name='plus-circle' />,
-            title: 'Add',
-            handler: () => this.onAddPressed()
-          }}
-          tintColor='#4EC0B2'
-           />
+              title: 'Add',
+              handler: () => this.onAddPressed(),
+            }}
+            tintColor="#4EC0B2"
+          />
           {/* <Text style={styles.label}>Dashboard</Text> */}
           <Text style={styles.heading}>
-            Hello Ronica!
+            Hello Neat Dev Team!
           </Text>
           <ListView
-            style={{backgroundColor: 'transparent'}}
+            style={{ backgroundColor: 'transparent' }}
             dataSource={this.state.dataSource}
             renderRow={this.renderRow.bind(this)}
-            enableEmptySections={true}/>
+            enableEmptySections={true}
+          />
 
           {/* <TouchableHighlight
             style={styles.button}
