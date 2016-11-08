@@ -42,7 +42,7 @@ class ClassForm extends Component{
   //POSTS to the api
     async onDonePressed(){
         try {
-            let response = await fetch(CONFIG.server.host + '/classes/',{
+            let response = await fetch(CONFIG.server.host + '/class/',{
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json',

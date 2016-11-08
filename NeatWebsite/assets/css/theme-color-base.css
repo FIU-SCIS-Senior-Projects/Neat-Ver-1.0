@@ -11,10 +11,10 @@ a {
 
 /* Default highlight color */
 ::-moz-selection {
-  background: #27d7e7;
+  background: #26bac8;
 }
 ::selection {
-  background: #27d7e7;
+  background: #26bac8;
 }
 .btn-u-lg.btn-u-bg-default {
   background: #27d7e7;
@@ -72,95 +72,10 @@ a {
   color: #26bac8;
 }
 
+/* Services Section */
 /*Modal popup window controls*/
 .modal button.close {
     background: #27d7e7;
-}
-
-/* Services Section */
-/*Designing the first owl carousel*/
-.service-section .owl-carousel-v4 .owl-a {
-  color: #27d7e7;
-}
-.service-section .owl-carousel-v4 .owl-a:hover, .service-section .owl-carousel-v4 .owl-a:focus,
-.award-a:hover, .award-a:focus{
-  color: #26bac8;
-}
-
-/*Owl-carousel controls*/
-.service-section .owl-theme .owl-controls .owl-buttons div:hover,
-.service-section .owl-theme .owl-controls .owl-buttons div:focus {
-  background: #27d7e7;
-}
-
-/* Projects Section */
-/*Cube-portfolio lightbox design*/
-.cbp-item:hover .popup-title h3 em, .cbp-popup-lightbox-title h3 em {
-  color: #27d7e7;
-}
-
-/*Lightbox popup window controls*/
-.cbp-popup-lightbox .cbp-popup-prev:hover,
-.cbp-popup-lightbox .cbp-popup-next:hover  {
-    background: #27d7e7;
-}
-.cbp-popup-lightbox .cbp-popup-close {
-    background: #27d7e7;
-}
-
-.cbp-popup-lightbox .cbp-popup-close:hover {
-    background: #26bac8;
-}
-
-/* Team Section */
-.team-section .owl-carousel-v4 .owl-list li > a:hover {
-  background: #27d7e7;
-}
-
-/*Owel-carousel controls*/
-.team-section .owl-theme .owl-controls .owl-buttons div:hover,
-.team-section .owl-theme .owl-controls .owl-buttons div:focus {
-  background: #27d7e7;
-}
-
-/* Gallery Section */
-/*Gallery tabs and content design*/
-.tab-v2 .nav-tabs li.active a {
-    background: #27d7e7;
-}
-.tab-v2 .nav-tabs li.active a:before  {
-    background: #27d7e7;
-}
-.tab-v2 .nav-tabs li.active a:after  {
-    border-left: 26px solid #27d7e7;
-}
-.owl-theme .owl-slider-v4-gallery .owl-controls .owl-page:hover span,
-.owl-theme .owl-slider-v4-gallery .owl-controls .owl-page.active span {
-    background: #27d7e7 none repeat scroll 0% 0%;
-}
-
-/*Fourth owel carousel*/
-.gallery-section .owl-carousel-v4 .owl-slider-v4-gallery-2 h3 a:hover,
-.gallery-section .owl-carousel-v4 .owl-slider-v4-gallery-2 h3 a:focus {
-  color: #27d7e7;
-}
-
-.owl-theme .owl-slider-v4-gallery-2 .owl-controls .owl-page:hover span,
-.owl-theme .owl-slider-v4-gallery-2 .owl-controls .owl-page.active span,
-.owl-theme .owl-slider-v4-testo .owl-controls .owl-page:hover span,
-.owl-theme .owl-slider-v4-testo .owl-controls .owl-page.active span {
-    background: #27d7e7 none repeat scroll 0% 0%;
-}
-
-/* Awards Section */
-.awards-desc a {
-  color: #27d7e7;
-}
-
-/* Contact Section */
-/*Contact list design*/
-.contact-list ul li .icon {
-  color: #27d7e7;
 }
 
 /*The Google maps div design */

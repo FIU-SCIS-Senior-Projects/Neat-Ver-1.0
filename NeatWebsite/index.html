@@ -42,8 +42,16 @@
 
 <body id="body" data-spy="scroll" data-target=".one-page-header" class="demo-lightbox-gallery">
 	<!--=== Header ===-->
-	<nav class="one-page-header one-page-header-style-2 navbar navbar-default navbar-fixed-top architecture-nav one-page-nav-scrolling one-page-nav__fixed" role="navigation">
+	<nav class="one-page-header navbar navbar-default navbar-fixed-top architecture-nav ">
 		<div class="container">
+			<div class="menu-container page-scroll">
+				<button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="container no-padding-left ">
 				<div class="row collapse navbar-collapse navbar-ex1-collapse">
@@ -59,6 +67,9 @@
 									</li>
 									<li class="page-scroll">
 										<a href="#services">Services</a>
+									</li>
+									<li class="page-scroll">
+										<a href="#contact">Contact</a>
 									</li>
 								</ul>
 							</div>
@@ -79,9 +90,9 @@
 							<div class="menu-container">
 								<ul class="nav navbar-nav">
 									<li class="page-scroll">
-										<a href="#contact">Contact</a>
+										<a href="team.html">Team Page</a>
 									</li>
-									<li class="page-scroll home">
+									<li class="page-scroll">
 										<a href="neatbot.html">Neat Bot</a>
 									</li>
 									<li class="page-scroll">
@@ -105,9 +116,10 @@
 			<div class="container g-block-middle animated fadeIn">
 				<div class="row">
 					<div class="col-sm-12 text-center-xs g-heading-v7 text-center">
-						<h1 class="h2 g-color-black"><em class="block-name">Making Task Management Neat Again.</em></h1>
+						<h1 class="h2 g-color-black"><em class="block-name">Task Management Made Neat Again.</em></h1>
 					</div>
 				</div>
+				<center><a href="#"><img src="assets/img/btn-appstore.png" width="145"></a> &nbsp; &nbsp; <a href="#"><img src="assets/img/btn-playstore.png" width="150"></a></center>
 			</div>
 			<!-- Promo Content END -->
 		</div>
@@ -119,8 +131,8 @@
 	<section id="about">
 		<div class="container-fluid bg-color-com content-md no-side-padding">
 			<div class="g-heading-v7 text-center g-mb-70">
-				<h2 class="h2 g-color-white g-mb-30"><em class="block-name">Who we are</em> A team dedicated to Task Managment</h2>
-				<p class="g-color-white-darker">We are dedicated to make Task Managment a breeze. Designed by students, for students, with multiple users across the country!</p>
+				<h2 class="h2 g-color-white g-mb-30"><em class="block-name">What is Neat</em> An  App dedicated to Task Managment</h2>
+				<p class="g-color-white-darker">Neat is dedicated to making Task Managment a breeze and helping students recieve higher grades! Visit our <a href="team.html">Team Page</a> to learn more about the team that made this app happen.</p>
 			</div>
 			<div class="row g-mb-40">
 				<div class="counters col-sm-6">
@@ -181,7 +193,7 @@
 			<div class="row equal-height-columns">
 				<div class="col-md-3 arch-service arch-service-1">
 					<div class="arch-service-in img-hover-1 equal-height-column">N
-						<span aria-hidden="true" class="icon-list  icon"></span>
+						<span aria-hidden="true" class="icon-list icon"></span>
 						<h3>Task<br>Organization</h3>
 						<p>Neat give the user the flexibility to break down assignments into user created smaller task and track their progress.</p>
 						<button class="arch-service-btn" data-toggle="modal" data-target="#myModal">Read More</button>
@@ -253,7 +265,7 @@
 			<!-- form and contact information -->
 			<div class="row">
 				<div class="col-md-9 col-sm-6 form no-side-padding">
-					<form action="#" method="post" id="sky-form3" class="sky-form contact-style">
+					<form action="sendMail.php" method="post" id="sky-form3" class="sky-form contact-style">
 						<fieldset>
 							<div class="row margin-bottom-30">
 								<div class="col-md-6 col-md-offset-0">
@@ -292,11 +304,6 @@
 
 							<p><button type="submit" class="btn-u btn-u-lg btn-u-bg-default btn-u-upper">Send Message</button></p>
 						</fieldset>
-
-						<div class="message">
-							<i class="rounded-x fa fa-check"></i>
-							<p>Your message was successfully sent!</p>
-						</div>
 					</form>
 				</div>
 
@@ -304,19 +311,19 @@
 					<ul class="list-unstyled margin-bottom-30">
 						<li><span aria-hidden="true" class="icon-directions icon"></span></li>
 						 <li class="first-item">Address</li>
-						<li class="second-item">Sit amet adipiscing</li>
+						<li class="second-item">11200 SW 8th St, Miami, FL </li>
 					</ul>
 
 					<ul class="list-unstyled margin-bottom-30">
 						<li><span aria-hidden="true" class="icon-call-in icon"></span></li>
 						<li class="first-item">Phone number</li>
-						<li class="second-item">+4586 585 4580</li>
+						<li class="second-item">+1(305) 348 2000</li>
 					</ul>
 
 					<ul class="list-unstyled margin-bottom-30">
 						<li><span aria-hidden="true" class="icon-envelope-open icon"></span></li>
 						<li class="first-item">Email</li>
-						<li class="second-item">info@neat.com</li>
+						<li class="second-item">neatstudy@outlook.com</li>
 					</ul>
 				</div>
 			</div>
@@ -356,7 +363,7 @@
 					<div class="row">
 						<div class="col-md-6">
 							<p>
-								2015 &copy; All Rights Reserved.
+								2016 &copy; All Rights Reserved.
 								<a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
 							</p>
 						</div>
@@ -364,38 +371,18 @@
 						<div class="col-md-6">
 							<ul class="footer-socials list-inline">
 								<li>
-									<a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Facebook">
+									<a href="https://www.facebook.com/neatstudy/" target="_blank" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Facebook">
 										<i class="fa fa-facebook"></i>
 									</a>
 								</li>
 								<li>
-									<a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Skype">
-										<i class="fa fa-skype"></i>
-									</a>
-								</li>
-								<li>
-									<a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Google Plus">
-										<i class="fa fa-google-plus"></i>
-									</a>
-								</li>
-								<li>
-									<a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Linkedin">
-										<i class="fa fa-linkedin"></i>
-									</a>
-								</li>
-								<li>
-									<a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Pinterest">
-										<i class="fa fa-pinterest"></i>
-									</a>
-								</li>
-								<li>
-									<a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Twitter">
+									<a href="https://twitter.com/neatstudy" target="_blank" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Twitter">
 										<i class="fa fa-twitter"></i>
 									</a>
 								</li>
 								<li>
-									<a href="#" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Dribbble">
-										<i class="fa fa-dribbble"></i>
+									<a href="https://www.instagram.com/neatstudy/" target="_blank" class="tooltips" data-toggle="tooltip" data-placement="top" title="" data-original-title="Instagram">
+										<i class="fa fa-instagram"></i>
 									</a>
 								</li>
 							</ul>

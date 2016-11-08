@@ -60,6 +60,10 @@ p {
 }
 
 /* General use classes */
+.promo-padding-top {
+	padding-top: 85px;
+}
+
 .no-padding {
 	padding: 0;
 }
@@ -775,7 +779,7 @@ p {
 
 .contact-list ul li .icon {
 	font-size: 20px;
-	color: #c94645;
+	color: #26bac8;
 }
 
 .contact-list ul .first-item {
@@ -870,6 +874,59 @@ p {
 	height: 400px;
 }
 
+/*Team Carousel*/
+/* Default padding */
+.team-screens {
+	padding: 5px 0;
+}
+
+/* Designing the cubeportfolio filter buttons */
+.team-screens .cbp-l-filters-button {
+    margin-bottom: 70px;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+/* On active */
+.team-screens .cube-portfolio #filters-container .cbp-filter-item-active {
+    background: transparent none repeat scroll 0% 0%;
+    border: none;
+    border-bottom: 1px solid #4fd2c2;
+    color: #4fd2c2;
+}
+
+.team-screens .cbp-l-filters-button .cbp-filter-item {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
+    text-transform: uppercase;
+    color: #999;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 10px 12px -1px;
+    padding: 0px 0 20px;
+    border-radius: 0;
+}
+
+.team-screens .cbp-l-filters-button .cbp-filter-item:hover {
+	color: #4fd2c2;
+}
+
+.team-screens .cbp-caption-fadeIn .cbp-caption-activeWrap {
+    background-color: rgba(79,184,172, 0.6);
+    transition: opacity 1s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+}
+
+.team-screens .cbp-l-caption-title {
+    font-size: 30px;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.team-screens .cbp-l-caption-body {
+    font-size: 12px;
+    color: #2d2d37;
+}
+
 /*The footer logo design*/
 .footLogo {
 	text-align: center;
@@ -930,6 +987,12 @@ p {
 /* HomeScreen */
 .homeScreen {
   background: url(../img/HomeScreen2.jpg) no-repeat center;
+  background-size: cover; /*Scales the background image to be as large as possible*/
+  height: 100vh;
+}
+
+.construction {
+  background: url(../img/construction.jpg) no-repeat center;
   background-size: cover; /*Scales the background image to be as large as possible*/
   height: 100vh;
 }
