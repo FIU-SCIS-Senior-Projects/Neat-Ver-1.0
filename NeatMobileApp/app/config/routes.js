@@ -6,8 +6,7 @@ import {
 } from 'react-native';
 import ExNavigator from '@exponent/react-native-navigator';
 import Assignments from '../routes/Assignments';
-// import Details from '../routes/Details';
-// import Profile from '../routes/Profile';
+import AddAssignment from '../routes/AddAssignment';
 import SignIn from '../routes/SignIn';
 import Classes from '../routes/Classes';
 
@@ -21,11 +20,11 @@ export const routes = {
       getTitle() {
         return 'Assignments';
       },
-      renderRightButton() {
+      renderRightButton(navigator) {
         return (
           <TouchableOpacity
             touchRetentionOffset={ExNavigator.Styles.barButtonTouchRetentionOffset}
-            onPress={() => console.log('got emmmm')}
+            onPress={() => navigator.push(this.getAddAssignmentsRoute())}
             style={ExNavigator.Styles.barRightButton}
           >
             <Text
@@ -36,6 +35,16 @@ export const routes = {
       },
       configureScene() {
         // return ExNavigator.SceneConfigs.FloatFromBottom;
+      },
+    };
+  },
+  getAddAssignmentRoute() {
+    return {
+      renderScene(navigator) {
+        return <AddAssignment navigator={navigator} />;
+      },
+      getTitle() {
+        return 'AddAssignment';
       },
     };
   },

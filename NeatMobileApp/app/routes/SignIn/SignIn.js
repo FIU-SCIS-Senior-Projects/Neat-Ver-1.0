@@ -23,7 +23,7 @@ const SignIn = (props) => {
       <InputWrapper>
         <GenericTextInput
           placeholder="email address"
-          onChangeText={(email) => updateState({ email })}
+          onChangeText={(username) => updateState({ username })}
         />
         <GenericTextInput
           placeholder="password"

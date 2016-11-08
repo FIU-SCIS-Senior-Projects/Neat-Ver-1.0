@@ -11,7 +11,7 @@ class SignInContainer extends Component {
 
     this.mounted = false;
     this.state = {
-      email: '',
+      username: '',
       password: '',
       confirmPassword: '',
       confirmPasswordVisible: false,
@@ -34,10 +34,10 @@ class SignInContainer extends Component {
   }
 
   validInput(overrideConfirm) {
-    const { email, password, confirmPassword, confirmPasswordVisible } = this.state;
+    const { username, password, confirmPassword, confirmPasswordVisible } = this.state;
     let valid = true;
 
-    if (email.length === 0 || password.length === 0) {
+    if (username.length === 0 || password.length === 0) {
       this.handleError('Email and password cannot be empty.');
       valid = false;
     }
@@ -63,8 +63,9 @@ class SignInContainer extends Component {
       //   }
       // });
       AuthService.login({ username, password }, (results) => {
+        console.log('from login', results);
         if (results.success) {
-          this.props.navigator.push(Routes.getDashboardRoute());
+          this.props.navigator.push(Routes.getAssignmentsRoute());
         } else {
           this.handleError('error during login: ', results.status);
         }
@@ -73,10 +74,10 @@ class SignInContainer extends Component {
   }
 
   handleCreateAccount() {
-    const { email, password, confirmPasswordVisible } = this.state;
+    const { username, password, confirmPasswordVisible } = this.state;
 
     if (confirmPasswordVisible && this.validInput()) {
-      AuthService.createUser({ email, password }, (err) => {
+      AuthService.createUser({ username, password }, (err) => {
         if (err) {
           this.handleError(err.reason);
         } else {

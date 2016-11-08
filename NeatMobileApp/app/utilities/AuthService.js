@@ -78,8 +78,11 @@ class AuthService {
     console.log('url', url, 'params', params);
     return fetch(url, {
       method  : 'POST',
-      headers : { 'Content-Type' : 'application/json' },
-      body    : JSON.stringify(params)
+      headers : {
+        'Content-Type' : 'application/json',
+        'Authorization': 'Token ' + token,
+      },
+      body: JSON.stringify(params)
     });
   }
 
@@ -146,9 +149,7 @@ class AuthService {
   }
 
 
-  login(creds, cb){
-    var b           = new buffer.Buffer(creds.username + ':' + creds.password);
-    var encodedAuth = b.toString('base64');
+  login(creds, cb) {
     console.log('creds from login AuthService', creds);
 
     this.doPost(CONFIG.server.host + '/login/', {
@@ -156,8 +157,8 @@ class AuthService {
       password: creds.password,
     })
     .then(this.handleResponse)
-    .then(response => response.json())
-    .then((results)=> {
+    .then((response) => response.json())
+    .then((results) => {
       console.log('after handleResponse');
       AsyncStorage.setItem(userKey, JSON.stringify(results.token), (err)=> {
           if(err){
@@ -168,6 +169,22 @@ class AuthService {
       })
     })
     .catch(err => cb(err));
+  }
+  fetchClasss() {
+    return fetch(CONFIG.server.host + '/classes/')
+    .then((response) => response.json()).then((responseJson) => {
+      const classList = responseJson;
+      console.log(classList);
+      const reduced = {};
+      classList.map((s) => {
+        reduced[s.classID] = s.className;
+      });
+      console.log(reduced);
+      return reduced;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 }
 
