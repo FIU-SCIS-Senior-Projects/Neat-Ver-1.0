@@ -12,8 +12,8 @@ class ChatRoom extends Component {
       messages: [
         {
           _id: 1,
-          text: 'Hello developer',
-          createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
+          text: 'Hello student',
+          createdAt: new Date(Date.now()),
           user: {
             _id: 2,
             name: 'React Native',
