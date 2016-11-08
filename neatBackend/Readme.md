@@ -5,13 +5,19 @@ Django and Django REST Framework For Neat
 # Rest API Documentation
 For an in depth documentation go to [http://localhost/docs][5] or the official docs at [http://52.87.176.128/docs][6]
 
+##Changelog
+#####01/08/16
+* User creating a school, class, or assignment is automatically added to respective roster
+* Added dashboard endpoint
+* Added isPublic boolean fields to Class & Assignment
+
 ##Recent Endpoints - examples
 
-####Get all my tasks (permissions on)
-http GET http://127.0.0.1:8000/api/assignmentRoster/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'
+####Get all my info (permissions on)
+`http GET http://127.0.0.1:8000/api/dashboard/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
 
 ####Add task (user no longer needed)
-http POST http://127.0.0.1:8000/api/task/ assignment_pk=1 taskName=HW1 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'
+`http POST http://127.0.0.1:8000/api/task/ assignment_pk=1 taskName=HW1 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
 
 ####Get collab assignment statistics (url arg: assignment pk)
 `http GET http://127.0.0.1:8000/api/collab/assig/1/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
@@ -47,10 +53,10 @@ http POST http://127.0.0.1:8000/api/task/ assignment_pk=1 taskName=HW1 'Authoriz
 `http GET http://127.0.0.1:8000/api/user/?email=user1@gmail.com`
 
 ####Register
-`http POST http://127.0.0.1:8000/api/user/ email=user10@neat.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
+`http POST http://127.0.0.1:8000/api/user/ email=2@neat.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
 
 ####Login (note username field, not email)
-`http POST http://127.0.0.1:8000/api/login/ username=user10@neat.com password=password123`
+`http POST http://127.0.0.1:8000/api/login/ username=1@neat.com password=password123`
 
 #Usage
 
