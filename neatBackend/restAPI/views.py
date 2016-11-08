@@ -157,6 +157,14 @@ def CollabView(request, pk):
                 array.append({'user': rosterObj.user.email, 'name': rosterObj.user.first_name, 'percentage': (taskProg/taskNum)})
         return Response(array)
 
+#Get user dashboard info, given token
+@api_view(['get'])
+def DashboardView(request):
+    queryset = Assignment.objects.filter(roster__user=request.user)
+    serializer = DashboardSerializer(queryset, many=True, context={'request': request})
+    return Response(serializer.data)
+
+
 class UserViewSet(viewsets.ModelViewSet):
     #No authentication required
     authentication_classes = ()

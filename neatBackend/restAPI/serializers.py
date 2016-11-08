@@ -21,6 +21,11 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
         assign_perm('view_school', usr, school)
         assign_perm('change_school', usr, school)
         assign_perm('delete_school', usr, school)
+        #Add user to school roster automatically
+        schRoster = SchoolRoster.objects.create(user=usr, school=school)
+        assign_perm('view_schoolroster', usr, schRoster)
+        assign_perm('change_schoolroster', usr, schRoster)
+        assign_perm('delete_schoolroster', usr, schRoster)
         return school
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -115,7 +120,7 @@ class ClassSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Class
-        fields = ('url', 'pk', 'className', 'classID', 'school')
+        fields = ('url', 'pk', 'className', 'classID', 'school', 'isPublic')
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -123,6 +128,11 @@ class ClassSerializer(serializers.HyperlinkedModelSerializer):
         assign_perm('view_class', usr, clss)
         assign_perm('change_class', usr, clss)
         assign_perm('delete_class', usr, clss)
+        #Add user to class roster automatically
+        clsRoster = ClassRoster.objects.create(user=usr, classFK=clss)
+        assign_perm('view_classroster', usr, clsRoster)
+        assign_perm('change_classroster', usr, clsRoster)
+        assign_perm('delete_classroster', usr, clsRoster)
         return clss
 
 
@@ -151,6 +161,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         read_only=True,
         view_name='user-detail'
     )
+    isApproved = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Task
@@ -164,14 +175,11 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         assign_perm('delete_task', usr, task)
         return task
 
-    
-
 class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
-    #tasks = TaskSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = Assignment
-        fields = ('url', 'pk', 'assignmentName', 'startDate', 'dueDate', 'classFK')
+        fields = ('url', 'pk', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'isPublic')
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -179,14 +187,31 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
         assign_perm('view_assignment', usr, assig)
         assign_perm('change_assignment', usr, assig)
         assign_perm('delete_assignment', usr, assig)
+        #Add user to assignment roster automatically
+        assgRoster = AssignmentRoster.objects.create(user=usr, assignment=assig)
+        assign_perm('view_assignmentroster', usr, assgRoster)
+        assign_perm('change_assignmentroster', usr, assgRoster)
+        assign_perm('delete_assignmentroster', usr, assgRoster)
         return assig
+
+class DashboardSerializer(serializers.HyperlinkedModelSerializer):
+    tasks = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Assignment
+        fields = ('url', 'pk', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'isPublic', 'tasks')
+    
+    #Get only tasks that belong to the user & given assignment
+    def get_tasks(self, obj):
+        tasks =  Task.objects.filter(user=self.context['request'].user).filter(assignment=obj)
+        serializer = TaskSerializer(instance=tasks, many=True, context={'request': self.context['request']})
+        return serializer.data
 
 class AssignmentRosterSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.HyperlinkedRelatedField(
         read_only=True,
         view_name='user-detail'
     )
-
     class Meta:
         model = AssignmentRoster
         fields = ('url', 'pk', 'assignment', 'user')
