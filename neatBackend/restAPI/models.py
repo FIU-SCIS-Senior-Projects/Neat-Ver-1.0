@@ -80,7 +80,8 @@ class Class(models.Model):
 
     #fields
     className = models.CharField(max_length=255)
-    classID = models.CharField(max_length=255) # TODO: What does a class ID look like? This can have great variance, so charfield was chosen.
+    classID = models.CharField(max_length=255)
+    isPublic = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('school', 'classID',)
@@ -116,6 +117,7 @@ class Assignment(models.Model):
     assignmentName = models.CharField(max_length=255)
     startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
     dueDate = models.DateField(validators=[is_before_today], null=True)
+    isPublic = models.BooleanField(default=False)
     
     #permissions
     class Meta:
@@ -165,6 +167,7 @@ class Task(models.Model):
     hoursCompleted = models.PositiveSmallIntegerField(null=True)
     startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
     endDate = models.DateField(validators=[is_before_today], null=True)
+    weight = models.FloatField(default=0.0)
     
     class Meta:
 
