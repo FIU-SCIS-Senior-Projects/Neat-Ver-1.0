@@ -12,45 +12,54 @@ import NavigationBar from 'react-native-navbar';
 
 var ClassForm = require('./ClassForm');
 var ClassView = require('./ClassView');
-var moment = require('moment'),
-    CONFIG = require('../../config.js');
+var moment = require('moment');
+import CONFIG from '../../config';
+import AuthService from '../../utilities/AuthService';
 
 class Classes extends Component{
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
+    let ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+    });
 
-        this.state = {
-          levels: 0,
-          dataSource: ds
-        };
-      }
+    this.state = {
+      levels: 0,
+      dataSource: ds,
+      authInfo: null,
+    };
+  }
 
-      componentDidMount(){
-        this.setState({levels: (this.props.navigator.getCurrentRoutes(0).length)})
-        this.fetchClasss();
-      }
-      componentWillReceiveProps(){
-        this.fetchClasss();
-      }
+  componentDidMount(){
+    this.setState({ levels: (this.props.navigator.getCurrentRoutes(0).length)});
+    AuthService.getLoginToken((err, authInfo) => {
+      this.setState({
+        authInfo,
+      });
+      this.fetchClasss();
+    });
+  }
+  componentWillReceiveProps() {
+    this.fetchClasss();
+  }
 
-      fetchClasss(){
-        return fetch(CONFIG.server.host + '/class/')
-              .then((response) => response.json())
-              .then((responseJson) => {
-
-                var classList = responseJson;
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(classList)
-                })
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-      }
+  fetchClasss(){
+    return fetch(CONFIG.server.host + '/class/', {
+      method: 'GET',
+      headers: this.state.authInfo.header,
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        var classList = responseJson;
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(classList)
+        })
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
       onAddPressed(){
         this.props.navigator.push({
@@ -63,6 +72,7 @@ class Classes extends Component{
       }
 
       onPressRow(rowData){
+        console.log('class rowData', rowData);
 
         this.props.navigator.push({
             id: 'ClassView',

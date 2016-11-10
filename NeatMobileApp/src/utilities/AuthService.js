@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native';
-var _ = require('lodash'),
-    buffer = require('buffer'),
-    CONFIG = require('../config.js');
+import _ from 'lodash';
+import buffer from 'buffer';
+import CONFIG from '../config';
 
 
 const authKey = 'auth';
@@ -46,7 +46,8 @@ class AuthService {
       var authInfo = {
         method: 'POST',
         header: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Token ' + val,
         },
         token: val
       }
@@ -133,8 +134,6 @@ class AuthService {
 
 
   login(creds, cb){
-    var b           = new buffer.Buffer(creds.username + ':' + creds.password);
-    var encodedAuth = b.toString('base64');
     console.log('creds from login AuthService', creds);
 
     this.doPost(CONFIG.server.host + '/login/',{
@@ -145,7 +144,7 @@ class AuthService {
     .then(response => response.json())
     .then((results)=> {
       console.log('after handleResponse');
-      AsyncStorage.setItem(userKey, JSON.stringify(results.token), (err)=> {
+      AsyncStorage.setItem(userKey, results.token, (err)=> {
           if(err){
               throw err;
           }

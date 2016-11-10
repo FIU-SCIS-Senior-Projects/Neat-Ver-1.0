@@ -12,6 +12,7 @@ import Classes from '../routes/Classes';
 
 export const routes = {
   getAssignmentsRoute() {
+    _this = this;
     return {
       renderScene(navigator) {
         return <Assignments navigator={navigator} />;
@@ -24,7 +25,7 @@ export const routes = {
         return (
           <TouchableOpacity
             touchRetentionOffset={ExNavigator.Styles.barButtonTouchRetentionOffset}
-            onPress={() => navigator.push(this.getAddAssignmentsRoute())}
+            onPress={() => navigator.push(_this.getAddAssignmentsRoute())}
             style={ExNavigator.Styles.barRightButton}
           >
             <Text

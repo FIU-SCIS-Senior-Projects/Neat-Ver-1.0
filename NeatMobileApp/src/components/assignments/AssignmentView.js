@@ -14,12 +14,14 @@ import {
   Switch,
   Image,
 } from 'react-native';
+import NavigationBar from 'react-native-navbar';
 
 import styles from './styles';
 
 var Assignments = require('./UserAssignment');
+import CONFIG from '../../config';
 
-    CONFIG = require('../../config.js');
+import AuthService from '../../utilities/AuthService';
 
 
 class AssignmentView extends Component{
@@ -30,85 +32,88 @@ class AssignmentView extends Component{
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
         });
-
         this.state={
             dataSource: ds,
-            assignmentUrl: props.assignmentUrl,
+            assignmentUrl: props.rowData.url,
             toggleState: true,
             trueSwitchIsOn: true,
         };
     }
 
     componentDidMount(){
-        this.fetchTasks();
-
+      AuthService.getLoginToken((err, authInfo) => {
+        this.setState({
+          authInfo,
+        });
+        // this.fetchTasks();
+      });
+      if(this.props.rowData.tasks) {
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.props.rowData.tasks)
+        });
+      }
     }
     componentWillReceiveProps(){
         this.fetchTasks();
     }
     fetchTasks(){
-
-        return fetch(CONFIG.server.host + '/task/')
-              .then((response) => response.json())
-              .then((responseJson) => {
-                var taskList = responseJson;
-
-                var display = [];
-                var j = 0
-
-                for(var i = 0; i < taskList.length; i++){
-                    if(taskList[i].user ===  CONFIG.server.host + '/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
-                        display[j] = taskList[i];
-
-                        j++;
-                    }
-
-                }
-
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(display)
-                })
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-    }
-
-    onAddTask(){
-        this.props.navigator.push({
-            id: 'TaskForm',
-            type: 'Pop',
-            passProps:{
-                assignmentUrl: this.state.assignmentUrl
-            }
+        return fetch(CONFIG.server.host + '/dashboard/', {
+          method: 'GET',
+          headers: this.state.authInfo.header,
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          var assignmentList = responseJson;
+          var selectedAssignment =
+            assignmentList.filter((assignment) => this.props.rowData.pk === assignment.pk)[0];
+            console.log('found assignment from filter ', selectedAssignment);
+          this.setState({
+              dataSource: this.state.dataSource.cloneWithRows(selectedAssignment.tasks)
+          })
+        })
+        .catch((error) => {
+          console.error(error);
         });
     }
 
+  onAddTask() {
+    this.props.navigator.push({
+      id: 'TaskForm',
+      type: 'Pop',
+      passProps: {
+        assignmentUrl: this.props.rowData.url,
+      },
+    });
+    }
+
     pressDashboard(){
-        let route = this.props.navigator.getCurrentRoutes().find((route) => route.id === 'AssignmentsDash');
-        this.props.navigator.popToRoute(route);
+        // let route = this.props.navigator.getCurrentRoutes().find((route) => route.id === 'AssignmentsDash');
+        console.log(this.props.navigator.getCurrentRoutes());
+        // this.props.navigator.popToRoute(route);
+      // this.props.navigator.resetTo(this.props.navigator.getCurrentRoutes()[0]);
+      this.props.navigator.pop();
     }
     toogleSwitched(rowData){
-        console.log("rowData before is: " + JSON.stringify(rowData));
+        // console.log("rowData before is: " + JSON.stringify(rowData));
         rowData.isDone = !rowData.isDone;
         this.forceUpdate();
-        console.log("rowData is: " + JSON.stringify(rowData));
-
+        // console.log("rowData is: " + JSON.stringify(rowData));
+        console.log('rowData from toggle', rowData);
         fetch(rowData.url, {
-              method: "PUT",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
+              method: 'PUT',
+              headers: this.state.authInfo.header,
               body: JSON.stringify({
-                assignment: rowData.assignment,
-                user: rowData.user,
-                taskName: rowData.taskName,
+                // assignment: rowData.assignment,
+                // user: rowData.user,
+                // taskName: rowData.taskName,
+                // isDone: rowData.isDone,
+                // hoursPlanned: rowData.hoursPlanned,
+                // hoursCompleted: rowData.hoursCompleted,
+                // startDate: rowData.startDate,
+                // endDate: rowData.endDate,
+                ...rowData,
                 isDone: rowData.isDone,
-                hoursPlanned: rowData.hoursPlanned,
-                hoursCompleted: rowData.hoursCompleted,
-                startDate: rowData.startDate,
-                endDate: rowData.endDate,
+
               })
         })
         .then((response) => response.json())
@@ -122,7 +127,7 @@ class AssignmentView extends Component{
 
 
     renderRow(rowData){
-        console.log("Before return render, rowData: " + JSON.stringify(rowData));
+        // console.log("Before return render, rowData: " + JSON.stringify(rowData));
         return(
                <View style={styles.List}>
                     <Switch
@@ -139,8 +144,20 @@ class AssignmentView extends Component{
     render(){
         return(
           <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
-          <Text style={styles.label}>{this.props.assignmentName}</Text>
+          {/* <Text style={styles.label}>{this.props.rowData.assignmentName}</Text> */}
             <View style={styles.container}>
+            <NavigationBar
+              title={{title: this.props.rowData.assignmentName}}
+              leftButton={{
+                title: 'Back',
+                handler: () => this.pressDashboard()
+              }}
+              rightButton={{
+                title: 'Add',
+                handler: () => this.onAddTask()
+              }}
+              tintColor='#4EC0B2'
+               />
             <ScrollView>
               <ListView
                 dataSource={this.state.dataSource}
@@ -148,21 +165,21 @@ class AssignmentView extends Component{
                 enableEmptySections= {true}
               />
             </ScrollView>
-              <TouchableHighlight style={styles.button}
+              {/* <TouchableHighlight style={styles.button}
                   onPress={this.onAddTask.bind(this)}
               >
                   <Text style={styles.buttonText}>
                           Add Task
                   </Text>
-              </TouchableHighlight>
+              </TouchableHighlight> */}
 
-              <TouchableHighlight style={styles.button}
+              {/* <TouchableHighlight style={styles.button}
                   onPress={this.pressDashboard.bind(this)}
               >
                   <Text style={styles.buttonText}>
                           Assignment Dashboard
                   </Text>
-              </TouchableHighlight>
+              </TouchableHighlight> */}
             </View>
           </Image>
         );

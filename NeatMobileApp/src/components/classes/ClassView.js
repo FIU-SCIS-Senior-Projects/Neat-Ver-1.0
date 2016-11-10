@@ -13,12 +13,14 @@ import {
   ScrollView,
   Image
 } from 'react-native';
+import NavigationBar from 'react-native-navbar';
 
 import styles from './styles';
 
 //TODO uses this variable to
 var Classes = require('./Classes');
-var CONFIG = require('../../config.js');
+import CONFIG from '../../config';
+import AuthService from '../../utilities/AuthService';
 
 class ClassView extends Component{
 
@@ -29,14 +31,20 @@ class ClassView extends Component{
             rowHasChanged: (r1, r2) => r1 !== r2
         });
 
-        this.state={
-            dataSource: ds,
-            classUrl: props.classUrl
-        };
+      this.state = {
+        dataSource: ds,
+        classUrl: props.classUrl,
+        authInfo: null,
+      };
     }
 
     componentDidMount(){
+      AuthService.getLoginToken((err, authInfo) => {
+        this.setState({
+          authInfo,
+        });
         this.fetchAssignmentsForClass();
+      });
     }
 
     componentWillReceiveProps(){
@@ -45,7 +53,10 @@ class ClassView extends Component{
 
     fetchAssignmentsForClass(){
 
-    return fetch(CONFIG.server.host +'/assignment/')
+    return fetch(CONFIG.server.host +'/assignment/', {
+      method: 'GET',
+      headers: this.state.authInfo.header,
+    })
               .then((response) => response.json())
               .then((responseJson) => {
                 var display = [];
@@ -81,12 +92,13 @@ class ClassView extends Component{
         });
     }
     onPressRow(rowData){
-
+      console.log('on class assignment press', rowData);
         this.props.navigator.push({
             id: 'AssignmentView',
             passProps: {
               assignmentUrl: rowData.url,
-              assignmentName: rowData.assignmentName
+              assignmentName: rowData.assignmentName,
+              rowData,
             }
         });
     }
@@ -111,7 +123,19 @@ class ClassView extends Component{
     render(){
         return(
           <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
-          <Text style={styles.label}>{this.props.className}</Text>
+          {/* <Text style={styles.label}>{this.props.className}</Text> */}
+          <NavigationBar
+            title={{ title: this.props.className }}
+            leftButton={{
+              title: 'Back',
+              handler: () => this.pressDashboard()
+            }}
+            rightButton={{
+              title: 'Add',
+              handler: () => this.onAddAssignment()
+            }}
+            tintColor='#4EC0B2'
+             />
           <View style={styles.container}>
 
           <ListView
@@ -120,21 +144,21 @@ class ClassView extends Component{
             enableEmptySections= {true}
           />
 
-          <TouchableHighlight style={styles.button}
+          {/* <TouchableHighlight style={styles.button}
               onPress={this.onAddAssignment.bind(this)}
           >
               <Text style={styles.buttonText}>
                       Add Assignment
               </Text>
-          </TouchableHighlight>
+          </TouchableHighlight> */}
 
-          <TouchableHighlight style={styles.button}
+          {/* <TouchableHighlight style={styles.button}
               onPress={this.pressDashboard.bind(this)}
           >
               <Text style={styles.buttonText}>
                       Class Dashboard
               </Text>
-          </TouchableHighlight>
+          </TouchableHighlight> */}
           </View>
           </Image>
         );

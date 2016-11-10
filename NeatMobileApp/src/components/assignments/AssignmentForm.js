@@ -10,23 +10,22 @@ import {
   TouchableOpacity,
   Image,
   Picker,
-  Animated
+  Animated,
 } from 'react-native';
-
-import styles from './styles';
 import NavigationBar from 'react-native-navbar';
-const UIPICKER_HEIGHT = 300
+import moment from 'moment';
+import styles from './styles';
+import CONFIG from '../../config';
+import AuthService from '../../utilities/AuthService';
+
+const UIPICKER_HEIGHT = 300;
 
 /* TODO make classFK not hard coded
    TODO add tasks here maybe(?)
 
    NOTE: you must create a class and a school before being able to add an assignment
 */
-
-var moment = require('moment'),
-  CONFIG = require('../../config.js');
-
-var PickerItem = Picker.Item;
+let PickerItem = Picker.Item;
 
 class AssignmentForm extends Component {
   constructor(props) {
@@ -50,12 +49,21 @@ class AssignmentForm extends Component {
   }
 
   componentDidMount() {
-    this.fetchClasss();
+    AuthService.getLoginToken((err, authInfo) => {
+      this.setState({
+        authInfo,
+      });
+      this.fetchClasss();
+    });
   }
 
   fetchClasss() {
-    return fetch(CONFIG.server.host + '/classes/').then((response) => response.json()).then((responseJson) => {
-
+    return fetch(CONFIG.server.host + '/class/', {
+      method: 'GET',
+      headers: this.state.authInfo.header,
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
       let classList = responseJson;
       console.log(classList);
       let reduced = {};
@@ -74,12 +82,9 @@ class AssignmentForm extends Component {
   async onDonePressed() {
 
     try {
-      let response = await fetch(CONFIG.server.host + '/assignments/', {
+      let response = await fetch(CONFIG.server.host + '/assignment/', {
         method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
+        headers: this.state.authInfo.header,
         body: JSON.stringify({
           assignmentName: this.state.assignmentName,
           classFK: this.state.classFK,

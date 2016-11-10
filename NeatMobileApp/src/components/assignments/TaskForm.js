@@ -20,8 +20,9 @@ import styles from './styles';
    NOTE: you must create a class and a school before being able to add an assignment
 */
 
-var moment = require('moment'),
-    CONFIG = require('../../config.js');
+import moment from 'moment';
+import CONFIG from '../../config';
+import AuthService from '../../utilities/AuthService';
 
 class TaskForm extends Component{
   constructor(props){
@@ -30,69 +31,73 @@ class TaskForm extends Component{
     this.state = {
       taskName:"",
       dueDate: new Date(),
-      assignmentUrl: props.assignmentUrl,
+      // assignmentUrl: props.assignmentUrl,
       //taskList: props.assignment.tasks
       user: CONFIG.server.host + '/user/1/',
       showDatePicker: false,
       errors: [],
-
+      authInfo: null,
     }
   }
 
-  //POSTS to the api
-    async onDonePressed(){
-        try {
-            let response = await fetch(CONFIG.server.host + '/task/',{
-                method: 'POST',
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  taskName: this.state.taskName,
-                  user: this.state.user,
-                  dueDate: moment(this.state.dueDate).format('YYYY-MM-DD'),
-                  assignment: this.state.assignmentUrl
-                })
-            });
+  componentDidMount() {
+    AuthService.getLoginToken((err, authInfo) => {
+      this.setState({
+        authInfo,
+      });
+    });
+  }
 
-            let responseJson = await response.text();
+  // POSTS to the api
+  async onDonePressed() {
+    try {
+      let response = await fetch(CONFIG.server.host + '/task/', {
+        method: 'POST',
+        headers: this.state.authInfo.header,
+        body: JSON.stringify({
+          taskName: this.state.taskName,
+          user: this.state.user,
+          dueDate: moment(this.state.dueDate).format('YYYY-MM-DD'),
+          assignment: this.props.assignmentUrl,
+        })
+      });
+
+        let responseJson = await response.text();
 
 
-            //verify if our operation was a success or failure
-            if(response.status >= 200 && response.status < 300){
-                console.log("response succes is:" + responseJson);
-                this.props.navigator.pop({
-                  id: 'AssignmentView',
-                  passProps:{
-                    assignmentUrl: this.state.assignmentUrl
-                  }
-
-                });
-                console.log('DONE BUTTON WAS PRESSED')
-            }else{
-              console.log("response failure is:" + responseJson);
-              let errors = responseJson;
-              throw errors;
-            }
-
-          } catch(errors) {
-
-            console.log("catch errors:" + errors);
-
-            let formErrors = JSON.parse(errors);
-
-            let errorsArray = [];
-
-            for(let key in formErrors){
-              if(formErrors[key].length > 1){
-                formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
-              }else {
-                errorsArray.push(`${key} ${formErrors[key]}`)
+        //verify if our operation was a success or failure
+        if(response.status >= 200 && response.status < 300){
+            console.log("response succes is:" + responseJson);
+            this.props.navigator.pop({
+              id: 'AssignmentView',
+              passProps:{
+                assignmentUrl: this.state.assignmentUrl
               }
-            }
-            this.setState({errors: errorsArray});
+            });
+            console.log('DONE BUTTON WAS PRESSED')
+        }else{
+          console.log("response failure is:" + responseJson);
+          let errors = responseJson;
+          throw errors;
+        }
+
+      } catch(errors) {
+
+        console.log("catch errors:" + errors);
+
+        let formErrors = JSON.parse(errors);
+
+        let errorsArray = [];
+
+        for(let key in formErrors){
+          if(formErrors[key].length > 1){
+            formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
+          }else {
+            errorsArray.push(`${key} ${formErrors[key]}`)
           }
+        }
+        this.setState({errors: errorsArray});
+      }
     }
 
      onDateChange = (date) => {
@@ -132,7 +137,7 @@ class TaskForm extends Component{
                             Done
                         </Text>
                 </TouchableHighlight>
-                
+
                 <TouchableHighlight
                     onPress={() => this.props.navigator.pop()}
                     style={styles.button}>

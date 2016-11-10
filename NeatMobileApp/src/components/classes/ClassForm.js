@@ -14,9 +14,10 @@ import {
 
 import styles from './styles';
 import NavigationBar from 'react-native-navbar';
+import AuthService from '../../utilities/AuthService';
 
-var moment = require('moment'),
-    CONFIG = require('../../config.js');
+var moment = require('moment');
+import CONFIG from '../../config';
 
 /* TODO
 change school id to dynamic
@@ -35,61 +36,66 @@ class ClassForm extends Component{
     this.state = {
       className:"",
       classID: getRandomInt(100,200),
-      school: CONFIG.server.host + '/schools/1/',
-
+      school: CONFIG.server.host + '/school/1/',
+      authInfo: null,
     }
   }
+
+  componentDidMount() {
+    AuthService.getLoginToken((err, authInfo) => {
+      this.setState({
+        authInfo,
+      });
+    });
+  }
   //POSTS to the api
-    async onDonePressed(){
-        try {
-            let response = await fetch(CONFIG.server.host + '/class/',{
-                method: 'POST',
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  className: this.state.className,
-                  classID: this.state.classID,
-                  school: this.state.school
-                })
-            });
+  async onDonePressed() {
+    try {
+      let response = await fetch(CONFIG.server.host + '/class/', {
+        method: 'POST',
+        headers: this.state.authInfo.header,
+        body: JSON.stringify({
+          className: this.state.className,
+          classID: this.state.classID,
+          school: this.state.school
+        })
+      });
 
-            let responseJson = await response.text();
+  let responseJson = await response.text();
 
 
 
-            //verify if our operation was a success or failure
-            if(response.status >= 200 && response.status < 300){
-                console.log("response succes is:" + responseJson);
-                this.props.navigator.pop({
-                  id: 'ClassList'
-                });
-                console.log('DONE BUTTON WAS PRESSED')
-            }else{
-              console.log("response failure is:" + responseJson);
-              let errors = responseJson;
-              throw errors;
-            }
+  //verify if our operation was a success or failure
+  if(response.status >= 200 && response.status < 300){
+      console.log("response succes is:" + responseJson);
+      this.props.navigator.pop({
+        id: 'ClassList'
+      });
+      console.log('DONE BUTTON WAS PRESSED')
+  }else{
+    console.log("response failure is:" + responseJson);
+    let errors = responseJson;
+    throw errors;
+  }
 
-          } catch(errors) {
+} catch(errors) {
 
-            console.log("catch errors:" + errors);
+  console.log("catch errors:" + errors);
 
-            let formErrors = JSON.parse(errors);
+  let formErrors = JSON.parse(errors);
 
-            let errorsArray = [];
+  let errorsArray = [];
 
-            for(let key in formErrors){
-              if(formErrors[key].length > 1){
-                formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
-              }else {
-                errorsArray.push(`${key} ${formErrors[key]}`)
-              }
-            }
-            this.setState({errors: errorsArray});
-          }
+  for(let key in formErrors){
+    if(formErrors[key].length > 1){
+      formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
+    }else {
+      errorsArray.push(`${key} ${formErrors[key]}`)
     }
+  }
+  this.setState({errors: errorsArray});
+  }
+  }
 
       onBackPressed() {
          this.props.navigator.pop()

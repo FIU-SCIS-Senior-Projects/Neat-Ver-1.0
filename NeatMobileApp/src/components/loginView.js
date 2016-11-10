@@ -53,7 +53,7 @@ class loginView extends Component{
           })
         }
         else {
-          console.log('error during login: ', results.status);
+          console.log('error during login: ', results);
         }
     });
   }
