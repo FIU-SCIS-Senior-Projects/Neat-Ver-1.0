@@ -34,6 +34,8 @@ from django.core.mail import send_mail
 import hashlib, random
 #For converting google oAuth code
 from rest_framework_social_oauth2.views import ConvertTokenView
+#time
+from datetime import *
 
 #verify a user's e-mail given a code
 @api_view(['post'])
@@ -75,7 +77,7 @@ def sendEmailCode(request):
 def sendPasswordCode(request, email):
     user = User.objects.filter(email=email)
     if user.count() is 0:
-            return Response({'error': 'E-mail provided not in database'},status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'E-mail provided not in database'},status=status.HTTP_400_BAD_REQUEST)
     user = user[0]
     profile = user.profile
     code = genCode(user.username)
@@ -124,45 +126,139 @@ def genCode(username):
 #Get user progress for an assignment, given assignment pk
 @api_view(['get'])
 def getAssigProgressView(request, pk):
-    taskNum, taskProg = 0, 0
     assig = Assignment.objects.filter(pk=pk)
     if assig.count() is 0:
         return Response({'error': 'assignment provided not in database'},status=status.HTTP_400_BAD_REQUEST)
     else:
-        assig = assig[0]
-        for task in assig.tasks.filter(user=request.user):
-            taskNum += 1
-            if task.isDone == True:
-                taskProg += 1
-        if taskNum == 0:
+        data = getAssignmentData(assig[0], request.user, True)
+        if not data:
             return Response({'error': 'this user has no tasks in this assignment'},status=status.HTTP_400_BAD_REQUEST)
-        return Response({'percentage': (taskProg/taskNum)})
+        else:
+            return Response(data)
 
 #Get assignment statistics, given assignment pk
 @api_view(['get'])
 def CollabView(request, pk):
     assig = Assignment.objects.filter(pk=pk)
+    total, count = 0.0 , 0
     array = []
     if assig.count() is 0:
         return Response({'error': 'assignment provided not in database'},status=status.HTTP_400_BAD_REQUEST)
     else:
-        assig = assig[0]
-        for rosterObj in AssignmentRoster.objects.filter(assignment=assig):
-            taskNum, taskProg = 0, 0
-            for task in assig.tasks.filter(user=rosterObj.user):
-                taskNum += 1
-                if task.isDone == True:
-                    taskProg += 1
-            if taskNum != 0:
-                array.append({'user': rosterObj.user.email, 'name': rosterObj.user.first_name, 'percentage': (taskProg/taskNum)})
-        return Response(array)
+        for rosterObj in AssignmentRoster.objects.filter(assignment=assig[0]):
+            data = getAssignmentData(assig[0], rosterObj.user, False)
+            if data:
+                total += data[0]['progress']
+                count += count + 1
+        return Response({'average' : total/count})
+
+
+#Compute assignment percentages, weights
+#if detailed = True , smart status is computed
+def getAssignmentData(assig, user, detailed):
+    weights = [0.5, 1.0, 1.5]
+    total, progress = 0.0 , 0.0
+    data = []
+    tasks = assig.tasks.filter(user=user)
+    for task in tasks:
+        difficulty = task.difficulty
+        if difficulty == 'medium':
+            weight = weights[1]
+        elif difficulty == 'low':
+            weight = weights[0]
+        else:
+            weight = weights[2]
+        if task.isDone == True:
+            state = 1
+        else:
+            state = 0
+        data += [{'task pk' : task.pk, 'weight' : weight, 'state' : state}]
+        total += weight
+    if total == 0:
+        return data
+    for task in data:
+        task['percentage'] = task['weight']/total
+        task['contribution'] = (task['weight']*task['state'])/total
+        progress += task['contribution']
+    expected = getExpected(assig.startDate, assig.dueDate)
+    if detailed:
+        status = getSmartStatus(progress, expected)
+        data.insert(0,{'progress' : progress, 'expected' : expected, 'smart status' : status})
+    else:
+        data.insert(0,{'progress' : progress, 'expected' : expected})
+    return data
+
+def getExpected(startDate, dueDate):
+    now = datetime.now()
+    dueDate = datetime(
+    year=dueDate.year, 
+    month=dueDate.month,
+    day=dueDate.day,
+    )
+    startDate = datetime(
+    year=startDate.year, 
+    month=startDate.month,
+    day=startDate.day,
+    )
+    totalTime = dueDate-startDate
+    timePassed = now-startDate
+    return timePassed/totalTime
+
+
+def getSmartStatus(current, expected):
+    result = ['Not Tracking Yet', 'On Track', 'Slightly Behind', 'Considerably Behind', 'Significantly Behind']
+    milestone = [0.3, 0.6, 0.9]
+    diff = expected - current
+    #not tracking
+    if current < milestone[0]:
+        return result[0]
+    #ahead of expected
+    elif diff <= 0:
+        return result[1]
+    #first milestone range
+    elif milestone[0] <= current < milestone[1]:
+        threshold = [0.15, 0.25]
+        if diff < threshold[0]:
+            return result[2]
+        elif threshold[0] <= diff < threshold[1]:
+            return result[3]
+        else:
+            return result[4]
+    #second milestone range
+    elif milestone[1] <= current < milestone[2]:
+        threshold = [0.1, 0.2]
+        if diff < threshold[0]:
+            return result[2]
+        elif threshold[0] <= diff < threshold[1]:
+            return result[3]
+        else:
+            return result[4]
+    #third milestone range
+    else:
+        threshold = [0.05, 0.15]
+        if diff < threshold[0]:
+            return result[2]
+        elif threshold[0] <= diff < threshold[1]:
+            return result[3]
+        else:
+            return result[4]
 
 #Get user dashboard info, given token
+#Also calculate additional task information & smart status
 @api_view(['get'])
 def DashboardView(request):
-    queryset = Assignment.objects.filter(roster__user=request.user)
+    queryset = (Assignment.objects.filter(roster__user=request.user)).order_by('pk')
     serializer = DashboardSerializer(queryset, many=True, context={'request': request})
-    return Response(serializer.data)
+    data = serializer.data
+    for assig in data:
+        subdata = getAssignmentData(Assignment.objects.get(pk=assig['pk']), request.user, True)
+        if subdata:
+            assig.update(subdata.pop(0))
+            for x, y in zip(assig['tasks'], subdata):
+                y.pop('task pk')
+                y.pop('state')
+                x.update(y)
+    return Response(data)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -233,7 +329,7 @@ class AssignmentViewSet(viewsets.ModelViewSet):
 class TaskViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsCreatorCanView,)
     filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
-    filter_fields = ('assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'isApproved')
+    filter_fields = ('assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'isApproved', 'dueDate', 'difficulty')
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
