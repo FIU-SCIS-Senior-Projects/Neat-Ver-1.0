@@ -1,45 +1,38 @@
-'use strict'
+import React, { PropTypes } from 'react';
+import t from 'tcomb-form-native';
 
-import React, { PropTypes, Component } from 'react';
+let Form = t.form.Form;
 
-var t = require('tcomb-form-native');
-var Form = t.form.Form;
-
-var LoginFormInput = t.struct({
+let LoginFormInput = t.struct({
   username: t.String,
   password: t.String,
 });
 
-var options = {
+let options = {
   auto: 'placeholders',
   fields: {
     username: {
+      keyboardType: 'email-address',
       autoCapitalize: 'none',
-      error: 'Enter username'
+      returnKeyType: 'next',
+      error: 'Enter username',
     },
     password: {
       secureTextEntry: true,
-      error: 'Enter password'
+      error: 'Enter password',
     },
-  }
-}
-
-class LoginForm extends Component{
-  constructor(props){
-    super(props);
-  }
-
-  render(){
-    return(
-      <Form
-        ref="form"
-        type={LoginFormInput}
-        options={options}
-        value={this.props.value}
-        onChange={this.props.onChange}
-        />
-    )
-  }
-}
+  },
+};
+const LoginForm = (props) => {
+  return (
+    <Form
+      // ref="form"
+      type={LoginFormInput}
+      options={options}
+      value={props.value}
+      onChange={props.onChange}
+    />
+  );
+};
 
 module.exports = LoginForm;

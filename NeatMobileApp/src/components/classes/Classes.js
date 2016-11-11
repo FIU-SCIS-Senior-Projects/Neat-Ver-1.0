@@ -9,10 +9,10 @@ import {
 
 import styles from './styles';
 import NavigationBar from 'react-native-navbar';
-
-var ClassForm = require('./ClassForm');
-var ClassView = require('./ClassView');
-var moment = require('moment');
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import moment from 'moment';
+import ClassForm from './ClassForm';
+import ClassView from './ClassView';
 import CONFIG from '../../config';
 import AuthService from '../../utilities/AuthService';
 
@@ -99,44 +99,32 @@ class Classes extends Component{
       }
 
     render(){
-      // console.log('current routes', this.props.navigator.getCurrentRoutes(0));
         return(
           <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
             <View style={styles.container}>
-            <NavigationBar
-              title={{title: 'Classes'}}
-              leftButton={(this.state.levels <2)? {title: ''} :{
-                title: 'Back',
-                handler: () => this.onBackPressed()
+              <NavigationBar
+              title={{
+                title: 'Classes',
+                tintColor: '#F5FCFF',
+              }}
+                leftButton={(this.state.levels <2)? {title: ''} :{
+                  title: <FontAwesome name='chevron-left' size={20} />,
+                  handler: () => this.onBackPressed(),
+                  tintColor: '#F5FCFF',
               }}
               rightButton={{
-                title: 'Add',
-                handler: () => this.onAddPressed()
+                title: <FontAwesome name='plus' size={25} />,
+                handler: () => this.onAddPressed(),
+                tintColor: '#F5FCFF',
               }}
-              tintColor='#4EC0B2'
-               />
-                {/* <Text style={styles.label}>Class Dashboard</Text> */}
-                  <ListView
-                    style={{flex: 1, alignSelf: 'stretch'}}
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRow.bind(this)}
-                    enableEmptySections= {true}
-                  />
-                {/* <TouchableHighlight style={styles.button}
-                    onPress={this.onAddPressed.bind(this)}
-                    >
-                    <Text style={styles.buttonText}>
-                            Add Class
-                    </Text>
-                </TouchableHighlight> */}
-
-                {/* {(this.state.levels < 2) ? null : (<TouchableHighlight style={styles.button}
-                    onPress={this.onBackPressed.bind(this)}
-                    >
-                    <Text style={styles.buttonText}>
-                            Back
-                    </Text>
-                </TouchableHighlight>)} */}
+              tintColor='#2194f3'
+            />
+              <ListView
+                style={{flex: 1, alignSelf: 'stretch'}}
+                dataSource={this.state.dataSource}
+                renderRow={this.renderRow.bind(this)}
+                enableEmptySections
+              />
             </View>
           </Image>
         );

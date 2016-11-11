@@ -152,36 +152,35 @@ class Assignments extends Component {
   render() {
     // console.log('current routes', this.props.navigator.getCurrentRoutes(0));
     return (
-      <Image
-        source={require('../../assets/img/blurback.jpg')}
-        style={styles.backgroundImage}
-      >
-        <View style={styles.container}>
-          <NavigationBar
-            title={{ title: 'Dashboard' }}
-            rightButton={{
-            // title: <FontAwesome name='plus-circle' />,
-              title: 'Add',
-              handler: () => this.onAddPressed(),
-            }}
-            leftButton={{
-              title: 'Logout',
-              handler: () => AuthService.logout(),
-            }}
-            tintColor="#4EC0B2"
-          />
-          {/* <Text style={styles.label}>Dashboard</Text> */}
-          <Text style={styles.heading}>
-            Hello Neat Dev Team!
-          </Text>
-          <ListView
-            style={{ backgroundColor: 'transparent' }}
-            dataSource={this.state.dataSource}
-            renderRow={this.renderRow.bind(this)}
-            enableEmptySections
-          />
-        </View>
-      </Image>
+      <View style={styles.container}>
+        <NavigationBar
+          title={{
+            title: 'Dashboard',
+            tintColor: '#F5FCFF',
+           }}
+          rightButton={{
+            title: <FontAwesome name="plus" size={25} />,
+            handler: () => this.onAddPressed(),
+            tintColor: '#F5FCFF',
+          }}
+          leftButton={{
+            title: <FontAwesome name='sign-out' size={25} />,
+            handler: () => AuthService.logout(),
+            tintColor: '#F5FCFF',
+          }}
+          tintColor='#2194f3'
+        />
+        {/* <Text style={styles.label}>Dashboard</Text> */}
+        <Text style={styles.heading}>
+          Hello Neat Dev Team!
+        </Text>
+        <ListView
+          style={{ backgroundColor: 'transparent' }}
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow.bind(this)}
+          enableEmptySections
+        />
+      </View>
     );
   }
 }

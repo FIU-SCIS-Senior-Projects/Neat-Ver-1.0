@@ -149,16 +149,21 @@ class AssignmentForm extends Component {
         style={styles.backgroundImage}>
         <View style={{alignItems: 'stretch'}}>
         <NavigationBar
-          title={{title: 'Add Assignment'}}
+          title={{
+            title: 'Add Assignment',
+            tintColor: '#F5FCFF',
+          }}
           leftButton={{
-            title: 'Cancel',
-            handler: () => this.props.navigator.pop()
+            title: <FontAwesome name='times' size={20} />,
+            handler: () => this.props.navigator.pop(),
+            tintColor: '#F5FCFF',
           }}
           rightButton={{
-            title: 'Done',
-            handler: () => this.onDonePressed()
+            title: <FontAwesome name='check' size={25} />,
+            handler: () => this.onDonePressed(),
+            tintColor: '#F5FCFF',
           }}
-          tintColor='#4EC0B2'
+          tintColor='#2194f3'
            />
           <TextInput
             style={styles.input}
@@ -197,22 +202,6 @@ class AssignmentForm extends Component {
                   <PickerItem value='CREATE' label='Add new class'/>
                 </Picker>
           </Animated.View>
-
-          {/* <TouchableHighlight
-            onPress={this.onDonePressed.bind(this)}
-            style={styles.button}>
-            <Text style={styles.buttonText}>
-              Done
-            </Text>
-          </TouchableHighlight>
-
-          <TouchableHighlight
-            onPress={() => this.props.navigator.pop()}
-            style={styles.button}>
-            <Text style={styles.buttonText}>
-              Back
-            </Text>
-          </TouchableHighlight> */}
         </View>
       </Image>
     );

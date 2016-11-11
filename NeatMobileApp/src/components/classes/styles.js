@@ -9,7 +9,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    backgroundColor: '#F5FCFF',
   },
   button: {
     flexDirection: 'row',

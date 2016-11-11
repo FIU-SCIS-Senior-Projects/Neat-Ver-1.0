@@ -11,12 +11,13 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import NavigationBar from 'react-native-navbar';
+var moment = require('moment');
 
 import styles from './styles';
-import NavigationBar from 'react-native-navbar';
 import AuthService from '../../utilities/AuthService';
 
-var moment = require('moment');
 import CONFIG from '../../config';
 
 /* TODO
@@ -110,38 +111,27 @@ render(){
             // style={{ marginTop: 65 }}
             >
           <NavigationBar
-            title={{title: 'Add a New Class'}}
+            title={{
+              title: 'Add a New Class',
+              tintColor: '#F5FCFF',
+            }}
             leftButton={{
-              title: 'Cancel',
-              handler: () => this.onBackPressed()
+              title: <FontAwesome name='times' size={20} />,
+              handler: () => this.onBackPressed(),
+              tintColor: '#F5FCFF',
             }}
             rightButton={{
-              title: 'Done',
-              handler: () => this.onDonePressed()
+              title: <FontAwesome name='check' size={25} />,
+              handler: () => this.onDonePressed(),
+              tintColor: '#F5FCFF',
             }}
-            tintColor='#4EC0B2'
+            tintColor='#2194f3'
              />
               <TextInput
                       style={styles.input}
                       onChangeText={(val) => this.setState({className: val})}
                       placeholder="Class Name">
               </TextInput>
-
-              {/* <TouchableHighlight
-                  onPress={this.onDonePressed.bind(this)}
-                  style={styles.button}>
-                      <Text style={styles.buttonText}>
-                          Done
-                      </Text>
-              </TouchableHighlight>
-
-              <TouchableHighlight
-                  onPress={this.onBackPressed.bind(this)}
-                  style={styles.button}>
-                      <Text style={styles.buttonText}>
-                          Back
-                      </Text>
-              </TouchableHighlight> */}
           </View>
           </Image>
 

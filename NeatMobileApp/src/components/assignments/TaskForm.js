@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import NavigationBar from 'react-native-navbar';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 
@@ -113,9 +115,24 @@ class TaskForm extends Component{
                         mode="date"/> : <View />
 
         return(
-          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
-            <View style={{ marginTop: 65 }}>
-
+            <View style={{ alignItems: 'stretch' }}>
+            <NavigationBar
+              title={{
+                title: 'Add Task',
+              tintColor: '#F5FCFF',
+            }}
+              leftButton={{
+                title: <FontAwesome name='times' size={20} />,
+                handler: () => this.props.navigator.pop(),
+                tintColor: '#F5FCFF',
+              }}
+              rightButton={{
+                title: <FontAwesome name='check' size={25} />,
+                handler: () => this.onDonePressed(),
+                tintColor: '#F5FCFF',
+              }}
+              tintColor='#2194f3'
+               />
                 <TextInput
                         style={styles.input}
                         onChangeText={(val) => this.setState({taskName: val})}
@@ -129,24 +146,7 @@ class TaskForm extends Component{
 
                     </TouchableOpacity>
                     {showDatePicker}
-
-                <TouchableHighlight
-                    onPress={this.onDonePressed.bind(this)}
-                    style={styles.button}>
-                        <Text style={styles.buttonText}>
-                            Done
-                        </Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight
-                    onPress={() => this.props.navigator.pop()}
-                    style={styles.button}>
-                        <Text style={styles.buttonText}>
-                            Back
-                        </Text>
-                </TouchableHighlight>
             </View>
-          </Image>
         );
     }
 }

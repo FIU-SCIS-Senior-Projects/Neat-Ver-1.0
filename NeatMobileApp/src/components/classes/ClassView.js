@@ -14,6 +14,7 @@ import {
   Image
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 
@@ -120,47 +121,35 @@ class ClassView extends Component{
         )
       }
 
-    render(){
-        return(
-          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
-          {/* <Text style={styles.label}>{this.props.className}</Text> */}
-          <NavigationBar
-            title={{ title: this.props.className }}
-            leftButton={{
-              title: 'Back',
-              handler: () => this.pressDashboard()
-            }}
-            rightButton={{
-              title: 'Add',
-              handler: () => this.onAddAssignment()
-            }}
-            tintColor='#4EC0B2'
-             />
-          <View style={styles.container}>
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        <NavigationBar
+          title={{
+            title: this.props.className,
+            tintColor: '#F5FCFF',
+          }}
+          leftButton={{
+            title: <FontAwesome name='chevron-left' size={20} />,
+            handler: () => this.pressDashboard(),
+            tintColor: '#F5FCFF',
+          }}
+          rightButton={{
+            title: <FontAwesome name='plus' size={25} />,
+            handler: () => this.onAddAssignment(),
+            tintColor: '#F5FCFF',
+          }}
+          tintColor='#2194f3'
+           />
+        <View style={styles.container}>
 
-          <ListView
-            dataSource={this.state.dataSource}
-            renderRow={this.renderRow.bind(this)}
-            enableEmptySections= {true}
-          />
-
-          {/* <TouchableHighlight style={styles.button}
-              onPress={this.onAddAssignment.bind(this)}
-          >
-              <Text style={styles.buttonText}>
-                      Add Assignment
-              </Text>
-          </TouchableHighlight> */}
-
-          {/* <TouchableHighlight style={styles.button}
-              onPress={this.pressDashboard.bind(this)}
-          >
-              <Text style={styles.buttonText}>
-                      Class Dashboard
-              </Text>
-          </TouchableHighlight> */}
-          </View>
-          </Image>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow.bind(this)}
+          enableEmptySections
+        />
+        </View>
+        </View>
         );
     }
 }

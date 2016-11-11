@@ -15,12 +15,11 @@ import {
   Image,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
-
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { CheckBox } from 'react-native-elements'
 import styles from './styles';
-
-var Assignments = require('./UserAssignment');
+import Assignments from './UserAssignment';
 import CONFIG from '../../config';
-
 import AuthService from '../../utilities/AuthService';
 
 
@@ -130,10 +129,15 @@ class AssignmentView extends Component{
         // console.log("Before return render, rowData: " + JSON.stringify(rowData));
         return(
                <View style={styles.List}>
-                    <Switch
+               <CheckBox
+                checked={rowData.isDone}
+                onPress={() => {this.toogleSwitched(rowData); console.log("clicked on voluechange")}}
+                // containerStyle={{paddingLeft: 80, marginBottom: 5}}
+              />
+                    {/* <Switch
                         onValueChange={() => {this.toogleSwitched(rowData); console.log("clicked on voluechange")}}
                         style={{paddingLeft: 80, marginBottom: 5}}
-                        value={rowData.isDone} />
+                        value={rowData.isDone} /> */}
               <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center'}}>
                <Text>{rowData.taskName}</Text>
                </View>
@@ -143,26 +147,29 @@ class AssignmentView extends Component{
 
     render(){
         return(
-          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
-          {/* <Text style={styles.label}>{this.props.rowData.assignmentName}</Text> */}
             <View style={styles.container}>
             <NavigationBar
-              title={{title: this.props.rowData.assignmentName}}
+              title={{
+                title: this.props.rowData.assignmentName,
+                tintColor: '#F5FCFF',
+              }}
               leftButton={{
-                title: 'Back',
-                handler: () => this.pressDashboard()
+                title: <FontAwesome name='chevron-left' size={20} />,
+                handler: () => this.pressDashboard(),
+                tintColor: '#F5FCFF',
               }}
               rightButton={{
-                title: 'Add',
-                handler: () => this.onAddTask()
+                title: <FontAwesome name='plus' size={25} />,
+                handler: () => this.onAddTask(),
+                tintColor: '#F5FCFF',
               }}
-              tintColor='#4EC0B2'
+              tintColor='#2194f3'
                />
             <ScrollView>
               <ListView
                 dataSource={this.state.dataSource}
                 renderRow={this.renderRow.bind(this)}
-                enableEmptySections= {true}
+                enableEmptySections
               />
             </ScrollView>
               {/* <TouchableHighlight style={styles.button}
@@ -181,7 +188,6 @@ class AssignmentView extends Component{
                   </Text>
               </TouchableHighlight> */}
             </View>
-          </Image>
         );
     }
 }
