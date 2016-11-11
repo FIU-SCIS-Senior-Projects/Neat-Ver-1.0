@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'stretch',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: 'white',
   },
   button: {
     flexDirection: 'row',
