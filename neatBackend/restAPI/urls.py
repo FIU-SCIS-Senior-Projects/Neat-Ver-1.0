@@ -31,5 +31,6 @@ urlpatterns = [
     url(r'^getAssigProgress/(?P<pk>[a-z0-9]+)/', views.getAssigProgressView),
     url(r'^collab/assig/(?P<pk>[a-z0-9]+)/', views.CollabView),
     url(r'^dashboard/', views.DashboardView),
+    url(r'^startGroup/', views.startGroupView),
     # url(r'^auth/(?P<usr>[a-z0-9]+)/(?P<pw>[a-z0-9]+)/$', views.AuthView.as_view()),
 ]
