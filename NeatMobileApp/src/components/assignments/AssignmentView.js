@@ -34,7 +34,6 @@ class AssignmentView extends Component{
         this.state={
             dataSource: ds,
             assignmentUrl: props.rowData.url,
-            task: rowData.tasks,
             toggleState: true,
             trueSwitchIsOn: true,
         };
