@@ -36,6 +36,7 @@ import hashlib, random
 from rest_framework_social_oauth2.views import ConvertTokenView
 #time
 from datetime import *
+from django.apps import apps
 
 #verify a user's e-mail given a code
 @api_view(['post'])
@@ -336,6 +337,24 @@ class TaskViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+@api_view(['post'])
+@authentication_classes([])
+@permission_classes([])
+def startGroupView(request):
+    group, created = Group.objects.get_or_create(name='student')
+    if created:
+        appList = ['restAPI', 'auth', 'authtoken', 'contenttypes', 'corsheaders', 'guardian', 'sessions', 'oauth2_provider', 'social_auth']
+        for app in appList:
+            models = apps.get_app_config(app).get_models()
+            for model in models:
+                content_type = ContentType.objects.get_for_model(model)
+                permissions = Permission.objects.filter(content_type=content_type)
+                for permission in permissions:
+                    group.permissions.add(permission)
+        return Response({"status" : "group created"})
+    else:
+        return Response({'error': 'group already exists'},status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def oauth_code(request):
