@@ -83,113 +83,88 @@ class AssignmentView extends Component{
         assignmentUrl: this.props.rowData.url,
       },
     });
-    }
+  }
 
-    pressDashboard(){
+  pressDashboard() {
         // let route = this.props.navigator.getCurrentRoutes().find((route) => route.id === 'AssignmentsDash');
-        console.log(this.props.navigator.getCurrentRoutes());
+    // console.log(this.props.navigator.getCurrentRoutes());
         // this.props.navigator.popToRoute(route);
       // this.props.navigator.resetTo(this.props.navigator.getCurrentRoutes()[0]);
-      this.props.navigator.pop();
-    }
-    toogleSwitched(rowData){
-        //console.log("rowData before is: " + JSON.stringify(rowData));
-        rowData.isDone = !rowData.isDone;
-        this.forceUpdate();
-        //console.log("rowData is: " + JSON.stringify(rowData));
-        console.log('rowData from toggle', rowData);
-        fetch(rowData.url, {
-              method: 'PUT',
-              headers: this.state.authInfo.header,
-              body: JSON.stringify({
-                // assignment: rowData.assignment,
-                // user: rowData.user,
-                // taskName: rowData.taskName,
-                // isDone: rowData.isDone,
-                // hoursPlanned: rowData.hoursPlanned,
-                // hoursCompleted: rowData.hoursCompleted,
-                // startDate: rowData.startDate,
-                // endDate: rowData.endDate,
-                ...rowData,
-                isDone: rowData.isDone,
+    this.props.navigator.pop();
+  }
+  toogleSwitched(rowData) {
+        // console.log("rowData before is: " + JSON.stringify(rowData));
+    rowData.isDone = !rowData.isDone;
+    this.forceUpdate();
+    // console.log("rowData is: " + JSON.stringify(rowData));
+    // console.log('rowData from toggle', rowData);
+    fetch(rowData.url, {
+      method: 'PUT',
+      headers: this.state.authInfo.header,
+      body: JSON.stringify({
+        // assignment: rowData.assignment,
+        // user: rowData.user,
+        // taskName: rowData.taskName,
+        // isDone: rowData.isDone,
+        // hoursPlanned: rowData.hoursPlanned,
+        // hoursCompleted: rowData.hoursCompleted,
+        // startDate: rowData.startDate,
+        // endDate: rowData.endDate,
+        ...rowData,
+        isDone: rowData.isDone,
+      }),
+    })
+    .then((response) => response.json())
+    .then((responseData) => console.log('PUT success with response: ' + JSON.stringify(responseData)))
+    .catch((error) => console.error(error));
+  }
+  renderRow(rowData) {
+    return (
+      <View>
+        <CheckBox
+          title={rowData.taskName}
+          checked={rowData.isDone}
+          onPress={() => this.toogleSwitched(rowData)}
+        />
+      </View>
+    );
+  }
 
-              })
-        })
-        .then((response) => response.json())
-        .then((responseData) => console.log("PUT success with response: " + JSON.stringify(responseData)))
-        .catch((errpr) => console.error(error));
-
-    }
-
-    async putToogleData(rowData){
-    }
-
-
-    renderRow(rowData){
-        // console.log("Before return render, rowData: " + JSON.stringify(rowData));
-        return(
-               <View style={styles.List}>
-               <CheckBox
-                checked={rowData.isDone}
-                onPress={() => {this.toogleSwitched(rowData); console.log("clicked on voluechange")}}
-                // containerStyle={{paddingLeft: 80, marginBottom: 5}}
-              />
-                    {/* <Switch
-                        onValueChange={() => {this.toogleSwitched(rowData); console.log("clicked on voluechange")}}
-                        style={{paddingLeft: 80, marginBottom: 5}}
-                        value={rowData.isDone} /> */}
-              <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center'}}>
-               <Text>{rowData.taskName}</Text>
-               </View>
-            </View>
-        );
-    }
-
-    render(){
-        return(
-            <View style={styles.container}>
-            <NavigationBar
-              title={{
-                title: this.props.rowData.assignmentName,
-                tintColor: '#F5FCFF',
-              }}
-              leftButton={{
-                title: <FontAwesome name='chevron-left' size={20} />,
-                handler: () => this.pressDashboard(),
-                tintColor: '#F5FCFF',
-              }}
-              rightButton={{
-                title: <FontAwesome name='plus' size={25} />,
-                handler: () => this.onAddTask(),
-                tintColor: '#F5FCFF',
-              }}
-              tintColor='#2194f3'
-               />
-            <ScrollView>
-              <ListView
-                dataSource={this.state.dataSource}
-                renderRow={this.renderRow.bind(this)}
-                enableEmptySections
-              />
-            </ScrollView>
-              {/* <TouchableHighlight style={styles.button}
-                  onPress={this.onAddTask.bind(this)}
-              >
-                  <Text style={styles.buttonText}>
-                          Add Task
-                  </Text>
-              </TouchableHighlight> */}
-
-              {/* <TouchableHighlight style={styles.button}
-                  onPress={this.pressDashboard.bind(this)}
-              >
-                  <Text style={styles.buttonText}>
-                          Assignment Dashboard
-                  </Text>
-              </TouchableHighlight> */}
-            </View>
-        );
-    }
+  render() {
+    return (
+      <View style={styles.container}>
+        <NavigationBar
+          title={{
+            title: this.props.rowData.assignmentName,
+            tintColor: '#F5FCFF',
+          }}
+          leftButton={{
+            title: <FontAwesome name="chevron-left" size={20} />,
+            handler: () => this.pressDashboard(),
+            tintColor: '#F5FCFF',
+          }}
+          rightButton={{
+            title: <FontAwesome name="plus" size={25} />,
+            handler: () => this.onAddTask(),
+            tintColor: '#F5FCFF',
+          }}
+          tintColor="#2194f3"
+        />
+        <ScrollView>
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow.bind(this)}
+            enableEmptySections
+          />
+        </ScrollView>
+      </View>
+    );
+  }
 }
+
+AssignmentView.propTypes = {
+  navigator: React.PropTypes.object,
+  rowData: React.PropTypes.object,
+};
 
 module.exports = AssignmentView;

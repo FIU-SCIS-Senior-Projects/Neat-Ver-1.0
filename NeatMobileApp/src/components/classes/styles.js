@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     color: 'grey',
-    fontWeight: '100'
+    fontWeight: '100',
   },
   List: {
     borderColor: '#599D95',
@@ -41,10 +41,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 1
+    marginBottom: 1,
   },
   progress: {
-    margin: 10
+    margin: 10,
   },
   circles: {},
   input: {
@@ -52,14 +52,14 @@ const styles = StyleSheet.create({
     padding: 4,
     borderWidth: 1,
     borderColor: '#48bbec',
-    borderRadius: 0
+    borderRadius: 0,
   },
   label: {
     padding: 20,
     fontSize: 25,
     fontWeight: '300',
     justifyContent: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   backgroundImage: {
     flex: 1,
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'stretch',
     width: null,
-    height: null
+    height: null,
   },
   // rowLabel: {   fontSize: 14,   fontWeight: '200',   alignSelf: 'center',
   // justifyContent: 'center',   flexDirection: 'row', },
