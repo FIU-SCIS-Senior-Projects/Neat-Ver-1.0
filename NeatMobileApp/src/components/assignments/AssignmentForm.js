@@ -27,7 +27,6 @@ const UIPICKER_HEIGHT = 300;
    NOTE: you must create a class and a school before being able to add an assignment
 */
 let PickerItem = Picker.Item;
-var url = null
 class AssignmentForm extends Component {
   constructor(props) {
     super(props);
@@ -35,18 +34,16 @@ class AssignmentForm extends Component {
     this.state = {
       reducedList: {},
       dataSource: [],
-      assignmentName: "",
+      assignmentName: '',
       dueDate: new Date(),
-      classFK: '',//props.classUrl,
+      classFK: '', // props.classUrl,
       showDatePicker: false,
       showPicker: false,
       errors: [],
       classObj: {},
       className: 'Select Class',
-
       pickerValue: 'Select Class',
-    }
-    // console.log(this.state.classFK);
+    };
   }
 
   componentDidMount() {
@@ -59,8 +56,8 @@ class AssignmentForm extends Component {
   }
 
   componentWillReceiveProps() {
-      this.fetchClasss();
-    }
+    this.fetchClasss();
+  }
 
   fetchClasss() {
     return fetch(CONFIG.server.host + '/class/', {
@@ -70,22 +67,19 @@ class AssignmentForm extends Component {
     .then((response) => response.json())
     .then((responseJson) => {
       let classList = responseJson;
-      //console.log(classList);
+      // console.log(classList);
       let reduced = {};
       classList.map((s) => {
         reduced[s.classID] = s.className;
       });
-      //console.log(reduced);
-
-      this.setState({dataSource: classList, reducedList: reduced})
+      this.setState({ dataSource: classList, reducedList: reduced });
     }).catch((error) => {
       console.error(error);
     });
   }
 
-  //POSTS to the api
+  // POSTS to the api
   async onDonePressed() {
-
     try {
       let response = await fetch(CONFIG.server.host + '/assignment/', {
         method: 'POST',
@@ -122,117 +116,102 @@ class AssignmentForm extends Component {
         if (formErrors[key].length > 1) {
           formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
         } else {
-          errorsArray.push(`${key} ${formErrors[key]}`)
+          errorsArray.push(`${key} ${formErrors[key]}`);
         }
       }
-      this.setState({errors: errorsArray});
+      this.setState({ errors: errorsArray });
     }
   }
 
   onDateChange = (date) => {
-    this.setState({dueDate: date});
+    this.setState({ dueDate: date });
   };
 
   onValueChange = (value) => {
-
-    var val = JSON.parse(value);
+    let val = JSON.parse(value);
 
     this.setState({
-        pickerValue: value,
-        className: val.className,
-        classFK: val.url
-    })
+      pickerValue: value,
+      className: val.className,
+      classFK: val.url,
+    });
     console.log('value change ', val.className);
-    if(val.className === 'CREATE'){
-        this.props.navigator.push({
-                    type: 'Pop',
-                    id: 'ClassForm'
-                });
+    if (val.className === 'CREATE') {
+      this.props.navigator.push({
+        type: 'Pop',
+        id: 'ClassForm',
+      });
     }
-
-
   }
 
   render() {
-
-    // let animation = Animated.timing;
-    // let animationConfig = {duration: 200};
-    var showDatePicker = this.state.showDatePicker
+    let showDatePicker = this.state.showDatePicker
       ? <DatePickerIOS
-          style={{height: 150}}
-          date={this.state.dueDate}
-          onDateChange={this.onDateChange}
-          mode="date"/>
-      : <View/>
-
-
-
-    const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
+        style={{ height: 150 }}
+        date={this.state.dueDate}
+        onDateChange={this.onDateChange}
+        mode="date"
+      />
+      : <View />;
+    // const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
     const pickItems = this.state.dataSource.map((classObj, i) => {
-
-      return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className}/>
+      return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className} />;
     });
 
-     var showPicker = this.state.showPicker
-            ? <Picker
-              selectedValue={this.state.pickerValue}
-              onValueChange={this.onValueChange}>
-              {pickItems}
-              <PickerItem value={'{"className": "CREATE"}'} label='Add new class'/>
-            </Picker> : <View/>
+    let showPicker = this.state.showPicker
+      ? <Picker
+        selectedValue={this.state.pickerValue}
+        onValueChange={this.onValueChange}
+      >
+        {pickItems}
+        <PickerItem value={'{"className": "CREATE"}'} label="Add new class" />
+      </Picker> : <View />;
 
     return (
-      <Image
-        source={require('../../assets/img/blurback.jpg')}
-        style={styles.backgroundImage}>
-        <View style={{alignItems: 'stretch'}}>
+      <View style={[styles.container, { justifyContent: 'flex-start' }]}>
         <NavigationBar
           title={{
             title: 'Add Assignment',
             tintColor: '#F5FCFF',
           }}
           leftButton={{
-            title: <FontAwesome name='times' size={20} />,
+            title: <FontAwesome name="times" size={20} />,
             handler: () => this.props.navigator.pop(),
             tintColor: '#F5FCFF',
           }}
           rightButton={{
-            title: <FontAwesome name='check' size={25} />,
+            title: <FontAwesome name="check" size={25} />,
             handler: () => this.onDonePressed(),
             tintColor: '#F5FCFF',
           }}
-          tintColor='#2194f3'
-           />
+          tintColor="#2194f3"
+        />
+        <View style={{ padding: 5 }} >
           <TextInput
             style={styles.input}
-            onChangeText={(val) => this.setState({assignmentName: val})}
-            placeholder="Assignment Name">
-          </TextInput>
+            onChangeText={(val) => this.setState({ assignmentName: val })}
+            placeholder="Assignment Name"
+          />
 
-          <Text style={{paddingTop: 20}}>
-            Due Date
-          </Text>
-
+          <Text style={{ paddingTop: 20 }}>
+              Due Date
+            </Text>
           <TouchableOpacity
             style={styles.input}
-            onPress={() => this.setState({showDatePicker: !this.state.showDatePicker})}>
+            onPress={() => this.setState({ showDatePicker: !this.state.showDatePicker })}
+          >
             <Text>{moment(this.state.dueDate).format('MM/DD/YYYY')}</Text>
-
           </TouchableOpacity>
-            {showDatePicker}
-
+          {showDatePicker}
           <TouchableOpacity
-
-              onPress={() => this.setState({showPicker: !this.state.showPicker})}>
-              <Text>{this.state.className}</Text>
-
-
-            </TouchableOpacity>
-              {showPicker}
-
-
+            onPress={() => this.setState({ showPicker: !this.state.showPicker })}
+          >
+            <Text>{this.state.className}</Text>
+          </TouchableOpacity>
+          {showPicker}
         </View>
-      </Image>
+
+      </View>
     );
   }
 }
@@ -243,29 +222,10 @@ const Errors = (props) => {
       {props.errors.map((error, i) => <Text key={i} style={styles.error}>{error}</Text>)}
     </View>
   );
-}
+};
+
+AssignmentForm.propTypes = {
+  navigator: React.PropTypes.object,
+};
 
 module.exports = AssignmentForm;
-
-
-/*
-          <TouchableOpacity
-            onPress={() => {
-            Animated.timing(this.state.height, Object.assign({
-              toValue: (this.state.isCollapsed) ? UIPICKER_HEIGHT : 0
-            }, {duration: 200})).start();
-            this.setState({isCollapsed: !this.state.isCollapsed});
-          }}>
-            <Text>{this.state.className}</Text>
-
-          </TouchableOpacity>
-
-          <Animated.View style={{height: this.state.height, overflow: 'hidden'}}>
-            <Picker
-                  selectedValue={this.state.className}
-                  onValueChange={(value) => this.setState({classObj: value, className: value.className})}>
-                  {pickItems}
-                  <PickerItem value='CREATE' label='Add new class'/>
-                </Picker>
-          </Animated.View>
-          */

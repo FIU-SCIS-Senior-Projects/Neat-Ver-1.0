@@ -84,49 +84,46 @@ class Classes extends Component{
       }
 
 
-      renderRow(rowData){
+  renderRow(rowData) {
+    return (
+      <TouchableHighlight
+        onPress={() => this.onPressRow(rowData)}
+        underlayColor="#ddd"
+      >
+        <View style={styles.List}>
+          <Text style={styles.rowLabel}>{rowData.className}</Text>
+        </View>
+      </TouchableHighlight>
+    );
+  }
 
-        return(
-          <TouchableHighlight
-            onPress={() => this.onPressRow(rowData)}
-            underlayColor='#ddd'
-          >
-          <View style={styles.List}>
-            <Text style={styles.rowLabel}>{rowData.className}</Text>
-          </View>
-         </TouchableHighlight>
-        )
-      }
-
-    render(){
-        return(
-          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
-            <View style={styles.container}>
-              <NavigationBar
-              title={{
-                title: 'Classes',
-                tintColor: '#F5FCFF',
-              }}
-                leftButton={(this.state.levels <2)? {title: ''} :{
-                  title: <FontAwesome name='chevron-left' size={20} />,
-                  handler: () => this.onBackPressed(),
-                  tintColor: '#F5FCFF',
-              }}
-              rightButton={{
-                title: <FontAwesome name='plus' size={25} />,
-                handler: () => this.onAddPressed(),
-                tintColor: '#F5FCFF',
-              }}
-              tintColor='#2194f3'
-            />
-              <ListView
-                style={{flex: 1, alignSelf: 'stretch'}}
-                dataSource={this.state.dataSource}
-                renderRow={this.renderRow.bind(this)}
-                enableEmptySections
-              />
-            </View>
-          </Image>
+  render() {
+    return (
+      <View style={styles.container}>
+        <NavigationBar
+          title={{
+            title: 'Classes',
+            tintColor: '#F5FCFF',
+          }}
+          leftButton={(this.state.levels < 2) ? { title: '' } : {
+            title: <FontAwesome name="chevron-left" size={20} />,
+            handler: () => this.onBackPressed(),
+            tintColor: '#F5FCFF',
+          }}
+          rightButton={{
+            title: <FontAwesome name="plus" size={25} />,
+            handler: () => this.onAddPressed(),
+            tintColor: '#F5FCFF',
+        }}
+        tintColor='#2194f3'
+      />
+        <ListView
+          style={{flex: 1, alignSelf: 'stretch'}}
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow.bind(this)}
+          enableEmptySections
+        />
+    </View>
         );
     }
 }
