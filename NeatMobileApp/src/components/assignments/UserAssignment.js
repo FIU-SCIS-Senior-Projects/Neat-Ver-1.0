@@ -62,7 +62,8 @@ class Assignments extends Component {
 
   onAddPressed() {
     this.props.navigator.push({
-      id: 'ClassList',
+      //id: 'ClassList',
+      id: 'AssignmentForm',
     });
   }
   fetchAssignments() {

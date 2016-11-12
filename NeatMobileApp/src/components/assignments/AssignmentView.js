@@ -34,6 +34,7 @@ class AssignmentView extends Component{
         this.state={
             dataSource: ds,
             assignmentUrl: props.rowData.url,
+            task: rowData.tasks,
             toggleState: true,
             trueSwitchIsOn: true,
         };
@@ -93,10 +94,10 @@ class AssignmentView extends Component{
       this.props.navigator.pop();
     }
     toogleSwitched(rowData){
-        // console.log("rowData before is: " + JSON.stringify(rowData));
+        //console.log("rowData before is: " + JSON.stringify(rowData));
         rowData.isDone = !rowData.isDone;
         this.forceUpdate();
-        // console.log("rowData is: " + JSON.stringify(rowData));
+        //console.log("rowData is: " + JSON.stringify(rowData));
         console.log('rowData from toggle', rowData);
         fetch(rowData.url, {
               method: 'PUT',

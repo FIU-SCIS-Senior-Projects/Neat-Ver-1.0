@@ -17,6 +17,7 @@ import moment from 'moment';
 import styles from './styles';
 import CONFIG from '../../config';
 import AuthService from '../../utilities/AuthService';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const UIPICKER_HEIGHT = 300;
 
@@ -26,24 +27,24 @@ const UIPICKER_HEIGHT = 300;
    NOTE: you must create a class and a school before being able to add an assignment
 */
 let PickerItem = Picker.Item;
-
+var url = null
 class AssignmentForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isCollapsed: true,
-      height: new Animated.Value(0),
       reducedList: {},
       dataSource: [],
       assignmentName: "",
       dueDate: new Date(),
-      classFK: props.classUrl,
+      classFK: '',//props.classUrl,
       showDatePicker: false,
+      showPicker: false,
       errors: [],
       classObj: {},
       className: 'Select Class',
-      value: {}
+
+      pickerValue: 'Select Class',
     }
     // console.log(this.state.classFK);
   }
@@ -57,6 +58,10 @@ class AssignmentForm extends Component {
     });
   }
 
+  componentWillReceiveProps() {
+      this.fetchClasss();
+    }
+
   fetchClasss() {
     return fetch(CONFIG.server.host + '/class/', {
       method: 'GET',
@@ -65,12 +70,12 @@ class AssignmentForm extends Component {
     .then((response) => response.json())
     .then((responseJson) => {
       let classList = responseJson;
-      console.log(classList);
+      //console.log(classList);
       let reduced = {};
       classList.map((s) => {
         reduced[s.classID] = s.className;
       });
-      console.log(reduced);
+      //console.log(reduced);
 
       this.setState({dataSource: classList, reducedList: reduced})
     }).catch((error) => {
@@ -128,7 +133,28 @@ class AssignmentForm extends Component {
     this.setState({dueDate: date});
   };
 
+  onValueChange = (value) => {
+
+    var val = JSON.parse(value);
+
+    this.setState({
+        pickerValue: value,
+        className: val.className,
+        classFK: val.url
+    })
+    console.log('value change ', val.className);
+    if(val.className === 'CREATE'){
+        this.props.navigator.push({
+                    type: 'Pop',
+                    id: 'ClassForm'
+                });
+    }
+
+
+  }
+
   render() {
+
     // let animation = Animated.timing;
     // let animationConfig = {duration: 200};
     var showDatePicker = this.state.showDatePicker
@@ -139,10 +165,22 @@ class AssignmentForm extends Component {
           mode="date"/>
       : <View/>
 
+
+
     const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
-    const pickItems = this.state.dataSource.map((classObj) => {
-      return <PickerItem key={classObj.classID} value={classObj} label={classObj.className}/>
+    const pickItems = this.state.dataSource.map((classObj, i) => {
+
+      return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className}/>
     });
+
+     var showPicker = this.state.showPicker
+            ? <Picker
+              selectedValue={this.state.pickerValue}
+              onValueChange={this.onValueChange}>
+              {pickItems}
+              <PickerItem value={'{"className": "CREATE"}'} label='Add new class'/>
+            </Picker> : <View/>
+
     return (
       <Image
         source={require('../../assets/img/blurback.jpg')}
@@ -184,6 +222,34 @@ class AssignmentForm extends Component {
             {showDatePicker}
 
           <TouchableOpacity
+
+              onPress={() => this.setState({showPicker: !this.state.showPicker})}>
+              <Text>{this.state.className}</Text>
+
+
+            </TouchableOpacity>
+              {showPicker}
+
+
+        </View>
+      </Image>
+    );
+  }
+}
+
+const Errors = (props) => {
+  return (
+    <View>
+      {props.errors.map((error, i) => <Text key={i} style={styles.error}>{error}</Text>)}
+    </View>
+  );
+}
+
+module.exports = AssignmentForm;
+
+
+/*
+          <TouchableOpacity
             onPress={() => {
             Animated.timing(this.state.height, Object.assign({
               toValue: (this.state.isCollapsed) ? UIPICKER_HEIGHT : 0
@@ -202,18 +268,4 @@ class AssignmentForm extends Component {
                   <PickerItem value='CREATE' label='Add new class'/>
                 </Picker>
           </Animated.View>
-        </View>
-      </Image>
-    );
-  }
-}
-
-const Errors = (props) => {
-  return (
-    <View>
-      {props.errors.map((error, i) => <Text key={i} style={styles.error}>{error}</Text>)}
-    </View>
-  );
-}
-
-module.exports = AssignmentForm;
+          */
