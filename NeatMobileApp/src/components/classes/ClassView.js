@@ -23,93 +23,66 @@ var Classes = require('./Classes');
 import CONFIG from '../../config';
 import AuthService from '../../utilities/AuthService';
 
-class ClassView extends Component{
+class ClassView extends Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props)
+    let ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+    });
 
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
+    this.state = {
+      dataSource: ds,
+      classUrl: props.classUrl,
+      authInfo: null,
+    };
+  }
 
-      this.state = {
-        dataSource: ds,
-        classUrl: props.classUrl,
-        authInfo: null,
-      };
-    }
-
-    componentDidMount(){
-      AuthService.getLoginToken((err, authInfo) => {
-        this.setState({
-          authInfo,
-        });
-        this.fetchAssignmentsForClass();
+  componentDidMount() {
+    this.fetchAssignmentsForClass();
+  }
+  componentWillReceiveProps() {
+    this.fetchAssignmentsForClass();
+  }
+  onAddAssignment() {
+    this.props.navigator.push({
+        id: 'AssignmentForm',
+        type: 'Pop',
+        passProps:{
+            classUrl: this.state.classUrl
+        }
+    });
+  }
+  onPressRow(rowData) {
+    console.log('on class assignment press', rowData);
+      this.props.navigator.push({
+          id: 'AssignmentView',
+          passProps: {
+            assignmentUrl: rowData.url,
+            assignmentName: rowData.assignmentName,
+            rowData,
+          }
       });
-    }
-
-    componentWillReceiveProps(){
-        this.fetchAssignmentsForClass();
-    }
-
-    fetchAssignmentsForClass(){
-
-    return fetch(CONFIG.server.host +'/assignment/', {
-      method: 'GET',
-      headers: this.state.authInfo.header,
-    })
-              .then((response) => response.json())
-              .then((responseJson) => {
-                var display = [];
-                var j = 0
-                console.log(responseJson);
-                for(var i = 0; i < responseJson.length; i++){
-                    if(responseJson[i].classFK ===  this.state.classUrl){
-                        display[j] = responseJson[i];
-                        j++;
-                    }
-                }
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(display)
-                })
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-    }
-
-    onAddAssignment(){
-        this.props.navigator.push({
-            id: 'AssignmentForm',
-            type: 'Pop',
-            passProps:{
-                classUrl: this.state.classUrl
-            }
-        });
-    }
-    pressDashboard(){
-         this.props.navigator.pop({
-            id: 'ClassList'
-        });
-    }
-    onPressRow(rowData){
-      console.log('on class assignment press', rowData);
-        this.props.navigator.push({
-            id: 'AssignmentView',
-            passProps: {
-              assignmentUrl: rowData.url,
-              assignmentName: rowData.assignmentName,
-              rowData,
-            }
-        });
-    }
-
-
-
-    renderRow(rowData){
-
-        return(
-        <TouchableHighlight
+  }
+  fetchAssignmentsForClass() {
+    const that = this;
+    AuthService.getAssignmentsForClass((responseJson) => {
+      const display = responseJson.filter((assignment) => {
+        return assignment.classFK === that.state.classUrl;
+      });
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(display),
+      });
+    });
+  }
+  pressDashboard() {
+    this.props.navigator.pop({
+      id: 'ClassList',
+    });
+  }
+  renderRow(rowData) {
+    return (
+      <TouchableHighlight
                 onPress={() => this.onPressRow(rowData)}
                 underlayColor='#ddd'
               >
@@ -135,23 +108,26 @@ class ClassView extends Component{
             tintColor: '#F5FCFF',
           }}
           rightButton={{
-            title: <FontAwesome name='plus' size={25} />,
+            title: <FontAwesome name="plus" size={25} />,
             handler: () => this.onAddAssignment(),
             tintColor: '#F5FCFF',
           }}
-          tintColor='#2194f3'
-           />
-        <View style={styles.container}>
-
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow.bind(this)}
-          enableEmptySections
+          tintColor="#2194f3"
         />
+        <View style={styles.container}>
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow.bind(this)}
+            enableEmptySections
+          />
         </View>
-        </View>
-        );
-    }
+      </View>
+    );
+  }
 }
+
+Classes.propTypes = {
+  navigator: React.PropTypes.object,
+};
 
 module.exports = ClassView;

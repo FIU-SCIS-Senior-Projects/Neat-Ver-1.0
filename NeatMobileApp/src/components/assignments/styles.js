@@ -65,8 +65,10 @@ const styles = StyleSheet.create({
     height: null,
   },
   heading: {
-    padding: 10,
+    padding: 30,
+    textAlign: 'center',
     fontSize: 36,
+    color: '#3b3b3b',
     fontWeight: '300',
     alignSelf: 'center',
   },
@@ -77,6 +79,11 @@ const styles = StyleSheet.create({
   },
   dueInLabel: {
     paddingLeft: 20,
+  },
+  inputContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    padding: 10,
   },
 });
 

@@ -5,12 +5,12 @@ import CONFIG from '../config';
 
 
 const authKey = 'auth';
-const userKey = 'user';
+const USERKEY = 'user';
 
-class AuthService {
+const AuthService = {
 
   getAuthInfo(cb) {
-    AsyncStorage.multiGet([authKey, userKey], (err, val) => {
+    AsyncStorage.multiGet([authKey, USERKEY], (err, val) => {
       if(err) {
         return cb(err);
       }
@@ -28,41 +28,58 @@ class AuthService {
           'Content-Type': 'application/json'
           // Authorization: 'Basic ' + zippedObj[authKey]
         },
-        token: JSON.parse(zippedObj[userKey])
+        token: JSON.parse(zippedObj[USERKEY])
       }
       return cb(null, authInfo);
     });
-  }
+  },
 
-  getLoginToken(cb) {
-    AsyncStorage.getItem(userKey, (err, val) => {
-      console.log('inside getLoginToken userkey', userKey, 'err:', err, 'val:', val);
-      if(err) {
-        return cb(err);
-      }
-      if(!val) {
-        return cb();
-      }
-      var authInfo = {
-        method: 'POST',
-        header: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Token ' + val,
-        },
-        token: val
-      }
-      return cb(null, authInfo);
+  getLoginToken() {
+    let prom = AsyncStorage.getItem(USERKEY);
+    return new Promise((resolve, reject) => {
+      prom.then(token => {
+        // console.log('===============>', token);
+        let authInfo = {
+          method: 'POST',
+          header: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + token,
+          },
+          token: token
+        }
+        resolve(authInfo);
+      })
+      .catch((err) => reject(err))
     });
-  }
+
+    // AsyncStorage.getItem(USERKEY, (err, val) => {
+    //   // console.log('inside getLoginToken userkey', USERKEY, 'err:', err, 'val:', val);
+    //   if(err) {
+    //     return cb(err);
+    //   }
+    //   if(!val) {
+    //     return cb();
+    //   }
+    //   var authInfo = {
+    //     method: 'POST',
+    //     header: {
+    //       'Content-Type': 'application/json',
+    //       'Authorization': 'Token ' + val,
+    //     },
+    //     token: val
+    //   }
+    //   cb(null, authInfo);
+    // });
+  },
 
   logout(cb){
-    AsyncStorage.removeItem(userKey, (err) => {
+    AsyncStorage.removeItem(USERKEY, (err) => {
       if(err) {
         return cb(err);
       }
       return null;
     })
-  }
+  },
 
   handleResponse(response) {
     // console.log('status: ', response);
@@ -70,43 +87,56 @@ class AuthService {
         return response;
     }
     else throw {
-        badCredentials : response.status == 400,
-        unknownError   : response.status != 400
+      badCredentials: response.status === 400,
+      unknownError: response.status !== 400,
+      success: false,
     }
-  }
+  },
 
-  doPost(url, params) {
-    console.log('url', url, 'params', params);
-    return fetch(url, {
-      method  : 'POST',
-      headers : { 'Content-Type' : 'application/json' },
-      body    : JSON.stringify(params)
+  doPost(url, params, type = 'POST') {
+    return new Promise((res, rej) => {
+      return this.getLoginToken()
+        .then(authInfo => res(authInfo))
+        .catch(err => rej(err));
+    }).then((authInfo) => {
+      return fetch(url, {
+        method: type,
+        headers: authInfo.header,
+        body: JSON.stringify(params),
+      });
     });
-  }
+  },
 
   doGet(url) {
-    return fetch(url, {method  : 'GET'})
-  }
+    return new Promise((res, rej) => {
+      return this.getLoginToken()
+        .then(authInfo => res(authInfo))
+        .catch(err => rej(err));
+    }).then((authInfo) => {
+      return fetch(url, {
+        method: 'GET',
+        headers: authInfo.header,
+      });
+    });
+  },
 
   register(creds, cb) {
-      console.log('creds from register AuthService', creds);
+    console.log('creds from register AuthService', creds);
 
-      this.doPost(CONFIG.server.host + '/user/', {
-        email     : creds.email,
-        first_name: creds.firstname,
-        last_name : creds.lastname,
-        password  : creds.password,
-        groups  : []
-      })
-      .then(this.handleResponse)
-      .then(response =>response.json())
-      .then((results)=> {
-        return cd({success: true});
-      })
-      .catch(err     => cb(err));
-  }//end of register
-
-
+    this.doPost(CONFIG.server.host + '/user/', {
+      email     : creds.email,
+      first_name: creds.firstname,
+      last_name : creds.lastname,
+      password  : creds.password,
+      groups  : []
+    })
+    .then(this.handleResponse)
+    .then(response =>response.json())
+    .then((results)=> {
+      return cd({success: true});
+    })
+    .catch(err     => cb(err));
+  },
   requestCode(creds, cb) {
     //if(!creds){
       //return;
@@ -128,32 +158,82 @@ class AuthService {
     //  return cd({success: true});
     //})
     .catch(err     => cb(err));
-}//end of requestCode
+  },//end of requestCode
 
-
-
-
-  login(creds, cb){
+  login(creds, cb) {
     console.log('creds from login AuthService', creds);
-
-    this.doPost(CONFIG.server.host + '/login/',{
-        "username": creds.username,
-        "password": creds.password,
-      })
+    fetch(`${CONFIG.server.host}/login/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: creds.username,
+        password: creds.password,
+      }),
+    })
     .then(this.handleResponse)
-    .then(response => response.json())
-    .then((results)=> {
+    .then((response) => response.json())
+    .then((results) => {
       console.log('after handleResponse');
-      AsyncStorage.setItem(userKey, results.token, (err)=> {
-          if(err){
-              throw err;
-          }
-          console.log('i got in');
-          return cb({success: true});
+      AsyncStorage.setItem(USERKEY, results.token, (err)=> {
+        if(err){
+            throw err;
+        }
+        console.log('i got in');
+        return cb({success: true});
       })
     })
     .catch(err => cb(err));
-  }
-}
+  },
+  getAssignments(cb) {
+    this.doGet(`${CONFIG.server.host}/dashboard/`)
+    .then((response) => response.json())
+    .then((responseJson) => cb(responseJson))
+    .catch((err) => cb(err));
+  },
+  getTasks(cb) {
+    this.doGet(`${CONFIG.server.host}/dashboard/`)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        cb(responseJson)
+      })
+      .catch((err) => cb(err));
+  },
+  getClasses(cb) {
+    this.doGet(`${CONFIG.server.host}/class/`)
+      .then((response) => response.json())
+      .then((responseJson) => cb(responseJson))
+      .catch((err) => cb(err));
+  },
+  getAssignmentsForClass(cb) {
+    this.doGet(`${CONFIG.server.host}/assignment/`)
+    .then((response) => response.json())
+    .then((responseJson) => {
+      cb(responseJson);
+    })
+    .catch((err) => cb(err));
+  },
+  updateTasks(url, params, cb) {
+    this.doPost(url, params, 'PUT')
+    .then((response) => response.json())
+    .then((responseData) => cb(responseData))
+    .catch((err) => cb(err));
+  },
+  addAssignment(params, cb) {
+    this.doPost(CONFIG.server.host + '/assignment/', params)
+    .then(this.handleResponse)
+    .then((response) => response.json())
+    .then((responseData) => cb({ success: true }))
+    .catch((err) => cb(err));
+  },
+  addTask(params, cb) {
+    this.doPost(CONFIG.server.host + '/task/', params)
+    .then(this.handleResponse)
+    .then((response) => response.json())
+    .then((responseData) => cb({ success: true }))
+    .catch((err) => cb(err));
+  },
+};
 
-module.exports = new AuthService();
+export default AuthService;

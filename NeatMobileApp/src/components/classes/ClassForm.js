@@ -49,94 +49,79 @@ class ClassForm extends Component{
       });
     });
   }
-  //POSTS to the api
+  // POSTS to the api
   async onDonePressed() {
     try {
       let response = await fetch(CONFIG.server.host + '/class/', {
         method: 'POST',
         headers: this.state.authInfo.header,
-        body: JSON.stringify({
-          className: this.state.className,
-          classID: this.state.classID,
-          school: this.state.school
-        })
-      });
+        body: JSON.stringify({className: this.state.className, classID: this.state.classID, school: this.state.school})
+        });
 
-  let responseJson = await response.text();
+        let responseJson = await response.text();
 
+        //verify if our operation was a success or failure
+        if (response.status >= 200 && response.status < 300) {
+            console.log("response succes is:" + responseJson);
+            this.props.navigator.pop({id: 'ClassList'});
+            console.log('DONE BUTTON WAS PRESSED')
+        } else {
+            console.log("response failure is:" + responseJson);
+            let errors = responseJson;
+            throw errors;
+        }
 
+    } catch (errors) {
 
-  //verify if our operation was a success or failure
-  if(response.status >= 200 && response.status < 300){
-      console.log("response succes is:" + responseJson);
-      this.props.navigator.pop({
-        id: 'ClassList'
-      });
-      console.log('DONE BUTTON WAS PRESSED')
-  }else{
-    console.log("response failure is:" + responseJson);
-    let errors = responseJson;
-    throw errors;
-  }
+        console.log("catch errors:" + errors);
 
-} catch(errors) {
+        let formErrors = JSON.parse(errors);
 
-  console.log("catch errors:" + errors);
+        let errorsArray = [];
 
-  let formErrors = JSON.parse(errors);
-
-  let errorsArray = [];
-
-  for(let key in formErrors){
-    if(formErrors[key].length > 1){
-      formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
-    }else {
-      errorsArray.push(`${key} ${formErrors[key]}`)
+        for (let key in formErrors) {
+            if (formErrors[key].length > 1) {
+                formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
+            } else {
+                errorsArray.push(`${key} ${formErrors[key]}`)
+            }
+        }
+        this.setState({errors: errorsArray});
     }
+}
+
+  onBackPressed() {
+    this.props.navigator.pop();
   }
-  this.setState({errors: errorsArray});
+
+  render() {
+    return (
+      <View >
+        <NavigationBar
+          title={{
+            title: 'Add a New Class',
+            tintColor: '#F5FCFF',
+          }}
+          leftButton={{
+            title: <FontAwesome name="times" size={20} />,
+            handler: () => this.onBackPressed(),
+            tintColor: '#F5FCFF',
+          }}
+          rightButton={{
+            title: <FontAwesome name="check" size={25} />,
+            handler: () => this.onDonePressed(),
+            tintColor: '#F5FCFF',
+          }}
+          tintColor="#2194f3"
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={(val) => this.setState({ className: val })}
+          placeholder="Class Name"
+        />
+      </View>
+    );
   }
-  }
-
-      onBackPressed() {
-         this.props.navigator.pop()
-
-      }
-
-render(){
-
-        return(
-          <Image source={require('../../assets/img/blurback.jpg')} style={styles.backgroundImage}>
-          <View
-            // style={{ marginTop: 65 }}
-            >
-          <NavigationBar
-            title={{
-              title: 'Add a New Class',
-              tintColor: '#F5FCFF',
-            }}
-            leftButton={{
-              title: <FontAwesome name='times' size={20} />,
-              handler: () => this.onBackPressed(),
-              tintColor: '#F5FCFF',
-            }}
-            rightButton={{
-              title: <FontAwesome name='check' size={25} />,
-              handler: () => this.onDonePressed(),
-              tintColor: '#F5FCFF',
-            }}
-            tintColor='#2194f3'
-             />
-              <TextInput
-                      style={styles.input}
-                      onChangeText={(val) => this.setState({className: val})}
-                      placeholder="Class Name">
-              </TextInput>
-          </View>
-          </Image>
-
-        );
-    }
 }
 
 const Errors = (props) => {
@@ -146,5 +131,9 @@ const Errors = (props) => {
     </View>
   );
 }
+
+ClassForm.propTypes = {
+  navigator: React.PropTypes.object,
+};
 
 module.exports = ClassForm;

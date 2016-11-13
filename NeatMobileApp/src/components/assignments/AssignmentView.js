@@ -39,42 +39,23 @@ class AssignmentView extends Component{
         };
     }
 
-    componentDidMount(){
-      AuthService.getLoginToken((err, authInfo) => {
-        this.setState({
-          authInfo,
-        });
-        // this.fetchTasks();
-      });
-      if(this.props.rowData.tasks) {
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.props.rowData.tasks)
-        });
-      }
-    }
-    componentWillReceiveProps(){
-        this.fetchTasks();
-    }
-    fetchTasks(){
-        return fetch(CONFIG.server.host + '/dashboard/', {
-          method: 'GET',
-          headers: this.state.authInfo.header,
-        })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          var assignmentList = responseJson;
-          var selectedAssignment =
-            assignmentList.filter((assignment) => this.props.rowData.pk === assignment.pk)[0];
-            console.log('found assignment from filter ', selectedAssignment);
-          this.setState({
-              dataSource: this.state.dataSource.cloneWithRows(selectedAssignment.tasks)
-          })
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-
+  componentDidMount() {
+      // AuthService.getLoginToken((err, authInfo) => {
+      //   this.setState({
+      //     authInfo,
+      //   });
+      //   // this.fetchTasks();
+      // });
+    this.fetchTasks();
+      // if(this.props.rowData.tasks) {
+      //   this.setState({
+      //       dataSource: this.state.dataSource.cloneWithRows(this.props.rowData.tasks)
+      //   });
+      // }
+  }
+  componentWillReceiveProps() {
+    this.fetchTasks();
+  }
   onAddTask() {
     this.props.navigator.push({
       id: 'TaskForm',
@@ -82,6 +63,16 @@ class AssignmentView extends Component{
       passProps: {
         assignmentUrl: this.props.rowData.url,
       },
+    });
+  }
+  fetchTasks() {
+    AuthService.getTasks((responseJson) => {
+      const selectedAssignment =
+          responseJson.filter((assignment) => this.props.rowData.pk === assignment.pk)[0];
+      console.log('found assignment from filter ', selectedAssignment);
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(selectedAssignment.tasks),
+      });
     });
   }
 
@@ -95,28 +86,13 @@ class AssignmentView extends Component{
   toogleSwitched(rowData) {
         // console.log("rowData before is: " + JSON.stringify(rowData));
     rowData.isDone = !rowData.isDone;
+    const newRowData = Object.assign({}, rowData);
     this.forceUpdate();
     // console.log("rowData is: " + JSON.stringify(rowData));
     // console.log('rowData from toggle', rowData);
-    fetch(rowData.url, {
-      method: 'PUT',
-      headers: this.state.authInfo.header,
-      body: JSON.stringify({
-        // assignment: rowData.assignment,
-        // user: rowData.user,
-        // taskName: rowData.taskName,
-        // isDone: rowData.isDone,
-        // hoursPlanned: rowData.hoursPlanned,
-        // hoursCompleted: rowData.hoursCompleted,
-        // startDate: rowData.startDate,
-        // endDate: rowData.endDate,
-        ...rowData,
-        isDone: rowData.isDone,
-      }),
+    AuthService.updateTasks(rowData.url, newRowData, (responseData) => {
+      console.log('PUT success or err with response: ' + JSON.stringify(responseData))
     })
-    .then((response) => response.json())
-    .then((responseData) => console.log('PUT success with response: ' + JSON.stringify(responseData)))
-    .catch((error) => console.error(error));
   }
   renderRow(rowData) {
     return (
@@ -125,8 +101,21 @@ class AssignmentView extends Component{
           title={rowData.taskName}
           checked={rowData.isDone}
           onPress={() => this.toogleSwitched(rowData)}
+          containerStyle={{backgroundColor: 'white', paddingBottom: 5, borderRadius: 0, borderWidth: 0}}
         />
       </View>
+    );
+  }
+
+  _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    return (
+      <View
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+      />
     );
   }
 
@@ -155,6 +144,7 @@ class AssignmentView extends Component{
             dataSource={this.state.dataSource}
             renderRow={this.renderRow.bind(this)}
             enableEmptySections
+            renderSeparator={this._renderSeparator}
           />
         </ScrollView>
       </View>

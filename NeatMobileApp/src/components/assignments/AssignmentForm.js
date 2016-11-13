@@ -47,80 +47,77 @@ class AssignmentForm extends Component {
   }
 
   componentDidMount() {
-    AuthService.getLoginToken((err, authInfo) => {
-      this.setState({
-        authInfo,
-      });
-      this.fetchClasss();
-    });
+    this.fetchClasses();
   }
 
   componentWillReceiveProps() {
-    this.fetchClasss();
+    this.fetchClasses();
   }
 
-  fetchClasss() {
-    return fetch(CONFIG.server.host + '/class/', {
-      method: 'GET',
-      headers: this.state.authInfo.header,
-    })
-    .then((response) => response.json())
-    .then((responseJson) => {
+  fetchClasses() {
+    AuthService.getClasses((responseJson) => {
       let classList = responseJson;
-      // console.log(classList);
       let reduced = {};
       classList.map((s) => {
         reduced[s.classID] = s.className;
       });
       this.setState({ dataSource: classList, reducedList: reduced });
-    }).catch((error) => {
-      console.error(error);
     });
   }
 
   // POSTS to the api
-  async onDonePressed() {
-    try {
-      let response = await fetch(CONFIG.server.host + '/assignment/', {
-        method: 'POST',
-        headers: this.state.authInfo.header,
-        body: JSON.stringify({
-          assignmentName: this.state.assignmentName,
-          classFK: this.state.classFK,
-          dueDate: moment(this.state.dueDate).format('YYYY-MM-DD')
-        })
-      });
-
-      let responseJson = await response.text();
-
-      //verify if our operation was a success or failure
-      if (response.status >= 200 && response.status < 300) {
-        console.log("response succes is:" + this.state.assignmentName);
-        this.props.navigator.pop({id: 'AssignmentsDash'});
-        console.log('DONE BUTTON WAS PRESSED')
-      } else {
-        console.log("response failure is:" + responseJson);
-        let errors = responseJson;
-        throw errors;
+  onDonePressed() {
+    AuthService.addAssignment({
+      assignmentName: this.state.assignmentName,
+      classFK: this.state.classFK,
+      dueDate: moment(this.state.dueDate).format('YYYY-MM-DD')
+    }, (results) => {
+      if (results.success) {
+        this.props.navigator.pop({ id: 'AssignmentsDash' });
       }
-
-    } catch (errors) {
-
-      console.log("catch errors:" + errors);
-
-      let formErrors = JSON.parse(errors);
-
-      let errorsArray = [];
-
-      for (let key in formErrors) {
-        if (formErrors[key].length > 1) {
-          formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
-        } else {
-          errorsArray.push(`${key} ${formErrors[key]}`);
-        }
-      }
-      this.setState({ errors: errorsArray });
-    }
+      console.log(results);
+    });
+    // try {
+    //   let response = await fetch(CONFIG.server.host + '/assignment/', {
+    //     method: 'POST',
+    //     headers: this.state.authInfo.header,
+    //     body: JSON.stringify({
+    //       assignmentName: this.state.assignmentName,
+    //       classFK: this.state.classFK,
+    //       dueDate: moment(this.state.dueDate).format('YYYY-MM-DD')
+    //     })
+    //   });
+    //
+    //   let responseJson = await response.text();
+    //
+    //   //verify if our operation was a success or failure
+    //   if (response.status >= 200 && response.status < 300) {
+    //     console.log("response succes is:" + this.state.assignmentName);
+    //     this.props.navigator.pop({id: 'AssignmentsDash'});
+    //     console.log('DONE BUTTON WAS PRESSED')
+    //   } else {
+    //     console.log("response failure is:" + responseJson);
+    //     let errors = responseJson;
+    //     throw errors;
+    //   }
+    //
+    // } catch (errors) {
+    //
+    //   console.log("catch errors:" + errors);
+    //
+    //   let formErrors = JSON.parse(errors);
+    //
+    //   let errorsArray = [];
+    //
+    //   for (let key in formErrors) {
+    //     if (formErrors[key].length > 1) {
+    //       formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
+    //     } else {
+    //       errorsArray.push(`${key} ${formErrors[key]}`);
+    //     }
+    //   }
+    //   this.setState({ errors: errorsArray });
+    // }
   }
 
   onDateChange = (date) => {

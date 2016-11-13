@@ -31,34 +31,24 @@ class Classes extends Component{
     };
   }
 
-  componentDidMount(){
-    this.setState({ levels: (this.props.navigator.getCurrentRoutes(0).length)});
-    AuthService.getLoginToken((err, authInfo) => {
-      this.setState({
-        authInfo,
-      });
-      this.fetchClasss();
-    });
+  componentDidMount() {
+    this.setState({ levels: (this.props.navigator.getCurrentRoutes(0).length) });
+    // AuthService.getLoginToken((err, authInfo) => {
+    //   this.setState({
+    //     authInfo,
+    //   });
+    this.fetchClasses();
   }
   componentWillReceiveProps() {
-    this.fetchClasss();
+    this.fetchClasses();
   }
 
-  fetchClasss(){
-    return fetch(CONFIG.server.host + '/class/', {
-      method: 'GET',
-      headers: this.state.authInfo.header,
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        var classList = responseJson;
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(classList)
-        })
-      })
-      .catch((error) => {
-        console.error(error);
+  fetchClasses() {
+    AuthService.getClasses((responseJson) => {
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(responseJson),
       });
+    });
   }
 
       onAddPressed(){
@@ -75,10 +65,10 @@ class Classes extends Component{
         console.log('class rowData', rowData);
 
         this.props.navigator.push({
-            id: 'ClassView',
-            passProps: {
-                classUrl: rowData.url,
-                className: rowData.className
+          id: 'ClassView',
+          passProps: {
+            classUrl: rowData.url,
+            className: rowData.className
             }
         });
       }
@@ -128,5 +118,8 @@ class Classes extends Component{
     }
 }
 
+Classes.propTypes = {
+  navigator: React.PropTypes.object,
+};
 
 module.exports = Classes;
