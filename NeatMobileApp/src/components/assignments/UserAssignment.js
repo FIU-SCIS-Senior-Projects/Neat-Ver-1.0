@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   Navigator,
   ListView,
 } from 'react-native';
@@ -15,6 +16,8 @@ import * as Progress from 'react-native-progress';
 
 var AssignmentForm = require('./AssignmentForm');
 var AssignmentView = require('./AssignmentView');
+var AssignmentRank = require('../assignmentRanking/AssignmentRank');
+
 var moment = require('moment'),
     CONFIG = require('../../config.js');
 
@@ -33,14 +36,9 @@ class Assignments extends Component{
         };
       }
 
-      componentDidMount(){
-        this.fetchAssignments();
-      }
-      componentWillReceiveProps(){
-       this.fetchAssignments();
-      }
 
-      fetchAssignments(){
+
+      componentDidMount(){
         return fetch(CONFIG.server.host + '/assignments/', {
             method  : 'GET',
             headers : { 'Content-Type' : 'application/json' }
@@ -73,7 +71,21 @@ class Assignments extends Component{
                 assignmentUrl: rowData.url
             }
         });
+        //console.log("the url:" + rowData.url);
       }
+
+      onPressAssignmentProgress(rowData){
+           //var id = rowData.url.split("/");
+
+            this.props.navigator.push({
+               id: 'AssignmentRank',
+               passProps: {
+                   assignmentUrl: rowData.url //id[5]
+               }
+           });
+
+      }
+
 
       changeColor(progress){
       var color = ''
@@ -103,7 +115,7 @@ class Assignments extends Component{
       }
 
       renderRow(rowData){
-
+         // console.log(rowData.url);
         var progress = Math.random();
         return(
         <TouchableHighlight
@@ -111,16 +123,17 @@ class Assignments extends Component{
                 underlayColor='#ddd'
               >
             <View style={styles.List}>
-
-                <Progress.Circle
-                    style={styles.progress}
-                    progress={progress}
-                    indeterminate={this.state.indeterminate}
-                    showsText={true}
-                    color={this.changeColor(progress)}
-                    direction="counter-clockwise"
-                />
-
+                <TouchableOpacity onPress={() =>
+                    this.onPressAssignmentProgress(rowData)}>
+                    <Progress.Circle
+                        style={styles.progress}
+                        progress={progress}
+                        indeterminate={this.state.indeterminate}
+                        showsText={true}
+                        color={this.changeColor(progress)}
+                        direction="counter-clockwise"
+                    />
+                </TouchableOpacity>
                 <Text>{rowData.assignmentName}</Text>
                 <Text style={{paddingLeft: 20}}>{this.displayDueDate(rowData.start, rowData.dueDate)}</Text>
 

@@ -26,10 +26,6 @@ var options = {
       autoCapitalize: 'none',
       keyboardType: 'email-address',
     },
-    username: {
-      autoCapitalize: 'none',
-      //error: 'Enter username'
-    },
     password: {
       secureTextEntry: true,
      // error: 'Enter password'
@@ -45,7 +41,7 @@ class RegisterForm extends Component {
   constructor(props){
     super(props)
 }
-var value = RegisterForm.refs.form.getValue();
+//var value = RegisterForm.refs.form.getValue();
     render(){
         return(
             <Form

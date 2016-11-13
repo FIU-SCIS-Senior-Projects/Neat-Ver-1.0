@@ -17,7 +17,7 @@ import {
 import styles from './styles';
 
 var Assignments = require('./UserAssignment');
-
+var authService = require('./../../utilities/AuthService');
     CONFIG = require('../../config.js');
 
 
@@ -40,13 +40,11 @@ class AssignmentView extends Component{
 
     componentDidMount(){
         this.fetchTasks();
-
     }
     componentWillReceiveProps(){
         this.fetchTasks();
     }
     fetchTasks(){
-
         return fetch(CONFIG.server.host + '/task/')
               .then((response) => response.json())
               .then((responseJson) => {
@@ -58,12 +56,9 @@ class AssignmentView extends Component{
                 for(var i = 0; i < taskList.length; i++){
                     if(taskList[i].user ===  CONFIG.server.host + '/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
                         display[j] = taskList[i];
-
                         j++;
                     }
-
                 }
-
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(display)
                 })
@@ -91,7 +86,7 @@ class AssignmentView extends Component{
         rowData.isDone = !rowData.isDone;
         this.forceUpdate();
         console.log("rowData is: " + JSON.stringify(rowData));
-        
+
         fetch(rowData.url, {
               method: "PUT",
               headers: {
@@ -112,12 +107,23 @@ class AssignmentView extends Component{
         .then((response) => response.json())
         .then((responseData) => console.log("PUT success with response: " + JSON.stringify(responseData)))
         .catch((errpr) => console.error(error));
-        
+
+    }
+
+    pressRankings(){
+          this.props.navigator.push({
+             id: 'AssignmentRank'
+         });
     }
 
     async putToogleData(rowData){
     }
 
+    onLogoutPressed(){
+        authService.logout(err => console.log(err));
+        this.props.navigator.pop();
+        console.log('Logout button pressed');
+      }
 
     renderRow(rowData){
         console.log("Before return render, rowData: " + JSON.stringify(rowData));
@@ -133,6 +139,7 @@ class AssignmentView extends Component{
     }
 
     render(){
+
         return(
 
             <ScrollView>
@@ -147,6 +154,14 @@ class AssignmentView extends Component{
             >
                 <Text style={styles.buttonText}>
                         Add Task
+                </Text>
+            </TouchableHighlight>
+
+            <TouchableHighlight style={styles.button}
+                onPress={this.onLogoutPressed.bind(this)}
+            >
+                <Text style={styles.buttonText}>
+                        logout
                 </Text>
             </TouchableHighlight>
 

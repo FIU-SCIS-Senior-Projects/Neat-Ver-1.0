@@ -88,7 +88,7 @@ class AuthService {
   }
 
   register(creds, cb) {
-      console.log('creds from register AuthService', creds);
+      //console.log('creds from register AuthService', creds);
 
       this.doPost(CONFIG.server.host + '/user/', {
         email     : creds.email,
@@ -100,41 +100,48 @@ class AuthService {
       .then(this.handleResponse)
       .then(response =>response.json())
       .then((results)=> {
-        return cd({success: true});
+          console.log('User Registration success');
+          cb({success: true});
       })
       .catch(err     => cb(err));
   }//end of register
 
+  getAssignmentProgress(assignmentID){
+    var url = CONFIG.server.host + '/collab/assig/' + assignmentID + '/';
+    return fetch(url).then((res)=> res.json());
+  }
 
   requestCode(creds, cb) {
-    //if(!creds){
-      //return;
-    //}
-    //var b           = new buffer.Buffer(creds.username);
-    //var encodedAuth = b.toString('base64');
-    console.log('creds from requestCode', creds.username);
+      this.doPost(CONFIG.server.host + '/send/passwordCode/' + creds.email +'/', {
+        email     : creds.email,
+      })
+      .then(this.handleResponse)
+      .then(response =>response.json())
+      .then((results)=> {
+        console.log("Request success");
+        cb({success: true});
+      })
+      .catch(err     => cb(err));
+}//end of requestCode
 
-    this.doGet(CONFIG.server.host + '/user/?username='+ creds.username, {
-      //username : creds.username,
+changePassword(creds, cb) {
+    this.doPost(CONFIG.server.host + '/changePassword/' + creds.code + '/', {
+      email     : creds.email,
+      password  : creds.newPassword,
     })
     .then(this.handleResponse)
-    .then(response => response.json())
-    .then(console.log(results.body.username))
-    .then(results  => cb({success: true}))
-
-    //.then((results)=> {
-     // console.log('Api response' + results);
-    //  return cd({success: true});
-    //})
+    .then(response =>response.json())
+    .then((results)=> {
+      console.log("Password update success");
+      cb({success: true});
+    })
     .catch(err     => cb(err));
 }//end of requestCode
 
 
-
-
   login(creds, cb){
-    var b           = new buffer.Buffer(creds.username + ':' + creds.password);
-    var encodedAuth = b.toString('base64');
+    //var b           = new buffer.Buffer(creds.username + ':' + creds.password);
+    //var encodedAuth = b.toString('base64');
     console.log('creds from login AuthService', creds);
 
     this.doPost(CONFIG.server.host + '/login/',{
