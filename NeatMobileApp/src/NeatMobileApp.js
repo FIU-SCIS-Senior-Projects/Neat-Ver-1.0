@@ -31,9 +31,10 @@ class NeatMobileApp extends Component {
     };
   }
   componentDidMount() {
-    AuthService.getLoginToken((err, authInfo) => {
+    AuthService.getLoginToken()
+    .then((authInfo) => {
       this.setState({
-        isLoggedIn: authInfo != null,
+        isLoggedIn: authInfo.token != null,
       });
     });
   }

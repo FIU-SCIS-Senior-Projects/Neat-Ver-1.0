@@ -9,6 +9,7 @@ import {
 import * as Progress from 'react-native-progress';
 import NavigationBar from 'react-native-navbar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import styles from './styles';
 import CONFIG from '../../config';
@@ -30,16 +31,10 @@ class Assignments extends Component {
   }
 
   componentDidMount() {
-    AuthService.getLoginToken((err, authInfo) => {
-      this.setState({
-        authInfo,
-      });
-      this.fetchAssignments();
-    });
-    // this.setState({levels: (this.props.navigator.getCurrentRoutes(0).length)})
+    this.getAssignments();
   }
   componentWillReceiveProps() {
-    this.fetchAssignments();
+    this.getAssignments();
   }
 
   onPressRow(rowData) {
@@ -58,21 +53,12 @@ class Assignments extends Component {
       id: 'AssignmentForm',
     });
   }
-  fetchAssignments() {
-    return fetch(CONFIG.server.host + '/dashboard/', {
-      method: 'GET',
-      headers: this.state.authInfo.header,
-    })
-    .then((response) => response.json())
-    .then((responseJson) => {
-      const assignmentList = responseJson;
-      // Sort by due date first
-      // assignmentList.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  getAssignments() {
+    AuthService.getAssignments((assignmentList) => {
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(assignmentList),
       });
-    })
-    .catch((error) => console.error(error));
+    });
   }
 
   changeColor(progress) {
@@ -96,41 +82,59 @@ class Assignments extends Component {
         onPress={() => this.onPressRow(rowData)}
         underlayColor="#ddd"
       >
-        <View style={{ flexDirection: 'row', borderColor: '#2194f3', borderBottomWidth: 1 }}>
-          <View style={{ flex: 1, flexDirection: 'column' }}>
-            <Progress.Circle
-              style={{ alignSelf: 'center', justifyContent: 'center', paddingTop: 5 }}
-              progress={progress}
-              size={55}
-              indeterminate={false}
-              showsText
-              color={this.changeColor(progress)}
-              direction="counter-clockwise"
-            />
-            <Text style={{ alignItems: 'flex-start', alignSelf: 'center', fontSize: 12, fontWeight: '300', paddingTop: 5 }}> {rowData.assignmentName}</Text>
-          </View>
+        <View style={{ flexDirection: 'column', paddingTop: 12, paddingBottom: 12, paddingLeft: 10, paddingRight: 10 }}>
+          <Text style={{ alignItems: 'flex-start', alignSelf: 'flex-start', fontSize: 14, fontWeight: '300', marginBottom: 4 }}> {rowData.assignmentName}</Text>
+          <View style={{ flexDirection: 'row', paddingTop: 8}}>
+            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+              <Progress.Circle
+                style={{ alignSelf: 'flex-start', justifyContent: 'center'}}
+                progress={progress}
+                size={55}
+                indeterminate={false}
+                showsText
+                color={this.changeColor(progress)}
+                direction="counter-clockwise"
+              />
+            </View>
 
-          <View style={{ flex: 1, alignItems: 'center', alignSelf: 'auto' }}>
-            <Text style={{ fontSize: 20 }}>
-              {(numberOfTaskLeft > 0) ? numberOfTaskLeft + '  ' : null}
-            </Text>
-            <Text>Open Task</Text>
-            <FontAwesome
-              name="puzzle-piece"
-              size={50}
-              color="#2194f3"
-            />
-          </View>
+            <View style={{ flex: 1, alignItems: 'center', alignSelf: 'auto'}}>
+              <View style={{flexDirection: 'row', alignItems:'center'}}>
+                <Text style={{ fontSize: 20 }}>
+                  {(numberOfTaskLeft > 0) ? numberOfTaskLeft + '  ' : null}
+                </Text>
+                <FontAwesome
+                  name="puzzle-piece"
+                  size={35}
+                  color="#32C0B2"
+                />
+              </View>
+              <Text>Open Task</Text>
+            </View>
 
-          <View style={{ flex: 1, alignItems: 'center', alignSelf: 'center' }}>
-            <Text>
-              {moment().isAfter(rowData.dueDate)
-                ? 'Past Due' : 'Due ' + moment(rowData.dueDate).from(rowData.startDate)}
-            </Text>
+            <View style={{ flex: 1, alignItems: 'flex-end', alignSelf: 'center' }}>
+              <Text style={{fontSize: 18}}>
+                Due
+              </Text>
+              <Text>
+                {moment().isAfter(rowData.dueDate)
+                  ? 'Past Due' : '' + moment(rowData.dueDate).from(rowData.startDate)}
+              </Text>
+            </View>
           </View>
-
         </View>
       </TouchableHighlight>
+    );
+  }
+
+  _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    return (
+      <View
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+      />
     );
   }
 
@@ -141,19 +145,20 @@ class Assignments extends Component {
         <NavigationBar
           title={{
             title: 'Dashboard',
-            tintColor: '#F5FCFF',
+            tintColor: '#32C0B2',
           }}
           rightButton={{
-            title: <FontAwesome name="plus" size={25} />,
+            title: <Icon name="ios-add" size={35} />,
             handler: () => this.onAddPressed(),
-            tintColor: '#F5FCFF',
+            tintColor: '#32C0B2',
           }}
           leftButton={{
-            title: <FontAwesome name="sign-out" size={25} />,
+            // title: <FontAwesome name="sign-out" size={25} />,
+            title: 'Logout',
             handler: () => AuthService.logout(),
-            tintColor: '#F5FCFF',
+            tintColor: '#32C0B2',
           }}
-          tintColor="#2194f3"
+          tintColor="#F5FCFF"
         />
         <Text style={styles.heading}>
           Hello Neat Dev Team!
@@ -161,6 +166,7 @@ class Assignments extends Component {
         <ListView
           dataSource={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
+          renderSeparator={this._renderSeparator.bind(this)}
           enableEmptySections
         />
       </View>
