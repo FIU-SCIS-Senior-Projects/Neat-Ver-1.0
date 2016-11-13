@@ -83,11 +83,11 @@ onRegisterPressed(){
  const value = this.refs.form.getValue();
 
   authService.register({
-      password:  value.password,
-      firstname: value.firstname,
-      lastname:  value.lastname,
-      email:     value.email,
-      groups:    value.groups
+      password:  this.state.value.password,
+      firstname: this.state.value.firstname,
+      lastname:  this.state.value.lastname,
+      email:     this.state.value.email,
+      groups:    this.state.value.groups
   }, (results)=> {
 
       this.setState(Object.assign({

@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 import { AppRegistry,StyleSheet,Text,View,TouchableHighlight,
          TextInput,Image,AlertIOS } from 'react-native';
-// import styles from './styles';
+ import styles from './styles';
 import Icon from '../../../node_modules/react-native-vector-icons/FontAwesome';
 import Logo from './../../assets/img/Logo_Neat.png';
 //const userIcon = (<Icon name="fa-user" size={25} color ={'#900'}/>)
