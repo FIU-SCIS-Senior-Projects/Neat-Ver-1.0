@@ -67,9 +67,6 @@ onRequestPressed(){
           id: 'UpdatePassword'
         });
     }else{
-        this.props.navigator.push({
-          id: 'UpdatePassword'
-        });
         console.log('error during codeRequest');
     }
   });
