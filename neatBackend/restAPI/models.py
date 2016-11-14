@@ -115,13 +115,8 @@ class Assignment(models.Model):
 
     #fields
     assignmentName = models.CharField(max_length=255)
-    startDate = models.DateField(default=datetime.date.today())
-    dueDate = models.DateField(validators=[is_before_today], null=True)
-    #Eventually we'll need datetime support with time zones
-    """
-    startDate = models.DateTimeField(default=timezone.now)
     dueDate = models.DateTimeField()
-    """
+    startDate = models.DateTimeField(default=timezone.now)
     isPublic = models.BooleanField(default=False)
     
     #permissions
@@ -170,9 +165,9 @@ class Task(models.Model):
     isApproved = models.BooleanField(default=False)
     hoursPlanned = models.PositiveSmallIntegerField(null=True)
     hoursCompleted = models.PositiveSmallIntegerField(null=True)
-    startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
-    endDate = models.DateField(validators=[is_before_today], null=True)
-    dueDate = models.DateField(validators=[is_before_today], null=True)
+    startDate = models.DateTimeField(default=timezone.now)
+    endDate = models.DateTimeField(null=True)
+    dueDate = models.DateTimeField(null=True)
 
     #weight
     LOW = 'low'

@@ -19,6 +19,9 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 
 ##Recent Endpoints - examples
 
+####Initialize student group
+`http POST http://127.0.0.1:8000/api/startGroup/`
+
 ####Get all my info (permissions on)
 `http GET http://127.0.0.1:8000/api/dashboard/ 'Authorization: Token 3727e9e5d6bacd414cf9e606eb8fd0b0ebb7807b'`
 
@@ -59,7 +62,7 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 `http GET http://127.0.0.1:8000/api/user/?email=user1@gmail.com`
 
 ####Register
-`http POST http://127.0.0.1:8000/api/user/ email=2@neat.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
+`http POST http://127.0.0.1:8000/api/user/ email=1@neat.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
 
 ####Login (note username field, not email)
 `http POST http://127.0.0.1:8000/api/login/ username=2@neat.com password=password123`
