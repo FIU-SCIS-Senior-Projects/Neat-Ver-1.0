@@ -1,6 +1,5 @@
 import { AsyncStorage } from 'react-native';
 import _ from 'lodash';
-import buffer from 'buffer';
 import CONFIG from '../config';
 
 
@@ -11,45 +10,45 @@ const AuthService = {
 
   getAuthInfo(cb) {
     AsyncStorage.multiGet([authKey, USERKEY], (err, val) => {
-      if(err) {
+      if (err) {
         return cb(err);
       }
-      if(!val) {
+      if (!val) {
         return cb();
       }
-      var zippedObj = _.fromPairs(val);
-      console.log('zippedObj ' + JSON.stringify(zippedObj));
-      if(!zippedObj[authKey]) {
+      const zippedObj = _.fromPairs(val);
+      // console.log(`zippedObj ${JSON.stringify(zippedObj)}`);
+      if (!zippedObj[authKey]) {
         return cb();
       }
-      var authInfo = {
+      const authInfo = {
         method: 'POST',
         header: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
           // Authorization: 'Basic ' + zippedObj[authKey]
         },
-        token: JSON.parse(zippedObj[USERKEY])
-      }
+        token: JSON.parse(zippedObj[USERKEY]),
+      };
       return cb(null, authInfo);
     });
   },
 
   getLoginToken() {
-    let prom = AsyncStorage.getItem(USERKEY);
+    const prom = AsyncStorage.getItem(USERKEY);
     return new Promise((resolve, reject) => {
-      prom.then(token => {
+      prom.then((token) => {
         // console.log('===============>', token);
-        let authInfo = {
+        const authInfo = {
           method: 'POST',
           header: {
             'Content-Type': 'application/json',
-            'Authorization': 'Token ' + token,
+            Authorization: `Token ${token}`,
           },
-          token: token
-        }
+          token,
+        };
         resolve(authInfo);
       })
-      .catch((err) => reject(err))
+      .catch((err) => reject(err));
     });
 
     // AsyncStorage.getItem(USERKEY, (err, val) => {
@@ -72,32 +71,33 @@ const AuthService = {
     // });
   },
 
-  logout(cb){
+  logout(cb) {
     AsyncStorage.removeItem(USERKEY, (err) => {
-      if(err) {
+      if (err) {
         return cb(err);
       }
       return null;
-    })
+    });
   },
 
   handleResponse(response) {
     // console.log('status: ', response);
-    if(response.status >= 200 && response.status < 300){
-        return response;
-    }
-    else throw {
-      badCredentials: response.status === 400,
-      unknownError: response.status !== 400,
-      success: false,
+    if (response.status >= 200 && response.status < 300) {
+      return response;
+    } else {
+      throw {
+        badCredentials: response.status === 400,
+        unknownError: response.status !== 400,
+        success: false,
+      };
     }
   },
 
   doPost(url, params, type = 'POST') {
     return new Promise((res, rej) => {
       return this.getLoginToken()
-        .then(authInfo => res(authInfo))
-        .catch(err => rej(err));
+        .then((authInfo) => res(authInfo))
+        .catch((err) => rej(err));
     }).then((authInfo) => {
       return fetch(url, {
         method: type,
@@ -110,8 +110,8 @@ const AuthService = {
   doGet(url) {
     return new Promise((res, rej) => {
       return this.getLoginToken()
-        .then(authInfo => res(authInfo))
-        .catch(err => rej(err));
+        .then((authInfo) => res(authInfo))
+        .catch((err) => rej(err));
     }).then((authInfo) => {
       return fetch(url, {
         method: 'GET',
@@ -123,42 +123,42 @@ const AuthService = {
   register(creds, cb) {
     console.log('creds from register AuthService', creds);
 
-    this.doPost(CONFIG.server.host + '/user/', {
-      email     : creds.email,
+    this.doPost(`${CONFIG.server.host}/user/`, {
+      email: creds.email,
       first_name: creds.firstname,
-      last_name : creds.lastname,
-      password  : creds.password,
-      groups  : []
+      last_name: creds.lastname,
+      password: creds.password,
+      groups: [],
     })
     .then(this.handleResponse)
-    .then(response =>response.json())
-    .then((results)=> {
-      return cd({success: true});
+    .then((response) => response.json())
+    .then((results) => {
+      return cd({ success: true });
     })
-    .catch(err     => cb(err));
+    .catch((err) => cb(err));
   },
   requestCode(creds, cb) {
-    //if(!creds){
-      //return;
-    //}
-    //var b           = new buffer.Buffer(creds.username);
-    //var encodedAuth = b.toString('base64');
+    // if(!creds){
+      // return;
+    // }
+    // var b           = new buffer.Buffer(creds.username);
+    // var encodedAuth = b.toString('base64');
     console.log('creds from requestCode', creds.username);
 
-    this.doGet(CONFIG.server.host + '/user/?username='+ creds.username, {
-      //username : creds.username,
+    this.doGet(`${CONFIG.server.host}/user/?username=${creds.username}`, {
+      // username : creds.username,
     })
     .then(this.handleResponse)
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(console.log(results.body.username))
-    .then(results  => cb({success: true}))
+    .then((results) => cb({ success: true }))
 
-    //.then((results)=> {
+    // .then((results)=> {
      // console.log('Api response' + results);
     //  return cd({success: true});
-    //})
-    .catch(err     => cb(err));
-  },//end of requestCode
+    // })
+    .catch((err) => cb(err));
+  }, // end of requestCode
 
   login(creds, cb) {
     console.log('creds from login AuthService', creds);
@@ -176,15 +176,15 @@ const AuthService = {
     .then((response) => response.json())
     .then((results) => {
       console.log('after handleResponse');
-      AsyncStorage.setItem(USERKEY, results.token, (err)=> {
-        if(err){
-            throw err;
+      AsyncStorage.setItem(USERKEY, results.token, (err) => {
+        if (err) {
+          throw err;
         }
         console.log('i got in');
-        return cb({success: true});
-      })
+        return cb({ success: true });
+      });
     })
-    .catch(err => cb(err));
+    .catch((err) => cb(err));
   },
   getAssignments(cb) {
     this.doGet(`${CONFIG.server.host}/dashboard/`)
@@ -196,7 +196,7 @@ const AuthService = {
     this.doGet(`${CONFIG.server.host}/dashboard/`)
       .then((response) => response.json())
       .then((responseJson) => {
-        cb(responseJson)
+        cb(responseJson);
       })
       .catch((err) => cb(err));
   },
@@ -221,19 +221,27 @@ const AuthService = {
     .catch((err) => cb(err));
   },
   addAssignment(params, cb) {
-    this.doPost(CONFIG.server.host + '/assignment/', params)
+    this.doPost(`${CONFIG.server.host}/assignment/`, params)
     .then(this.handleResponse)
     .then((response) => response.json())
     .then((responseData) => cb({ success: true }))
     .catch((err) => cb(err));
   },
   addTask(params, cb) {
-    this.doPost(CONFIG.server.host + '/task/', params)
+    this.doPost(`${CONFIG.server.host}/task/`, params)
+    .then(this.handleResponse)
+    .then((response) => response.json())
+    .then((responseData) => cb({ success: true }))
+    .catch((err) => cb(err));
+  },
+  addClass(params, cb) {
+    this.doPost(`${CONFIG.server.host}/class/`, params)
     .then(this.handleResponse)
     .then((response) => response.json())
     .then((responseData) => cb({ success: true }))
     .catch((err) => cb(err));
   },
 };
+
 
 export default AuthService;

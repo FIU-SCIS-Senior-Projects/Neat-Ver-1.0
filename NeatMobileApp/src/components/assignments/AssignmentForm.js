@@ -1,32 +1,24 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
-  StyleSheet,
-  TouchableHighlight,
-  Navigator,
   TextInput,
   DatePickerIOS,
   TouchableOpacity,
-  Image,
   Picker,
-  Animated,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import styles from './styles';
-import CONFIG from '../../config';
 import AuthService from '../../utilities/AuthService';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const UIPICKER_HEIGHT = 300;
-
-/* TODO make classFK not hard coded
+/*
    TODO add tasks here maybe(?)
 
-   NOTE: you must create a class and a school before being able to add an assignment
+   NOTE: you must create school before being able to add an assignment
 */
-let PickerItem = Picker.Item;
+const PickerItem = Picker.Item;
 class AssignmentForm extends Component {
   constructor(props) {
     super(props);
@@ -54,23 +46,12 @@ class AssignmentForm extends Component {
     this.fetchClasses();
   }
 
-  fetchClasses() {
-    AuthService.getClasses((responseJson) => {
-      let classList = responseJson;
-      let reduced = {};
-      classList.map((s) => {
-        reduced[s.classID] = s.className;
-      });
-      this.setState({ dataSource: classList, reducedList: reduced });
-    });
-  }
-
   // POSTS to the api
   onDonePressed() {
     AuthService.addAssignment({
       assignmentName: this.state.assignmentName,
       classFK: this.state.classFK,
-      dueDate: moment(this.state.dueDate).format('YYYY-MM-DD')
+      dueDate: moment(this.state.dueDate).format('YYYY-MM-DD'),
     }, (results) => {
       if (results.success) {
         this.props.navigator.pop({ id: 'AssignmentsDash' });
@@ -125,14 +106,14 @@ class AssignmentForm extends Component {
   };
 
   onValueChange = (value) => {
-    let val = JSON.parse(value);
+    const val = JSON.parse(value);
 
     this.setState({
       pickerValue: value,
       className: val.className,
       classFK: val.url,
     });
-    console.log('value change ', val.className);
+    // console.log('value change ', val.className);
     if (val.className === 'CREATE') {
       this.props.navigator.push({
         type: 'Pop',
@@ -141,8 +122,19 @@ class AssignmentForm extends Component {
     }
   }
 
+  fetchClasses() {
+    AuthService.getClasses((responseJson) => {
+      const classList = responseJson;
+      const reduced = {};
+      classList.map((s) => {
+        reduced[s.classID] = s.className;
+      });
+      this.setState({ dataSource: classList, reducedList: reduced });
+    });
+  }
+
   render() {
-    let showDatePicker = this.state.showDatePicker
+    const showDatePicker = this.state.showDatePicker
       ? <DatePickerIOS
         style={{ height: 150 }}
         date={this.state.dueDate}
@@ -155,7 +147,7 @@ class AssignmentForm extends Component {
       return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className} />;
     });
 
-    let showPicker = this.state.showPicker
+    const showPicker = this.state.showPicker
       ? <Picker
         selectedValue={this.state.pickerValue}
         onValueChange={this.onValueChange}

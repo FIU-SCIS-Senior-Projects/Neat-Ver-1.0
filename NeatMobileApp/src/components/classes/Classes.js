@@ -1,26 +1,22 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
   TouchableHighlight,
   ListView,
-  Image
 } from 'react-native';
 
-import styles from './styles';
 import NavigationBar from 'react-native-navbar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import moment from 'moment';
-import ClassForm from './ClassForm';
-import ClassView from './ClassView';
-import CONFIG from '../../config';
+
+import styles from './styles';
 import AuthService from '../../utilities/AuthService';
 
-class Classes extends Component{
+class Classes extends Component {
   constructor(props) {
     super(props);
 
-    let ds = new ListView.DataSource({
+    const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
     });
 
@@ -43,6 +39,28 @@ class Classes extends Component{
     this.fetchClasses();
   }
 
+  onAddPressed() {
+    this.props.navigator.push({
+      type: 'Pop',
+      id: 'ClassForm',
+    });
+  }
+  onBackPressed() {
+    this.props.navigator.pop();
+  }
+
+  onPressRow(rowData) {
+    // console.log('class rowData', rowData);
+
+    this.props.navigator.push({
+      id: 'ClassView',
+      passProps: {
+        classUrl: rowData.url,
+        className: rowData.className,
+      },
+    });
+  }
+
   fetchClasses() {
     AuthService.getClasses((responseJson) => {
       this.setState({
@@ -50,28 +68,6 @@ class Classes extends Component{
       });
     });
   }
-
-      onAddPressed(){
-        this.props.navigator.push({
-            type: 'Pop',
-            id: 'ClassForm'
-        });
-      }
-      onBackPressed(){
-        this.props.navigator.pop();
-      }
-
-      onPressRow(rowData){
-        console.log('class rowData', rowData);
-
-        this.props.navigator.push({
-          id: 'ClassView',
-          passProps: {
-            classUrl: rowData.url,
-            className: rowData.className
-            }
-        });
-      }
 
 
   renderRow(rowData) {
@@ -104,18 +100,18 @@ class Classes extends Component{
             title: <FontAwesome name="plus" size={25} />,
             handler: () => this.onAddPressed(),
             tintColor: '#F5FCFF',
-        }}
-        tintColor='#2194f3'
-      />
+          }}
+          tintColor="#2194f3"
+        />
         <ListView
-          style={{flex: 1, alignSelf: 'stretch'}}
+          style={{ flex: 1, alignSelf: 'stretch' }}
           dataSource={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
           enableEmptySections
         />
-    </View>
-        );
-    }
+      </View>
+    );
+  }
 }
 
 Classes.propTypes = {

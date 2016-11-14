@@ -1,43 +1,30 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-  AppRegistry,
-  Text,
   View,
-  StyleSheet,
-  TouchableHighlight,
-  Navigator,
-  TextInput,
-  DatePickerIOS,
-  TouchableOpacity,
   ListView,
   ScrollView,
-  Switch,
-  Image,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { CheckBox } from 'react-native-elements'
+import { CheckBox } from 'react-native-elements';
 import styles from './styles';
-import Assignments from './UserAssignment';
-import CONFIG from '../../config';
 import AuthService from '../../utilities/AuthService';
 
 
-class AssignmentView extends Component{
+class AssignmentView extends Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props)
-
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
-        this.state={
-            dataSource: ds,
-            assignmentUrl: props.rowData.url,
-            toggleState: true,
-            trueSwitchIsOn: true,
-        };
-    }
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+    });
+    this.state = {
+      dataSource: ds,
+      assignmentUrl: props.rowData.url,
+      toggleState: true,
+      trueSwitchIsOn: true,
+    };
+  }
 
   componentDidMount() {
       // AuthService.getLoginToken((err, authInfo) => {
@@ -77,7 +64,8 @@ class AssignmentView extends Component{
   }
 
   pressDashboard() {
-        // let route = this.props.navigator.getCurrentRoutes().find((route) => route.id === 'AssignmentsDash');
+        // let route = this.props.navigator.getCurrentRoutes().find((route) =>
+        // route.id === 'AssignmentsDash');
     // console.log(this.props.navigator.getCurrentRoutes());
         // this.props.navigator.popToRoute(route);
       // this.props.navigator.resetTo(this.props.navigator.getCurrentRoutes()[0]);
@@ -91,20 +79,8 @@ class AssignmentView extends Component{
     // console.log("rowData is: " + JSON.stringify(rowData));
     // console.log('rowData from toggle', rowData);
     AuthService.updateTasks(rowData.url, newRowData, (responseData) => {
-      console.log('PUT success or err with response: ' + JSON.stringify(responseData))
-    })
-  }
-  renderRow(rowData) {
-    return (
-      <View>
-        <CheckBox
-          title={rowData.taskName}
-          checked={rowData.isDone}
-          onPress={() => this.toogleSwitched(rowData)}
-          containerStyle={{backgroundColor: 'white', paddingBottom: 5, borderRadius: 0, borderWidth: 0}}
-        />
-      </View>
-    );
+      console.log(`PUT success or err with response: ${JSON.stringify(responseData)}`);
+    });
   }
 
   _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
@@ -116,6 +92,19 @@ class AssignmentView extends Component{
           backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
         }}
       />
+    );
+  }
+
+  renderRow(rowData) {
+    return (
+      <View>
+        <CheckBox
+          title={rowData.taskName}
+          checked={rowData.isDone}
+          onPress={() => this.toogleSwitched(rowData)}
+          containerStyle={{ backgroundColor: 'white', paddingBottom: 5, borderRadius: 0, borderWidth: 0 }}
+        />
+      </View>
     );
   }
 

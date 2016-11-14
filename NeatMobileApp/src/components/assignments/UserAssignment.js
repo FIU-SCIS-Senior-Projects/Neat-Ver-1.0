@@ -12,7 +12,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import styles from './styles';
-import CONFIG from '../../config';
 import AuthService from '../../utilities/AuthService';
 
 class Assignments extends Component {
@@ -73,59 +72,6 @@ class Assignments extends Component {
     return color;
   }
 
-  renderRow(rowData) {
-    const numberOfTaskLeft = rowData.tasks.filter((task) => !task.isDone).length;
-    // let numberOfTaskLeft = 2;
-    const progress = Math.random();
-    return (
-      <TouchableHighlight
-        onPress={() => this.onPressRow(rowData)}
-        underlayColor="#ddd"
-      >
-        <View style={{ flexDirection: 'column', paddingTop: 12, paddingBottom: 12, paddingLeft: 10, paddingRight: 10 }}>
-          <Text style={{ alignItems: 'flex-start', alignSelf: 'flex-start', fontSize: 14, fontWeight: '300', marginBottom: 4 }}> {rowData.assignmentName}</Text>
-          <View style={{ flexDirection: 'row', paddingTop: 8}}>
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-              <Progress.Circle
-                style={{ alignSelf: 'flex-start', justifyContent: 'center'}}
-                progress={progress}
-                size={55}
-                indeterminate={false}
-                showsText
-                color={this.changeColor(progress)}
-                direction="counter-clockwise"
-              />
-            </View>
-
-            <View style={{ flex: 1, alignItems: 'center', alignSelf: 'auto'}}>
-              <View style={{flexDirection: 'row', alignItems:'center'}}>
-                <Text style={{ fontSize: 20 }}>
-                  {(numberOfTaskLeft > 0) ? numberOfTaskLeft + '  ' : null}
-                </Text>
-                <FontAwesome
-                  name="puzzle-piece"
-                  size={35}
-                  color="#32C0B2"
-                />
-              </View>
-              <Text>Open Task</Text>
-            </View>
-
-            <View style={{ flex: 1, alignItems: 'flex-end', alignSelf: 'center' }}>
-              <Text style={{fontSize: 18}}>
-                Due
-              </Text>
-              <Text>
-                {moment().isAfter(rowData.dueDate)
-                  ? 'Past Due' : '' + moment(rowData.dueDate).from(rowData.startDate)}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </TouchableHighlight>
-    );
-  }
-
   _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
     return (
       <View
@@ -137,7 +83,58 @@ class Assignments extends Component {
       />
     );
   }
+  renderRow(rowData) {
+    const numberOfTaskLeft = rowData.tasks.filter((task) => !task.isDone).length;
+    // let numberOfTaskLeft = 2;
+    const progress = Math.random();
+    return (
+      <TouchableHighlight
+        onPress={() => this.onPressRow(rowData)}
+        underlayColor="#ddd"
+      >
+        <View style={{ flexDirection: 'column', paddingTop: 12, paddingBottom: 12, paddingLeft: 10, paddingRight: 10 }}>
+          <Text style={{ alignItems: 'flex-start', alignSelf: 'flex-start', fontSize: 14, fontWeight: '300', marginBottom: 4 }}> {rowData.assignmentName}</Text>
+          <View style={{ flexDirection: 'row', paddingTop: 8 }}>
+            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <Progress.Circle
+                style={{ alignSelf: 'flex-start', justifyContent: 'center' }}
+                progress={progress}
+                size={55}
+                indeterminate={false}
+                showsText
+                color={this.changeColor(progress)}
+                direction="counter-clockwise"
+              />
+            </View>
 
+            <View style={{ flex: 1, alignItems: 'center', alignSelf: 'auto' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ fontSize: 20 }}>
+                  {(numberOfTaskLeft > 0) ? `${numberOfTaskLeft}  ` : null}
+                </Text>
+                <FontAwesome
+                  name="puzzle-piece"
+                  size={35}
+                  color="#32C0B2"
+                />
+              </View>
+              <Text>Open Task</Text>
+            </View>
+
+            <View style={{ flex: 1, alignItems: 'flex-end', alignSelf: 'center' }}>
+              <Text style={{ fontSize: 18 }}>
+                Due
+              </Text>
+              <Text>
+                {moment().isAfter(rowData.dueDate)
+                  ? 'Past Due' : `${moment(rowData.dueDate).from(rowData.startDate)}`}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </TouchableHighlight>
+    );
+  }
   render() {
     // console.log('current routes', this.props.navigator.getCurrentRoutes(0));
     return (
