@@ -44,7 +44,7 @@ class ClassView extends Component{
 
     fetchAssignmentsForClass(){
 
-    return fetch(CONFIG.server.host +'/assignments/')
+    return fetch(CONFIG.server.host +'/assignment/')
               .then((response) => response.json())
               .then((responseJson) => {
                 var display = [];

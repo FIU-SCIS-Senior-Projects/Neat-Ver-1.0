@@ -80,7 +80,7 @@ REST_SOCIAL_OAUTH_ABSOLUTE_REDIRECT_URI ='http://neat.pachevjoseph.com/oauth/cod
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
+        #'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'oauth2_provider.ext.rest_framework.OAuth2Authentication',

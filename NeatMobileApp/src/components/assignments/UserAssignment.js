@@ -37,9 +37,14 @@ class Assignments extends Component{
       }
 
 
+//<<<<<<< HEAD
 
       componentDidMount(){
         return fetch(CONFIG.server.host + '/assignments/', {
+/*=======
+      fetchAssignments(){
+        return fetch(CONFIG.server.host + '/assignment/', {
+>>>>>>> a214740c10ae83fffc4c06f22aa30930dcac0850*/
             method  : 'GET',
             headers : { 'Content-Type' : 'application/json' }
             })

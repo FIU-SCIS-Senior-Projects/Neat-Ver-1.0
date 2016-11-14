@@ -9,6 +9,8 @@ from restAPI.models import Assignment, Task, SchoolRoster
 
 logger = logging.getLogger(__name__)
 
+#Commenting out since switch to datetime
+"""
 
 class DateFieldModelValidation(TestCase):
     today = date.today()
@@ -16,17 +18,17 @@ class DateFieldModelValidation(TestCase):
     afterToday = today + timedelta(days=+3)
 
     def test_assignment_default_startdate_not_before_today(self):
-        """
-            Check that the default startdate cannot be before today. startDate
-            has a default value of today if none is placed.
-        """
+        
+            #Check that the default startdate cannot be before today. startDate
+            #has a default value of today if none is placed.
+        
         assignment = Assignment()
         self.assertGreaterEqual(assignment.startDate, self.today)
 
     def test_assignment_startdate_not_before_today(self):
-        """
-            Check that the inputted startdate cannot be before today.
-        """
+        
+            #Check that the inputted startdate cannot be before today.
+        
         assignment = Assignment(startDate= self.beforeToday, dueDate=self.afterToday)
         try:
             assignment.clean()
@@ -35,9 +37,9 @@ class DateFieldModelValidation(TestCase):
         self.assertIsNone(assignment.startDate)
 
     def test_assignment_duedate_not_before_today(self):
-        """
-            Check that the inputted duedate cannot be before today.
-        """
+        
+            #Check that the inputted duedate cannot be before today.
+        
         assignment = Assignment(dueDate= self.beforeToday)
         try:
             assignment.clean()
@@ -46,17 +48,17 @@ class DateFieldModelValidation(TestCase):
         self.assertIsNone(assignment.dueDate)
 
     def test_task_default_startdate_not_before_today(self):
-        """
-            Check that the default startdate cannot be before today. startDate
-            has a default value of today if none is placed.
-        """
+        
+            #Check that the default startdate cannot be before today. startDate
+            #has a default value of today if none is placed.
+        
         task = Task()
         self.assertGreaterEqual(task.startDate, self.today)
 
     def test_task_startdate_not_before_today(self):
-        """
-            Check that the inputted startdate cannot be before today.
-        """
+        
+            #Check that the inputted startdate cannot be before today.
+        
         task = Task(startDate= self.beforeToday, endDate=self.afterToday, hoursPlanned=1)
         try:
             task.clean()
@@ -65,9 +67,9 @@ class DateFieldModelValidation(TestCase):
         self.assertIsNone(task.startDate)
 
     def test_task_duedate_not_before_today(self):
-        """
-            Check that the inputted duedate cannot be before today.
-        """
+        
+            #Check that the inputted duedate cannot be before today.
+        
         task = Task(endDate= self.beforeToday, hoursPlanned=1)
         try:
             task.clean()
@@ -109,3 +111,5 @@ class PositiveValueModelTests(TestCase):
         except ValidationError as e:
             logger.debug(e.message_dict)
         self.assertGreater(task.hoursCompleted, 0)
+
+"""

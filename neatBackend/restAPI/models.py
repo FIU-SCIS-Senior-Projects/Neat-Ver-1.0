@@ -61,6 +61,10 @@ class SchoolRoster(models.Model):
     class Meta:
         unique_together = ('school', 'user',)
 
+        permissions = (
+            ('view_schoolroster', 'View school roster'),
+        )
+
     def clean(self):
         if self.schoolYear < 2016:  # start year of the app
             self.schoolYear = timezone.now().year
@@ -76,10 +80,9 @@ class Class(models.Model):
 
     #fields
     className = models.CharField(max_length=255)
-    classID = models.CharField(max_length=255) # TODO: What does a class ID look like? This can have great variance, so charfield was chosen.
+    classID = models.CharField(max_length=255)
+    isPublic = models.BooleanField(default=False)
 
-    #permissions
-    #permissions
     class Meta:
         unique_together = ('school', 'classID',)
 
@@ -100,6 +103,11 @@ class ClassRoster(models.Model):
     class Meta:
         unique_together = ('classFK', 'user',)
 
+        #add, change, delete already exist by default
+        permissions = (
+            ('view_classroster', 'View class roster'),
+        )
+
 
 class Assignment(models.Model):
     #FK
@@ -107,8 +115,9 @@ class Assignment(models.Model):
 
     #fields
     assignmentName = models.CharField(max_length=255)
-    startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
-    dueDate = models.DateField(validators=[is_before_today], null=True)
+    dueDate = models.DateTimeField()
+    startDate = models.DateTimeField(default=timezone.now)
+    isPublic = models.BooleanField(default=False)
     
     #permissions
     class Meta:
@@ -141,6 +150,10 @@ class AssignmentRoster(models.Model):
     class Meta:
         unique_together = ('assignment', 'user',)
 
+        permissions = (
+            ('view_assignmentroster', 'View assignment roster'),
+        )
+
 class Task(models.Model):
     #FK
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='tasks')
@@ -149,14 +162,30 @@ class Task(models.Model):
     #fields
     taskName = models.CharField(max_length=255)
     isDone = models.BooleanField(default=False)
+    isApproved = models.BooleanField(default=False)
     hoursPlanned = models.PositiveSmallIntegerField(null=True)
     hoursCompleted = models.PositiveSmallIntegerField(null=True)
-    startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
-    endDate = models.DateField(validators=[is_before_today], null=True)
+    startDate = models.DateTimeField(default=timezone.now)
+    endDate = models.DateTimeField(null=True)
+    dueDate = models.DateTimeField(null=True)
+
+    #weight
+    LOW = 'low'
+    MEDIUM = 'medium'
+    HIGH = 'high'
+    DIFFICULTY_CHOICES = (
+        (LOW, 'low'),
+        (MEDIUM, 'medium'),
+        (HIGH, 'high'),
+    )
+    difficulty = models.CharField(max_length=6,
+                                      choices=DIFFICULTY_CHOICES,
+                                      default=MEDIUM)
     
     class Meta:
 
         unique_together = ('assignment', 'user', 'taskName')
+
         #add, change, delete already exist by default
         permissions = (
             ('view_task', 'View tasks'),
