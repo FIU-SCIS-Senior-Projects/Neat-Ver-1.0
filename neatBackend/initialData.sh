@@ -1,35 +1,59 @@
 #!/bin/sh
 
-#http POST http://127.0.0.1:8000/api/startGroup/
+#initialize student group
+http POST http://127.0.0.1:8000/api/startGroup/
 
 #create users
 
-#users=( "user1@neat.com" "user2@neat.com" "user3@neat.com" )
-#for i in "${users[@]}"
-#do
-#	http POST http://127.0.0.1:8000/api/user/ email=$i password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'
-#
-#    TOKEN=$(http POST http://127.0.0.1:8000/api/login/ username=$i password=password123)
-#
-#    echo "${TOKEN:10:40}"
-#done
+users=( "user1@neat.com" "user2@neat.com" "user3@neat.com" )
+for i in "${users[@]}"
+do
+	http POST http://127.0.0.1:8000/api/user/ email=$i password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'
+done
 
-#create school, class, & assignment
+#login
 
-AUTH="Authorization: Token "
 TOKEN=$(http POST http://127.0.0.1:8000/api/login/ username=user1@neat.com password=password123)
-AUTH+=${TOKEN:10:40}
+AUTH="'Authorization: Token ${TOKEN:10:40}'"
 
-echo $AUTH
+#create school
 
-http POST http://127.0.0.1:8000/api/school/ schoolName=FIU schoolID=123 \'$AUTH\'
+eval "http POST http://127.0.0.1:8000/api/school/ schoolName=FIU schoolID=123 $AUTH"
 
+#create classes & assignments
 
+i="0"
 
-#CMD="http POST http://127.0.0.1:8000/api/class/ schoolName=LOOOL schoolID=123 "
-#CMD+="'Authorization: Token "
-#TOKEN=$(http POST http://127.0.0.1:8000/api/login/ username=user1@neat.com password=password123)
-#CMD+=${TOKEN:10:40}
-#CMD+="'"
+while [ $i -lt 4 ]
+do
+    i=$[$i+1]
+    
+    eval "http POST http://127.0.0.1:8000/api/class/ className='class$i' classID=MAD3102 school='http://localhost:8000/api/school/1/' $AUTH"
 
-#eval $CMD
+    j="0"
+    while [ $j -lt 5 ]
+    do
+        j=$[$j+1]
+        eval "http POST http://127.0.0.1:8000/api/assignment/ assignmentName='HW$j' due=2016-11-29 classFK='http://localhost:8000/api/class/$i/' $AUTH"
+    done
+
+done
+
+i="0"
+
+#Create a few tasks for assig1
+while [ $i -lt 7 ]
+do
+    if ! (($i % 2)); then
+        diff="low"
+        bool="true"
+    else
+        diff="high"
+        bool="false"
+    fi
+    i=$[$i+1]
+    eval "http POST http://127.0.0.1:8000/api/task/ assignment='http://localhost:8000/api/assignment/1/' taskName='task$i' isDone=$bool difficulty=$diff $AUTH"
+done
+
+#make class1 public
+eval "http PATCH http://localhost:8000/api/class/1/ isPublic=true $AUTH"

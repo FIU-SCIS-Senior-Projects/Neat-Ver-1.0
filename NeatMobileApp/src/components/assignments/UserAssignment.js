@@ -10,6 +10,7 @@ import * as Progress from 'react-native-progress';
 import NavigationBar from 'react-native-navbar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { ButtonGroup } from 'react-native-elements';
 import moment from 'moment';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
@@ -26,7 +27,10 @@ class Assignments extends Component {
       levels: 0,
       dataSource: ds,
       authInfo: null,
+      selectedIndex: 0,
+      assignmentList: [],
     };
+    this.filterAssignments = this.filterAssignments.bind(this);
   }
 
   componentDidMount() {
@@ -35,7 +39,6 @@ class Assignments extends Component {
   componentWillReceiveProps() {
     this.getAssignments();
   }
-
   onPressRow(rowData) {
     this.props.navigator.push({
       id: 'AssignmentView',
@@ -54,10 +57,40 @@ class Assignments extends Component {
   }
   getAssignments() {
     AuthService.getAssignments((assignmentList) => {
+      const filteredList = this.getCurrentAssignmentList(assignmentList);
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(assignmentList),
+        assignmentList,
+        dataSource: this.state.dataSource.cloneWithRows(filteredList),
       });
     });
+  }
+
+  getCurrentAssignmentList(assignmentList) {
+    return assignmentList.filter((assignment) => {
+      return (assignment.tasks.filter((task) => !task.isDone).length) > 0;
+    });
+  }
+
+  getCompletedAssignmentList(assignmentList) {
+    return assignmentList.filter((assignment) => {
+      return (assignment.tasks.filter((task) => task.isDone).length) === assignment.tasks.length;
+    });
+  }
+
+  filterAssignments(selectedIndex) {
+    if (selectedIndex === 0) {
+      const list = this.getCurrentAssignmentList(this.state.assignmentList);
+      this.setState({
+        selectedIndex,
+        dataSource: this.state.dataSource.cloneWithRows(list),
+      });
+    } else if (selectedIndex === 1) {
+      const list = this.getCompletedAssignmentList(this.state.assignmentList);
+      this.setState({
+        selectedIndex,
+        dataSource: this.state.dataSource.cloneWithRows(list),
+      });
+    }
   }
 
   changeColor(progress, numTasks) {
@@ -147,6 +180,8 @@ class Assignments extends Component {
   }
   render() {
     // console.log('current routes', this.props.navigator.getCurrentRoutes(0));
+    const buttons = ['Current', 'Completed'];
+    const { selectedIndex } = this.state;
     return (
       <View style={styles.container}>
         <NavigationBar
@@ -166,6 +201,11 @@ class Assignments extends Component {
             tintColor: '#32C0B2',
           }}
           tintColor="#F5FCFF"
+        />
+        <ButtonGroup
+          onPress={this.filterAssignments}
+          selectedIndex={selectedIndex}
+          buttons={buttons}
         />
         <Text style={styles.heading}>
           Hello Neat Dev Team!
