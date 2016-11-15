@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Navigator, TabBarIOS } from 'react-native';
 
 import ChatRoom from './components/ChatRoom';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Register from './components/registration/register';
 import ResetPassword from './components/credentials/reset';
 import UpdatePassword from './components/credentials/updatePassword';
@@ -94,22 +95,17 @@ class NeatMobileApp extends Component {
               />
             </Icon.TabBarItemIOS>
             <Icon.TabBarItemIOS
-              title="Settings"
-              iconName="ios-settings-outline"
-              selectedIconName="ios-settings"
-              selected={this.state.selectedTab === 'settings'}
-              // renderAsOriginal={true}
-              onPress={() => {
-                this.setState({
-                  selectedTab: 'settings',
-                });
-              }}
+              title="Chatroom"
+              iconName="ios-chatbubbles-outline"
+              selectedIconName="ios-chatbubbles"
+              selected={this.state.selectedTab === 'ChatRoom'}
+              onPress={() => this.setState({ selectedTab: 'ChatRoom' })}
             >
               <Navigator
                 configureScene={this.configureScene}
                 initialRoute={{
-                  id: 'ClassList',
-                  title: 'Classes',
+                  id: 'ChatRoom',
+                  title: 'ChatRoom',
                 }}
                 renderScene={this.navigatorRenderScene}
                 onLogin={() => this.onLogin}

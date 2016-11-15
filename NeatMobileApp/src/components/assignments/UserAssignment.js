@@ -97,123 +97,24 @@ class Assignments extends Component {
       progress = 0.0009;
     }
 
-var AssignmentForm = require('./AssignmentForm');
-var AssignmentView = require('./AssignmentView');
-var moment = require('moment'),
-    CONFIG = require('../../config.js');
-
-class Assignments extends Component{
-    constructor(props) {
-        super(props);
-
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
-
-        this.state = {
-          dataSource: ds,
-          //progress: 0.58,
-          indeterminate: false,
-        };
-      }
-
-      componentDidMount(){
-        this.fetchAssignments();
-      }
-      componentWillReceiveProps(){
-       this.fetchAssignments();
-      }
-
-      fetchAssignments(){
-        return fetch(CONFIG.server.host + '/assignment/', {
-            method  : 'GET',
-            headers : { 'Content-Type' : 'application/json' }
-            })
-              .then((response) => response.json())
-              .then((responseJson) => {
-
-                var assignmentList = responseJson;
-                console.log('my print state: ' + responseJson.assignmentName)
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(assignmentList)
-                })
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-      }
-
-      onAddPressed(){
-        this.props.navigator.push({
-            id: 'ClassList'
-        });
-      }
-
-      onChatRoomPressed(){
-        this.props.navigator.push({
-            id: 'ChatRoom'
-        });
-      }
-
-      onPressRow(rowData){
-
-        this.props.navigator.push({
-            id: 'AssignmentView',
-            passProps: {
-                assignmentUrl: rowData.url
-            }
-        });
-      }
-
-      changeColor(progress){
-      var color = ''
-        if(progress < 0.33){
-           color='#F44336'
-        }
-        else if(progress >= 0.33 && progress < 0.66){
-            color='#ffcc00'
-        }
-        else{
-            color='#009688'
-        }
-        return color;
-      }
-
-      displayDueDate(start, due){
-        var str = ''
-
-        if(moment().isAfter(due)){
-            str = 'Passed Due'
-        }
-        else{
-            str = 'Due ' + moment(due).from(start)
-        }
-
-        return str;
-      }
-
-      renderRow(rowData){
-
-        var progress = Math.random();
-        return(
-        <TouchableHighlight
-                onPress={() => this.onPressRow(rowData)}
-                underlayColor='#ddd'
-              >
-            <View style={styles.List}>
-
-                <Progress.Circle
-                    style={styles.progress}
-                    progress={progress}
-                    indeterminate={this.state.indeterminate}
-                    showsText={true}
-                    color={this.changeColor(progress)}
-                    direction="counter-clockwise"
-                />
-
-                <Text>{rowData.assignmentName}</Text>
-                <Text style={{paddingLeft: 20}}>{this.displayDueDate(rowData.start, rowData.dueDate)}</Text>
-
+    return (
+      <TouchableHighlight
+        onPress={() => this.onPressRow(rowData)}
+        underlayColor="#ddd"
+      >
+        <View style={{ flexDirection: 'column', paddingTop: 12, paddingBottom: 12, paddingLeft: 10, paddingRight: 10 }}>
+          <Text style={{ alignItems: 'flex-start', alignSelf: 'flex-start', fontSize: 14, fontWeight: '300', marginBottom: 4 }}> {rowData.assignmentName}</Text>
+          <View style={{ flexDirection: 'row', paddingTop: 8 }}>
+            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <Progress.Circle
+                style={{ alignSelf: 'flex-start', justifyContent: 'center' }}
+                progress={progress}
+                size={55}
+                indeterminate={false}
+                showsText
+                color={this.changeColor(smartStatus, rowData.tasks.length)}
+                direction="counter-clockwise"
+              />
             </View>
 
             <View style={{ flex: 1, alignItems: 'center', alignSelf: 'auto' }}>
@@ -230,24 +131,54 @@ class Assignments extends Component{
               <Text>Open Task</Text>
             </View>
 
-                <TouchableHighlight style={styles.button}
-                    onPress={this.onAddPressed.bind(this)}
-                    >
-                    <Text style={styles.buttonText}>
-                            Add
-                    </Text>
-                </TouchableHighlight>
-
-                <TouchableHighlight style={styles.button}
-                    onPress={this.onChatRoomPressed.bind(this)}
-                    >
-                    <Text style={styles.buttonText}>
-                            Chat Room
-                    </Text>
-                </TouchableHighlight>
-            </ScrollView>
-        );
-    }
+            <View style={{ flex: 1, alignItems: 'flex-end', alignSelf: 'center' }}>
+              <Text style={{ fontSize: 18 }}>
+                Due
+              </Text>
+              <Text>
+                {moment().isAfter(rowData.dueDate)
+                  ? 'Past Due' : `${moment(rowData.dueDate).fromNow()}`}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </TouchableHighlight>
+    );
+  }
+  render() {
+    // console.log('current routes', this.props.navigator.getCurrentRoutes(0));
+    return (
+      <View style={styles.container}>
+        <NavigationBar
+          title={{
+            title: 'Dashboard',
+            tintColor: '#32C0B2',
+          }}
+          rightButton={{
+            title: <Icon name="ios-add" size={35} />,
+            handler: () => this.onAddPressed(),
+            tintColor: '#32C0B2',
+          }}
+          leftButton={{
+            // title: <FontAwesome name="sign-out" size={25} />,
+            title: 'Logout',
+            handler: () => AuthService.logout(),
+            tintColor: '#32C0B2',
+          }}
+          tintColor="#F5FCFF"
+        />
+        <Text style={styles.heading}>
+          Hello Neat Dev Team!
+        </Text>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow.bind(this)}
+          renderSeparator={this._renderSeparator.bind(this)}
+          enableEmptySections
+        />
+      </View>
+    );
+  }
 }
 
 Assignments.propTypes = {

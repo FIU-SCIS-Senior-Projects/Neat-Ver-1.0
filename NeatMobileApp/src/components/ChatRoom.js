@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { AppRegistry, StyleSheet, Text, View } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 
 class ChatRoom extends Component {
@@ -54,13 +55,20 @@ class ChatRoom extends Component {
 
   render() {
     return (
-      <GiftedChat
-        messages={this.state.messages}
-        onSend={this.onSend}
-        user={{
-          _id: 1,
-        }}
-      />
+      <View style={{flex: 1}}>
+        <View style={{flex: 10}}/>
+        <View style={{flex: 83}}>
+          <GiftedChat
+            messages={this.state.messages}
+            onSend={this.onSend.bind(this)}
+            loadEarlier={this.state.loadEarlier}
+            user={{
+              _id: 1,
+            }}
+          />
+        </View>
+        <View style={{flex: 7}}/>
+      </View>
     );
   }
 }
