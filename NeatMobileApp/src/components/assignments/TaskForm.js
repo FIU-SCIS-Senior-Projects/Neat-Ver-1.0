@@ -53,12 +53,12 @@ class TaskForm extends Component {
       if (results.success) {
         this.props.navigator.pop({
           id: 'AssignmentView',
-          passProps:{
-            assignmentUrl: this.state.assignmentUrl
-          }
+          passProps: {
+            assignmentUrl: this.state.assignmentUrl,
+          },
         });
       }
-      console.log(results);
+      // console.log(results);
     });
       //   //verify if our operation was a success or failure
       //   if(response.status >= 200 && response.status < 300){
@@ -151,6 +151,10 @@ const Errors = (props) => {
       {props.errors.map((error, i) => <Text key={i} style={styles.error}>{error}</Text>)}
     </View>
   );
+};
+TaskForm.propTypes = {
+  navigator: React.PropTypes.object,
+  assignmentUrl: React.PropTypes.object,
 };
 
 module.exports = TaskForm;

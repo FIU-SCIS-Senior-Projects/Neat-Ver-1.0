@@ -56,7 +56,7 @@ class AssignmentForm extends Component {
       if (results.success) {
         this.props.navigator.pop({ id: 'AssignmentsDash' });
       }
-      console.log(results);
+      // console.log(results);
     });
     // try {
     //   let response = await fetch(CONFIG.server.host + '/assignment/', {

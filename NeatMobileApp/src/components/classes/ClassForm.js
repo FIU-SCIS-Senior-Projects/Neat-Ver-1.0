@@ -27,9 +27,9 @@ class ClassForm extends Component {
     this.state = {
       className: '',
       classID: getRandomInt(100, 200),
-      school: `${CONFIG.server.host  }/school/1/`,
+      school: `${CONFIG.server.host}/school/1/`,
       authInfo: null,
-    }
+    };
   }
 
   componentDidMount() {

@@ -11,7 +11,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
 
-const Classes = require('./Classes');
+// const Classes = require('./Classes');
 
 
 class ClassView extends Component {
@@ -117,9 +117,10 @@ class ClassView extends Component {
   }
 }
 
-Classes.propTypes = {
+ClassView.propTypes = {
   navigator: React.PropTypes.object,
   className: React.PropTypes.string.isRequired,
+  classUrl: React.PropTypes.string.isRequired,
 };
 
 module.exports = ClassView;

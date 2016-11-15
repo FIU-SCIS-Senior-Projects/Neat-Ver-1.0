@@ -60,13 +60,17 @@ class Assignments extends Component {
     });
   }
 
-  changeColor(progress) {
+  changeColor(progress, numTasks) {
     let color = '';
-    if (progress < 0.33) {
+    if (numTasks === 0 || progress === 'Not Tracking Yet') {
+      color = '#595959';
+    } else if (progress === 'Significantly Behind') {
       color = '#F44336';
-    } else if (progress >= 0.33 && progress < 0.66) {
+    } else if (progress === 'Considerably Behind') {
       color = '#ffcc00';
-    } else {
+    } else if (progress === 'Slightly Behind') {
+      color = '#e6e600';
+    } else if (progress === 'On Track') {
       color = '#009688';
     }
     return color;
@@ -86,7 +90,13 @@ class Assignments extends Component {
   renderRow(rowData) {
     const numberOfTaskLeft = rowData.tasks.filter((task) => !task.isDone).length;
     // let numberOfTaskLeft = 2;
-    const progress = Math.random();
+    const smartStatus = rowData['smart status'];
+
+    let progress = rowData.progress; // Math.random();
+    if (progress === 0 || rowData.tasks.length === 0) {
+      progress = 0.0009;
+    }
+
     return (
       <TouchableHighlight
         onPress={() => this.onPressRow(rowData)}
@@ -102,7 +112,7 @@ class Assignments extends Component {
                 size={55}
                 indeterminate={false}
                 showsText
-                color={this.changeColor(progress)}
+                color={this.changeColor(smartStatus, rowData.tasks.length)}
                 direction="counter-clockwise"
               />
             </View>
@@ -127,7 +137,7 @@ class Assignments extends Component {
               </Text>
               <Text>
                 {moment().isAfter(rowData.dueDate)
-                  ? 'Past Due' : `${moment(rowData.dueDate).from(rowData.startDate)}`}
+                  ? 'Past Due' : `${moment(rowData.dueDate).fromNow()}`}
               </Text>
             </View>
           </View>
