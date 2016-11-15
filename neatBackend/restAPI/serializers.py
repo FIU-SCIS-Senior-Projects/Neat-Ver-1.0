@@ -286,6 +286,21 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
         else:
             return value
 
+class MyClassesSerializer(serializers.HyperlinkedModelSerializer):
+    assignments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Class
+        fields = '__all__'
+
+    def get_assignments(self, obj):
+        if obj.isPublic == True:
+            assignments =  obj.assignments
+            serializer = AssignmentSerializer(instance=assignments, many=True, context={'request': self.context['request']})
+            return serializer.data
+        else:
+            return []
+
 class DashboardSerializer(serializers.HyperlinkedModelSerializer):
     tasks = serializers.SerializerMethodField()
 

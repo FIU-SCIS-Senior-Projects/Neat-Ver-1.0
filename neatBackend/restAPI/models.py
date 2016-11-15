@@ -73,7 +73,7 @@ class SchoolRoster(models.Model):
     def __str__(self):
         return str(self.school) + " year " + str(self.schoolYear)
 
-
+#TODO: Add session field, alter unique constraint
 class Class(models.Model):
     #FK
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
@@ -84,7 +84,7 @@ class Class(models.Model):
     isPublic = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('school', 'classID',)
+        unique_together = ('school', 'classID', 'className',)
 
         #add, change, delete already exist by default
         permissions = (

@@ -6,6 +6,10 @@ Django and Django REST Framework For Neat
 For an in depth documentation go to [http://localhost/docs][5] or the official docs at [http://52.87.176.128/docs][6]
 
 ##Changelog
+#####11/16/16
+* Added /api/myClasses/ endpoint to get a list of classes user belongs to
+* Switched data to datetime, still inputting only dates to endpoint as 'due' field
+* initialData.sh and restartDB.sh scripts
 #####11/11/16
 * Added /api/startGroup/ endpoint to initialize student group with correct permissions
 #####11/10/16

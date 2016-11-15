@@ -236,6 +236,14 @@ def getSmartStatus(current, expected):
         else:
             return result[4]
 
+#get classes users belongs to, and if class is public, get assignments
+@api_view(['get'])
+def MyClassesView(request):
+    queryset = (Class.objects.filter(roster__user=request.user)).order_by('pk')
+    serializer = MyClassesSerializer(queryset, many=True, context={'request': request})
+    data = serializer.data
+    return Response(data)
+
 #Get user dashboard info, given token
 #Also calculate additional task information & smart status
 @api_view(['get'])
