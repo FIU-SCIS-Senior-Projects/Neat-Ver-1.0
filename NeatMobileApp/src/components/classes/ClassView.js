@@ -1,146 +1,126 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-  AppRegistry,
   Text,
   View,
-  StyleSheet,
   TouchableHighlight,
-  Navigator,
-  TextInput,
-  DatePickerIOS,
-  TouchableOpacity,
   ListView,
-  ScrollView,
 } from 'react-native';
+import NavigationBar from 'react-native-navbar';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
+import AuthService from '../../utilities/AuthService';
 
-//TODO uses this variable to
-var Classes = require('./Classes');
-var CONFIG = require('../../config.js');
+// const Classes = require('./Classes');
 
-class ClassView extends Component{
 
-    constructor(props) {
-        super(props)
+class ClassView extends Component {
+  constructor(props) {
+    super(props);
 
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+    });
 
-        this.state={
-            dataSource: ds,
-            classUrl: props.classUrl
-        };
-    }
+    this.state = {
+      dataSource: ds,
+      classUrl: props.classUrl,
+      authInfo: null,
+    };
+  }
 
-    componentDidMount(){
-        this.fetchAssignmentsForClass();
-    }
+  componentDidMount() {
+    this.fetchAssignmentsForClass();
+  }
+  componentWillReceiveProps() {
+    this.fetchAssignmentsForClass();
+  }
+  onAddAssignment() {
+    this.props.navigator.push({
+      id: 'AssignmentForm',
+      type: 'Pop',
+      passProps: {
+        classUrl: this.state.classUrl,
+      },
+    });
+  }
+  onPressRow(rowData) {
+    // console.log('on class assignment press', rowData);
+    this.props.navigator.push({
+      id: 'AssignmentView',
+      passProps: {
+        assignmentUrl: rowData.url,
+        assignmentName: rowData.assignmentName,
+        rowData,
+      },
+    });
+  }
+  fetchAssignmentsForClass() {
+    const that = this;
+    AuthService.getAssignmentsForClass((responseJson) => {
+      const display = responseJson.filter((assignment) => {
+        return assignment.classFK === that.state.classUrl;
+      });
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(display),
+      });
+    });
+  }
+  pressDashboard() {
+    this.props.navigator.pop({
+      id: 'ClassList',
+    });
+  }
+  renderRow(rowData) {
+    return (
+      <TouchableHighlight
+        onPress={() => this.onPressRow(rowData)}
+        underlayColor="#ddd"
+      >
+        <View style={styles.List}>
 
-    componentWillReceiveProps(){
-        this.fetchAssignmentsForClass();
-    }
+          <Text>{rowData.assignmentName}</Text>
+        </View>
+      </TouchableHighlight>
+    );
+  }
 
-    fetchAssignmentsForClass(){
-
-    return fetch(CONFIG.server.host +'/assignment/')
-              .then((response) => response.json())
-              .then((responseJson) => {
-                var display = [];
-                var j = 0
-                console.log(responseJson);
-                for(var i = 0; i < responseJson.length; i++){
-                    if(responseJson[i].classFK ===  this.state.classUrl){
-                        display[j] = responseJson[i];
-                        j++;
-                    }
-                }
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(display)
-                })
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-    }
-
-    onAddAssignment(){
-        this.props.navigator.push({
-            id: 'AssignmentForm',
-            passProps:{
-                classUrl: this.state.classUrl
-            }
-        });
-    }
-    pressDashboard(){
-         this.props.navigator.pop({
-            id: 'ClassList'
-        });
-    }
-    onPressRow(rowData){
-
-        this.props.navigator.push({
-            id: 'AssignmentView',
-            passProps: {
-            assignmentUrl: rowData.url
-            }
-        });
-    }
-
-    renderRow(rowData){
-        return(
-            <View style={styles.List}>
-                <Text>{rowData.assignmentName}</Text>
-            </View>
-        );
-        }
-
-    renderRow(rowData){
-
-        return(
-        <TouchableHighlight
-                onPress={() => this.onPressRow(rowData)}
-                underlayColor='#ddd'
-              >
-            <View style={styles.List}>
-
-                <Text>{rowData.assignmentName}</Text>
-            </View>
-         </TouchableHighlight>
-        )
-      }
-
-    render(){
-        return(
-
-            <ScrollView>
-
-            <ListView
-              dataSource={this.state.dataSource}
-              renderRow={this.renderRow.bind(this)}
-              enableEmptySections= {true}
-            />
-
-            <TouchableHighlight style={styles.button}
-                onPress={this.onAddAssignment.bind(this)}
-            >
-                <Text style={styles.buttonText}>
-                        Add Assignment
-                </Text>
-            </TouchableHighlight>
-
-            <TouchableHighlight style={styles.button}
-                onPress={this.pressDashboard.bind(this)}
-            >
-                <Text style={styles.buttonText}>
-                        Class Dashboard
-                </Text>
-            </TouchableHighlight>
-            </ScrollView>
-
-        );
-    }
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        <NavigationBar
+          title={{
+            title: this.props.className,
+            tintColor: '#F5FCFF',
+          }}
+          leftButton={{
+            title: <FontAwesome name="chevron-left" size={20} />,
+            handler: () => this.pressDashboard(),
+            tintColor: '#F5FCFF',
+          }}
+          rightButton={{
+            title: <FontAwesome name="plus" size={25} />,
+            handler: () => this.onAddAssignment(),
+            tintColor: '#F5FCFF',
+          }}
+          tintColor="#2194f3"
+        />
+        <View style={styles.container}>
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow.bind(this)}
+            enableEmptySections
+          />
+        </View>
+      </View>
+    );
+  }
 }
+
+ClassView.propTypes = {
+  navigator: React.PropTypes.object,
+  className: React.PropTypes.string.isRequired,
+  classUrl: React.PropTypes.string.isRequired,
+};
 
 module.exports = ClassView;

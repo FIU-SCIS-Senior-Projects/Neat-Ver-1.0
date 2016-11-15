@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import Logo from './../assets/img/Logo_Neat.png';
-var authService = require('../utilities/AuthService');
+import AuthService from '../utilities/AuthService';
 var LoginForm = require('./LoginForm');
 var Header = require('./Header');
 
@@ -34,7 +34,7 @@ class loginView extends Component{
   onLoginPressed(){
     this.setState({showProgress: true});
 
-    authService.login({
+    AuthService.login({
         username: this.state.value.username,
         password: this.state.value.password
     }, (results)=> {
@@ -53,7 +53,7 @@ class loginView extends Component{
           })
         }
         else {
-          console.log('error during login: ', results.status);
+          console.log('error during login: ', results);
         }
     });
   }

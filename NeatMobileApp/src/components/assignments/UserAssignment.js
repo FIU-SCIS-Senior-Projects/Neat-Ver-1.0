@@ -1,17 +1,101 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-  AppRegistry,
   Text,
-  ScrollView,
   View,
-  StyleSheet,
   TouchableHighlight,
-  Navigator,
   ListView,
 } from 'react-native';
 
-import styles from './styles';
 import * as Progress from 'react-native-progress';
+import NavigationBar from 'react-native-navbar';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
+import moment from 'moment';
+import styles from './styles';
+import AuthService from '../../utilities/AuthService';
+
+class Assignments extends Component {
+  constructor(props) {
+    super(props);
+
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+    });
+
+    this.state = {
+      levels: 0,
+      dataSource: ds,
+      authInfo: null,
+    };
+  }
+
+  componentDidMount() {
+    this.getAssignments();
+  }
+  componentWillReceiveProps() {
+    this.getAssignments();
+  }
+
+  onPressRow(rowData) {
+    this.props.navigator.push({
+      id: 'AssignmentView',
+      title: rowData.assignmentName,
+      passProps: {
+        onPress: this.AddPressed,
+        rowData,
+      },
+    });
+  }
+
+  onAddPressed() {
+    this.props.navigator.push({
+      id: 'AssignmentForm',
+    });
+  }
+  getAssignments() {
+    AuthService.getAssignments((assignmentList) => {
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(assignmentList),
+      });
+    });
+  }
+
+  changeColor(progress, numTasks) {
+    let color = '';
+    if (numTasks === 0 || progress === 'Not Tracking Yet') {
+      color = '#595959';
+    } else if (progress === 'Significantly Behind') {
+      color = '#F44336';
+    } else if (progress === 'Considerably Behind') {
+      color = '#ffcc00';
+    } else if (progress === 'Slightly Behind') {
+      color = '#e6e600';
+    } else if (progress === 'On Track') {
+      color = '#009688';
+    }
+    return color;
+  }
+
+  _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    return (
+      <View
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+      />
+    );
+  }
+  renderRow(rowData) {
+    const numberOfTaskLeft = rowData.tasks.filter((task) => !task.isDone).length;
+    // let numberOfTaskLeft = 2;
+    const smartStatus = rowData['smart status'];
+
+    let progress = rowData.progress; // Math.random();
+    if (progress === 0 || rowData.tasks.length === 0) {
+      progress = 0.0009;
+    }
 
 var AssignmentForm = require('./AssignmentForm');
 var AssignmentView = require('./AssignmentView');
@@ -131,19 +215,20 @@ class Assignments extends Component{
                 <Text style={{paddingLeft: 20}}>{this.displayDueDate(rowData.start, rowData.dueDate)}</Text>
 
             </View>
-         </TouchableHighlight>
-        )
-      }
 
-    render(){
-        return(
-            <ScrollView style={styles.container}>
-                <Text style={{ padding: 20, justifyContent: 'center'}}>Assignment Dashboard</Text>
-                <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRow.bind(this)}
-                    enableEmptySections= {true}
+            <View style={{ flex: 1, alignItems: 'center', alignSelf: 'auto' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ fontSize: 20 }}>
+                  {(numberOfTaskLeft > 0) ? `${numberOfTaskLeft}  ` : null}
+                </Text>
+                <FontAwesome
+                  name="puzzle-piece"
+                  size={35}
+                  color="#32C0B2"
                 />
+              </View>
+              <Text>Open Task</Text>
+            </View>
 
                 <TouchableHighlight style={styles.button}
                     onPress={this.onAddPressed.bind(this)}
@@ -165,5 +250,8 @@ class Assignments extends Component{
     }
 }
 
+Assignments.propTypes = {
+  navigator: React.PropTypes.object,
+};
 
 module.exports = Assignments;
