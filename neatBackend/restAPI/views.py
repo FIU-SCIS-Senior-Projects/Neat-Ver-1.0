@@ -301,7 +301,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class ClassViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsCreatorCanEdit,)
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('className', 'classID', 'school', 'roster')
+    filter_fields = ('className', 'classID', 'school', 'roster', 'isPublic')
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
