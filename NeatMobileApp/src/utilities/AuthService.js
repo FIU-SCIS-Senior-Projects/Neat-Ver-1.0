@@ -201,7 +201,7 @@ const AuthService = {
       .catch((err) => cb(err));
   },
   getClasses(cb) {
-    this.doGet(`${CONFIG.server.host}/class/`)
+    this.doGet(`${CONFIG.server.host}/myClasses/`)
       .then((response) => response.json())
       .then((responseJson) => cb(responseJson))
       .catch((err) => cb(err));
@@ -242,6 +242,5 @@ const AuthService = {
     .catch((err) => cb(err));
   },
 };
-
 
 export default AuthService;

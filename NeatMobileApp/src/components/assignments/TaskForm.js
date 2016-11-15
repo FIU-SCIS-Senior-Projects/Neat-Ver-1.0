@@ -47,7 +47,7 @@ class TaskForm extends Component {
     AuthService.addTask({
       taskName: this.state.taskName,
       // user: this.state.user,
-      dueDate: moment(this.state.dueDate).format('YYYY-MM-DD'),
+      due: moment(this.state.dueDate).format('YYYY-MM-DD'),
       assignment: this.props.assignmentUrl,
     }, (results) => {
       if (results.success) {
