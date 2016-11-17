@@ -6,12 +6,14 @@ import {
   DatePickerIOS,
   TouchableOpacity,
   Picker,
+  Animated,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
+import GenericPicker from '../GenericPicker';
 
 /*
    TODO add tasks here maybe(?)
@@ -19,6 +21,8 @@ import AuthService from '../../utilities/AuthService';
    NOTE: you must create school before being able to add an assignment
 */
 const PickerItem = Picker.Item;
+const UIPICKER_HEIGHT = 216;
+
 class AssignmentForm extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +39,9 @@ class AssignmentForm extends Component {
       classObj: {},
       className: 'Select Class',
       pickerValue: 'Select Class',
+      isCollapsed: true,
+      PickerCollapsed: true,
+      height: new Animated.Value(0),
     };
   }
 
@@ -112,6 +119,7 @@ class AssignmentForm extends Component {
       pickerValue: value,
       className: val.className,
       classFK: val.url,
+      isCollapsed: true,
     });
     // console.log('value change ', val.className);
     if (val.className === 'CREATE') {
@@ -134,28 +142,35 @@ class AssignmentForm extends Component {
   }
 
   render() {
-    const showDatePicker = this.state.showDatePicker
-      ? <DatePickerIOS
-        style={{ height: 150 }}
-        date={this.state.dueDate}
-        onDateChange={this.onDateChange}
-        mode="date"
-      />
-      : <View />;
+    const animationConfig = {
+      duration: 200,
+    };
+    const animation = Animated.timing;
+    // const showDatePicker = this.state.showDatePicker
+    //   ? <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
+    //     <DatePickerIOS
+    //       date={this.state.dueDate}
+    //       onDateChange={this.onDateChange}
+    //       mode="date"
+    //     />
+    //   </Animated.View>
+    //   : <View />;
     // const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
-    const pickItems = this.state.dataSource.map((classObj, i) => {
-      return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className} />;
-    });
-
-    const showPicker = this.state.showPicker
-      ? <Picker
-        selectedValue={this.state.pickerValue}
-        onValueChange={this.onValueChange}
-      >
-        {pickItems}
-        <PickerItem value={'{"className": "CREATE"}'} label="Add new class" />
-      </Picker> : <View />;
-
+    // const pickItems = this.state.dataSource.map((classObj, i) => {
+    //   return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className} />;
+    // });
+    //
+    // const showPicker = this.state.showPicker
+    //   ? <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
+    //     <Picker
+    //       selectedValue={this.state.pickerValue}
+    //       onValueChange={this.onValueChange}
+    //     >
+    //       {pickItems}
+    //       <PickerItem value={'{"className": "CREATE"}'} label="Add new class" />
+    //     </Picker>
+    //   </Animated.View> : <View />;
+    const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
     return (
       <View style={[styles.container, { justifyContent: 'flex-start' }]}>
         <NavigationBar
@@ -176,28 +191,44 @@ class AssignmentForm extends Component {
           tintColor="#2194f3"
         />
         <View style={{ padding: 5 }} >
-          <TextInput
-            style={styles.input}
-            onChangeText={(val) => this.setState({ assignmentName: val })}
-            placeholder="Assignment Name"
+          <View
+            style={{ borderBottomWidth: 1,
+              borderColor: '#2194f3' }}
+          >
+            <TextInput
+              style={styles.input}
+              onChangeText={(val) => this.setState({ assignmentName: val })}
+              placeholder="Assignment Name"
+            />
+          </View>
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                animation(this.state.height, Object.assign({
+                  toValue: (this.state.isCollapsed) ? UIPICKER_HEIGHT : 0,
+                }, animationConfig)).start();
+                this.setState({ isCollapsed: !this.state.isCollapsed });
+              }}
+            >
+              <Text>Due</Text>
+            </TouchableOpacity>
+
+            <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
+              <DatePickerIOS
+                date={this.state.dueDate}
+                onDateChange={this.onDateChange}
+                mode="date"
+                style={{ height }}
+              />
+            </Animated.View>
+          </View>
+          <GenericPicker
+            classList={this.state.dataSource}
+            className={this.state.className}
+            pickerValue={this.state.pickerValue}
+            onValueChange={this.onValueChange}
           />
 
-          <Text style={{ paddingTop: 20 }}>
-              Due Date
-            </Text>
-          <TouchableOpacity
-            style={styles.input}
-            onPress={() => this.setState({ showDatePicker: !this.state.showDatePicker })}
-          >
-            <Text>{moment(this.state.dueDate).format('MM/DD/YYYY')}</Text>
-          </TouchableOpacity>
-          {showDatePicker}
-          <TouchableOpacity
-            onPress={() => this.setState({ showPicker: !this.state.showPicker })}
-          >
-            <Text>{this.state.className}</Text>
-          </TouchableOpacity>
-          {showPicker}
         </View>
 
       </View>
