@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Animated, View, TouchableOpacity, Text, Picker } from 'react-native';
 // import AuthService from '../utilities/AuthService';
 
@@ -65,7 +65,8 @@ class GenericPicker extends Component {
       duration: 200,
     };
 
-    const pickItems = this.props.classList.map((classObj, i) => {
+    const pickItems = this.props.classList.map((classObj, i, a, name) => {
+      console.log('classObj ', classObj, 'i ', i, 'a ', a, 'name ', name);
       return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className} />;
     });
     return (
@@ -93,4 +94,12 @@ class GenericPicker extends Component {
     );
   }// <PickerItem value={'{"className": "CREATE"}'} label="Add new class" />
 }
+
+GenericPicker.propTypes = {
+  onValueChange: React.PropTypes.func,
+  pickerValue: React.PropTypes.string,
+  className: React.PropTypes.string,
+  classList: React.PropTypes.array,
+};
+
 module.exports = GenericPicker;

@@ -28,7 +28,6 @@ class AssignmentForm extends Component {
     super(props);
 
     this.state = {
-      reducedList: {},
       dataSource: [],
       assignmentName: '',
       dueDate: new Date(),
@@ -112,7 +111,7 @@ class AssignmentForm extends Component {
       isCollapsed: true,
     });
     // console.log('value change ', val.className);
-    if (val.className === 'CREATE') {
+    if (val.className === 'Add New Class') {
       this.props.navigator.push({
         type: 'Pop',
         id: 'ClassForm',
@@ -124,10 +123,8 @@ class AssignmentForm extends Component {
     AuthService.getClasses((responseJson) => {
       const classList = responseJson;
       const reduced = {};
-      classList.map((s) => {
-        reduced[s.classID] = s.className;
-      });
-      this.setState({ dataSource: classList, reducedList: reduced });
+      classList.push({ className: 'Add New Class' });
+      this.setState({ dataSource: classList });
     });
   }
 
@@ -189,6 +186,7 @@ class AssignmentForm extends Component {
               style={styles.input}
               onChangeText={(val) => this.setState({ assignmentName: val })}
               placeholder="Assignment Name"
+              autoFocus
             />
           </View>
           <View>

@@ -68,8 +68,17 @@ class Classes extends Component {
       });
     });
   }
-
-
+  _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    return (
+      <View
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+      />
+    );
+  }
   renderRow(rowData) {
     return (
       <TouchableHighlight
@@ -107,6 +116,7 @@ class Classes extends Component {
           style={{ flex: 1, alignSelf: 'stretch' }}
           dataSource={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
+          renderSeparator={this._renderSeparator.bind(this)}
           enableEmptySections
         />
       </View>

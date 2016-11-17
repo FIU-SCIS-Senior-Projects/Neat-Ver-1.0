@@ -121,6 +121,7 @@ class Assignments extends Component {
     const numberOfTaskLeft = rowData.tasks.filter((task) => !task.isDone).length;
     // let numberOfTaskLeft = 2;
     const smartStatus = rowData['smart status'];
+    console.log('Assignment');
 
     let progress = rowData.progress; // Math.random();
     if (progress === 0 || rowData.tasks.length === 0) {
