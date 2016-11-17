@@ -10,6 +10,7 @@ import { CheckBox } from 'react-native-elements';
 import moment from 'moment';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
+import { colors } from '../styles';
 
 
 class AssignmentView extends Component {
@@ -100,10 +101,10 @@ class AssignmentView extends Component {
     return (
       <View>
         <CheckBox
-          right
-          iconRight
+          // right
+          // iconRight
           checkedTitle={rowData.taskName}
-          title={rowData.taskName + '\t' + moment(rowData.dueDate).fromNow()}
+          title={rowData.taskName + ' - ' + moment(rowData.dueDate).fromNow()}
           checked={rowData.isDone}
           onPress={() => this.toogleSwitched(rowData)}
           containerStyle={{ backgroundColor: 'white', paddingBottom: 5, borderRadius: 0, borderWidth: 0 }}
@@ -118,19 +119,20 @@ class AssignmentView extends Component {
         <NavigationBar
           title={{
             title: this.props.rowData.assignmentName,
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
+            style: { fontSize: 20, fontWeight: '500' }
           }}
           leftButton={{
             title: <FontAwesome name="chevron-left" size={20} />,
             handler: () => this.pressDashboard(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           rightButton={{
             title: <FontAwesome name="plus" size={25} />,
             handler: () => this.onAddTask(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
-          tintColor="#2194f3"
+          tintColor={colors.navBarColor}
         />
         <ScrollView>
           <ListView

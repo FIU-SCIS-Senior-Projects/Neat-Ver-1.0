@@ -9,7 +9,7 @@ import Splash from './components/neatsplash';
 
 import AuthService from './utilities/AuthService';
 
-import Login from './components/loginView';
+import Login from './components/Login';
 
 // Classes
 import ClassList from './components/classes/Classes';
@@ -17,7 +17,7 @@ import ClassForm from './components/classes/ClassForm';
 import ClassView from './components/classes/ClassView';
 
 // Assignment
-import AssignmentsDash from './components/assignments/UserAssignment';
+import Dashboard from './components/Dashboard';
 import AssignmentForm from './components/assignments/AssignmentForm';
 import AssignmentView from './components/assignments/AssignmentView';
 import TaskForm from './components/assignments/TaskForm';
@@ -60,8 +60,8 @@ class NeatMobileApp extends Component {
         return (<ResetPassword navigator={navigator} title="ResetPassword" />);
       case 'UpdatePassword':
         return (<UpdatePassword navigator={navigator} title="UpdatePassword" />);
-      case 'AssignmentsDash':
-        return (<AssignmentsDash navigator={navigator} {...route.passProps} title="AssignmentsDash" />);
+      case 'Dashboard':
+        return (<Dashboard navigator={navigator} {...route.passProps} title="Dashboard" />);
       case 'AssignmentForm':
         return (<AssignmentForm navigator={navigator} {...route.passProps} title="AssignmentForm" />);
       case 'AssignmentView':
@@ -94,7 +94,7 @@ class NeatMobileApp extends Component {
               <Navigator
                 configureScene={this.configureScene}
                 initialRoute={{
-                  id: 'AssignmentsDash',
+                  id: 'Dashboard',
                   title: 'Dashboard',
                 }}
                 renderScene={this.navigatorRenderScene}

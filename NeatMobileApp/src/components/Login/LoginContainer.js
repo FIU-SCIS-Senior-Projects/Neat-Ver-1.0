@@ -7,11 +7,11 @@ import {
 } from 'react-native';
 
 // import Logo from './../assets/img/Logo_Neat.png';
-import AuthService from '../utilities/AuthService';
-import LoginForm from './LoginForm';
-import Header from './Header';
+import AuthService from '../../utilities/AuthService';
+import Login from './Login';
+import Header from '../Header';
 
-class LoginView extends Component {
+class LoginContainer extends Component {
   constructor(props) {
     super(props);
 
@@ -87,7 +87,7 @@ class LoginView extends Component {
           showProgress={this.state.showProgress}
         />
         <View style={styles.inputs, styles.inputContainer}>
-          <LoginForm
+          <Login
             value={this.state.value}
             onChange={(value) => this.setState({ value })}
           />
@@ -219,8 +219,8 @@ const styles = StyleSheet.create({
   },
 });
 
-LoginView.propTypes = {
+LoginContainer.propTypes = {
   navigator: React.PropTypes.object,
 };
 
-module.exports = LoginView;
+module.exports = LoginContainer;

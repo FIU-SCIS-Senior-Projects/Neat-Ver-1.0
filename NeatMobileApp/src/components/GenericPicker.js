@@ -65,8 +65,7 @@ class GenericPicker extends Component {
       duration: 200,
     };
 
-    const pickItems = this.props.classList.map((classObj, i, a, name) => {
-      console.log('classObj ', classObj, 'i ', i, 'a ', a, 'name ', name);
+    const pickItems = this.props.classList.map((classObj, i) => {
       return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className} />;
     });
     return (
