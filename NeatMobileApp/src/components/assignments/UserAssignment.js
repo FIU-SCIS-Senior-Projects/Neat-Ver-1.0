@@ -78,19 +78,14 @@ class Assignments extends Component {
   }
 
   filterAssignments(selectedIndex) {
-    if (selectedIndex === 0) {
-      const list = this.getCurrentAssignmentList(this.state.assignmentList);
-      this.setState({
-        selectedIndex,
-        dataSource: this.state.dataSource.cloneWithRows(list),
-      });
-    } else if (selectedIndex === 1) {
-      const list = this.getCompletedAssignmentList(this.state.assignmentList);
-      this.setState({
-        selectedIndex,
-        dataSource: this.state.dataSource.cloneWithRows(list),
-      });
-    }
+    let func = null;
+    if (selectedIndex === 0) func = this.getCurrentAssignmentList;
+    else if (selectedIndex === 1) func = this.getCompletedAssignmentList;
+    const list = func(this.state.assignmentList);
+    this.setState({
+      selectedIndex,
+      dataSource: this.state.dataSource.cloneWithRows(list),
+    });
   }
 
   changeColor(progress, numTasks) {
@@ -206,6 +201,7 @@ class Assignments extends Component {
           onPress={this.filterAssignments}
           selectedIndex={selectedIndex}
           buttons={buttons}
+          textStyle={{ fontSize: 10 }}
         />
         <Text style={styles.heading}>
           Hello Neat Dev Team!
