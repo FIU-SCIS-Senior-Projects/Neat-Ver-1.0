@@ -129,6 +129,7 @@ class TaskForm extends Component {
           style={styles.input}
           onChangeText={(val) => this.setState({ taskName: val })}
           placeholder="Task Name"
+          autoFocus
         />
         <Text style={{ paddingTop: 20 }}>Due Date</Text>
         <TouchableOpacity
