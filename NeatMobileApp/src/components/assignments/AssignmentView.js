@@ -7,6 +7,7 @@ import {
 import NavigationBar from 'react-native-navbar';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { CheckBox } from 'react-native-elements';
+import moment from 'moment';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
 
@@ -99,7 +100,10 @@ class AssignmentView extends Component {
     return (
       <View>
         <CheckBox
-          title={rowData.taskName}
+          right
+          iconRight
+          checkedTitle={rowData.taskName}
+          title={rowData.taskName + '\t' + moment(rowData.dueDate).fromNow()}
           checked={rowData.isDone}
           onPress={() => this.toogleSwitched(rowData)}
           containerStyle={{ backgroundColor: 'white', paddingBottom: 5, borderRadius: 0, borderWidth: 0 }}

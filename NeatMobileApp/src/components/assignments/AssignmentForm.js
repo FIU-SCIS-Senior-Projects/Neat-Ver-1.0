@@ -58,23 +58,13 @@ class AssignmentForm extends Component {
     AuthService.addAssignment({
       assignmentName: this.state.assignmentName,
       classFK: this.state.classFK,
-      dueDate: moment(this.state.dueDate).format('YYYY-MM-DD'),
+      due: moment(this.state.dueDate).format('YYYY-MM-DD'),
     }, (results) => {
       if (results.success) {
         this.props.navigator.pop({ id: 'AssignmentsDash' });
       }
       // console.log(results);
     });
-    // try {
-    //   let response = await fetch(CONFIG.server.host + '/assignment/', {
-    //     method: 'POST',
-    //     headers: this.state.authInfo.header,
-    //     body: JSON.stringify({
-    //       assignmentName: this.state.assignmentName,
-    //       classFK: this.state.classFK,
-    //       dueDate: moment(this.state.dueDate).format('YYYY-MM-DD')
-    //     })
-    //   });
     //
     //   let responseJson = await response.text();
     //

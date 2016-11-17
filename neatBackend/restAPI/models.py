@@ -73,7 +73,7 @@ class SchoolRoster(models.Model):
     def __str__(self):
         return str(self.school) + " year " + str(self.schoolYear)
 
-
+#TODO: Add session field, alter unique constraint
 class Class(models.Model):
     #FK
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
@@ -84,7 +84,7 @@ class Class(models.Model):
     isPublic = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('school', 'classID',)
+        unique_together = ('school', 'classID', 'className',)
 
         #add, change, delete already exist by default
         permissions = (
@@ -115,13 +115,8 @@ class Assignment(models.Model):
 
     #fields
     assignmentName = models.CharField(max_length=255)
-    startDate = models.DateField(default=datetime.date.today())
-    dueDate = models.DateField(validators=[is_before_today], null=True)
-    #Eventually we'll need datetime support with time zones
-    """
-    startDate = models.DateTimeField(default=timezone.now)
     dueDate = models.DateTimeField()
-    """
+    startDate = models.DateTimeField(default=timezone.now)
     isPublic = models.BooleanField(default=False)
     
     #permissions
@@ -170,9 +165,9 @@ class Task(models.Model):
     isApproved = models.BooleanField(default=False)
     hoursPlanned = models.PositiveSmallIntegerField(null=True)
     hoursCompleted = models.PositiveSmallIntegerField(null=True)
-    startDate = models.DateField(default=datetime.date.today()) # Start date is set to day of creation
-    endDate = models.DateField(validators=[is_before_today], null=True)
-    dueDate = models.DateField(validators=[is_before_today], null=True)
+    startDate = models.DateTimeField(default=timezone.now)
+    endDate = models.DateTimeField(null=True)
+    dueDate = models.DateTimeField(null=True)
 
     #weight
     LOW = 'low'
