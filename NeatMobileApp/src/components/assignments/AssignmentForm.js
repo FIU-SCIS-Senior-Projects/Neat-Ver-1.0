@@ -170,6 +170,7 @@ class AssignmentForm extends Component {
             style={styles.input}
             onChangeText={(val) => this.setState({ assignmentName: val })}
             placeholder="Assignment Name"
+            autoFocus
           />
 
           <Text style={{ paddingTop: 20 }}>

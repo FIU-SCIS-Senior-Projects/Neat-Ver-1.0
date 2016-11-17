@@ -67,13 +67,15 @@ class Assignments extends Component {
 
   getCurrentAssignmentList(assignmentList) {
     return assignmentList.filter((assignment) => {
-      return (assignment.tasks.filter((task) => !task.isDone).length) > 0;
+      return (assignment.tasks.filter((task) => !task.isDone).length) > 0
+        || assignment.tasks.length === 0;
     });
   }
 
   getCompletedAssignmentList(assignmentList) {
     return assignmentList.filter((assignment) => {
-      return (assignment.tasks.filter((task) => task.isDone).length) === assignment.tasks.length;
+      return (assignment.tasks.filter((task) => task.isDone).length) === assignment.tasks.length
+        && assignment.tasks.length !== 0;
     });
   }
 
@@ -156,7 +158,7 @@ class Assignments extends Component {
                   color="#32C0B2"
                 />
               </View>
-              <Text>Open Task</Text>
+              {rowData.tasks.length === 0 ? <Text>No Tasks</Text> : <Text>Open Tasks</Text>}
             </View>
 
             <View style={{ flex: 1, alignItems: 'flex-end', alignSelf: 'center' }}>
