@@ -10,6 +10,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
+import { colors } from '../styles';
 
 // const Classes = require('./Classes');
 
@@ -91,19 +92,19 @@ class ClassView extends Component {
         <NavigationBar
           title={{
             title: this.props.className,
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           leftButton={{
             title: <FontAwesome name="chevron-left" size={20} />,
             handler: () => this.pressDashboard(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           rightButton={{
             title: <FontAwesome name="plus" size={25} />,
             handler: () => this.onAddAssignment(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
-          tintColor="#2194f3"
+          tintColor={colors.navBarColor}
         />
         <View style={styles.container}>
           <ListView

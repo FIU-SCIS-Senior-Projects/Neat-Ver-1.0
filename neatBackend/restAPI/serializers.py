@@ -4,8 +4,13 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from rest_framework import serializers
 from guardian.shortcuts import assign_perm
 from .models import *
+from rest_framework.validators import *
 #email verification
 import hashlib, random
+#time
+from datetime import *
+from django.utils import timezone
+import pytz
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +18,7 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = School
-        fields = ('url', 'pk', 'schoolName', 'schoolID',)
+        fields = ('url', 'pk', 'name', 'identifier',)
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -105,7 +110,7 @@ class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = SchoolRoster
-        fields = ('url', 'pk', 'schoolYear', 'school', 'user')
+        fields = ('url', 'pk', 'year', 'school', 'user')
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -120,7 +125,7 @@ class ClassSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Class
-        fields = ('url', 'pk', 'className', 'classID', 'school', 'isPublic')
+        fields = ('url', 'pk', 'name', 'identifier', 'school', 'isPublic')
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -162,28 +167,86 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         view_name='user-detail'
     )
     isApproved = serializers.BooleanField(read_only=True)
+    due = serializers.DateField(write_only=True, required=False)
+    startDate = serializers.DateTimeField(read_only=True)
+    dueDate = serializers.DateTimeField(read_only=True)
+    endDate = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Task
-        fields = ('url', 'pk', 'assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'isApproved', 'dueDate', 'difficulty')
+        fields = ('url', 'pk', 'assignment', 'user', 'name', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'isApproved', 'dueDate', 'difficulty', 'due')
 
     def create(self, validated_data):
         usr = self.context['request'].user
-        task = Task.objects.create(user=usr, **validated_data)
+        #Change given date to datetime field
+        date = validated_data.pop('due', None)
+        if date is not None:
+            dueDate = datetime(
+            year=date.year, 
+            month=date.month,
+            day=date.day,
+            tzinfo=pytz.UTC
+            )
+            task = Task.objects.create(user=usr, dueDate=dueDate, **validated_data)
+        else:
+            task = Task.objects.create(user=usr, **validated_data)
         assign_perm('view_task', usr, task)
         assign_perm('change_task', usr, task)
         assign_perm('delete_task', usr, task)
         return task
 
+    def update(self, instance, validated_data):
+        date = validated_data.get('due', None)
+        if date is not None:
+            dueDate = datetime(
+            year=date.year, 
+            month=date.month,
+            day=date.day,
+            tzinfo=pytz.UTC
+            )
+            instance.dueDate = dueDate
+        instance.assignment = validated_data.get('assignment', instance.assignment)
+        instance.name = validated_data.get('name', instance.name)
+        instance.isDone = validated_data.get('isDone', instance.isDone)
+        instance.hoursPlanned = validated_data.get('hoursPlanned', instance.hoursPlanned)
+        instance.hoursCompleted = validated_data.get('hoursCompleted', instance.hoursCompleted)
+        instance.difficulty = validated_data.get('difficulty', instance.difficulty)
+        instance.save()
+        return instance
+
+    def validate_due(self, value):
+        now = timezone.now()
+        dueDate = datetime(
+        year=value.year, 
+        month=value.month,
+        day=value.day,
+        tzinfo=pytz.UTC
+        )
+        if dueDate <= now:
+            raise serializers.ValidationError('This date must be later than startDate')
+        else:
+            return value
+
 class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
+    due = serializers.DateField(write_only=True)
+    startDate = serializers.DateTimeField(read_only=True)
+    dueDate = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Assignment
-        fields = ('url', 'pk', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'isPublic')
+        fields = ('url', 'pk', 'name', 'startDate', 'due' ,'dueDate', 'classFK', 'isPublic')
 
     def create(self, validated_data):
         usr = self.context['request'].user
-        assig = Assignment.objects.create(**validated_data)
+        #Change given date to datetime field
+        date = validated_data.pop('due')
+        dueDate = datetime(
+        year=date.year, 
+        month=date.month,
+        day=date.day,
+        tzinfo=pytz.UTC
+        )
+        assig = Assignment.objects.create(dueDate=dueDate, **validated_data)
         assign_perm('view_assignment', usr, assig)
         assign_perm('change_assignment', usr, assig)
         assign_perm('delete_assignment', usr, assig)
@@ -194,12 +257,56 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
         assign_perm('delete_assignmentroster', usr, assgRoster)
         return assig
 
+    def update(self, instance, validated_data):
+        date = validated_data.pop('due', None)
+        if date is not None:
+            dueDate = datetime(
+            year=date.year, 
+            month=date.month,
+            day=date.day,
+            tzinfo=pytz.UTC
+            )
+            instance.dueDate = dueDate
+        instance.name = validated_data.get('name', instance.name)
+        instance.classFK = validated_data.get('classFK', instance.classFK)
+        instance.isPublic = validated_data.get('isPublic', instance.isPublic)
+        instance.save()
+        return instance
+
+    def validate_due(self, value):
+        now = timezone.now()
+        dueDate = datetime(
+        year=value.year, 
+        month=value.month,
+        day=value.day,
+        tzinfo=pytz.UTC
+        )
+        if dueDate <= now:
+            raise serializers.ValidationError('This date must be later than startDate')
+        else:
+            return value
+
+class MyClassesSerializer(serializers.HyperlinkedModelSerializer):
+    assignments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Class
+        fields = '__all__'
+
+    def get_assignments(self, obj):
+        if obj.isPublic == True:
+            assignments =  obj.assignments
+            serializer = AssignmentSerializer(instance=assignments, many=True, context={'request': self.context['request']})
+            return serializer.data
+        else:
+            return []
+
 class DashboardSerializer(serializers.HyperlinkedModelSerializer):
     tasks = serializers.SerializerMethodField()
 
     class Meta:
         model = Assignment
-        fields = ('url', 'pk', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'isPublic', 'tasks')
+        fields = ('url', 'pk', 'name', 'startDate', 'dueDate', 'classFK', 'isPublic', 'tasks')
     
     #Get only tasks that belong to the user & given assignment
     def get_tasks(self, obj):

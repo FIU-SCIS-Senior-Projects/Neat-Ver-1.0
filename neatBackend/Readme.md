@@ -6,63 +6,35 @@ Django and Django REST Framework For Neat
 For an in depth documentation go to [http://localhost/docs][5] or the official docs at [http://52.87.176.128/docs][6]
 
 ##Changelog
+#####11/17/16
+
+* changed modelName, modelID & modelYear to name, identifier & year respectively
+
+#####11/16/16
+
+* Added /api/myClasses/ endpoint to get a list of classes user belongs to
+* Switched data to datetime, still inputting only dates to endpoint as 'due' field
+* initialData.sh and restartDB.sh scripts
+
 #####11/11/16
+
 * Added /api/startGroup/ endpoint to initialize student group with correct permissions
+
 #####11/10/16
+
 * Collab & dashboard views updated with new algorithm
 * Created smart algorithm & added it to /getAssigProgress/#/ view
 * Added dueDate, difficulty to Task (note endDate != dueDate, use dueDate)
+
 #####11/08/16
+
 * User creating a school, class, or assignment is automatically added to respective roster
 * Added dashboard endpoint
 * Added isPublic boolean fields to Class & Assignment
 
-##Recent Endpoints - examples
+##Endpoint examples
 
-####Get all my info (permissions on)
-`http GET http://127.0.0.1:8000/api/dashboard/ 'Authorization: Token 3727e9e5d6bacd414cf9e606eb8fd0b0ebb7807b'`
-
-####Add task (user no longer needed)
-`http POST http://127.0.0.1:8000/api/task/ assignment_pk=1 taskName=HW1 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
-
-####Get collab assignment statistics (url arg: assignment pk)
-`http GET http://127.0.0.1:8000/api/collab/assig/1/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
-
-####Get user info from token
-`http GET http://127.0.0.1:8000/api/user/getFromToken/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
-
-####Get user assignment progress (url arg: assignment pk)
-`http GET http://127.0.0.1:8000/api/getAssigProgress/1/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
-
-####Add user to assignment
-`http POST http://127.0.0.1:8000/api/assignmentRoster/ assignment=http://localhost:8000/api/assignment/4/ 'Authorization: Token 701a39d1ab82f4d71a14c0d0826b342ac112573c'`
-
-####Add user to school
-`http POST http://127.0.0.1:8000/api/schoolrosters/ user=http://localhost:8000/api/user/4/ school=http://localhost:8000/api/schools/1/ 'Authorization: Token e68dff15c0f0f6f87ff8d7fac2f3f4f8ec947dd1'`
-
-####Create school
-`http POST http://127.0.0.1:8000/api/school/ schoolName=FIU schoolID=123 'Authorization: Token 1dbc6867bac42923c3f34b222c66e1d7733bff7b'`
-
-####Change password (use pk) (url arg: code)
-`http POST http://127.0.0.1:8000/api/changePassword/2c9a2/ email=email@gmail.com password=newPassword`
-
-####Send "password code" e-mail (url arg: email)
-`http POST http://127.0.0.1:8000/api/send/passwordCode/email@gmail.com/`
-
-####Send "e-mail verification" e-mail
-`http POST http://127.0.0.1:8000/api/send/emailCode/ 'Authorization: Token 3ec82aeb21ca8e3f334db37d44d5cb1819252f5b'`
-
-####Verify user e-mail with code (url arg: code)
-`http POST http://127.0.0.1:8000/api/receive/emailCode/f72d6/ 'Authorization: Token 3ec82aeb21ca8e3f334db37d44d5cb1819252f5b'`
-
-####Does a user exist?
-`http GET http://127.0.0.1:8000/api/user/?email=user1@gmail.com`
-
-####Register
-`http POST http://127.0.0.1:8000/api/user/ email=2@neat.com password=password123 first_name=John last_name=Smith groups:='[{"name":"student"}]' profile:='{"grade":"12","age":"23","gender":"male"}'`
-
-####Login (note username field, not email)
-`http POST http://127.0.0.1:8000/api/login/ username=2@neat.com password=password123`
+* Look at initialData.sh for exndpoint examples with httpie
 
 #Usage
 

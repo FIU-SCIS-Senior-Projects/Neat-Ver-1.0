@@ -11,6 +11,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
+import { colors } from '../styles';
 
 class Classes extends Component {
   constructor(props) {
@@ -68,8 +69,17 @@ class Classes extends Component {
       });
     });
   }
-
-
+  _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    return (
+      <View
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+      />
+    );
+  }
   renderRow(rowData) {
     return (
       <TouchableHighlight
@@ -89,24 +99,25 @@ class Classes extends Component {
         <NavigationBar
           title={{
             title: 'Classes',
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           leftButton={(this.state.levels < 2) ? { title: '' } : {
             title: <FontAwesome name="chevron-left" size={20} />,
             handler: () => this.onBackPressed(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           rightButton={{
             title: <FontAwesome name="plus" size={25} />,
             handler: () => this.onAddPressed(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
-          tintColor="#2194f3"
+          tintColor={colors.navBarColor}
         />
         <ListView
           style={{ flex: 1, alignSelf: 'stretch' }}
           dataSource={this.state.dataSource}
           renderRow={this.renderRow.bind(this)}
+          renderSeparator={this._renderSeparator.bind(this)}
           enableEmptySections
         />
       </View>

@@ -1,6 +1,5 @@
-'use strict'
-/*This are the styles for the Assignment view screen*/
-import {StyleSheet} from 'react-native';
+/* This are the styles for the Assignment view screen*/
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -27,7 +26,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     backgroundColor: '#FFF',
-    borderColor: '#599D95'
+    borderColor: '#599D95',
   },
   buttonText: {
     fontSize: 18,
@@ -35,9 +34,9 @@ const styles = StyleSheet.create({
     fontWeight: '100',
   },
   List: {
-    borderColor: '#599D95',
-    borderBottomWidth: 1,
-    height: 70,
+    // borderColor: '#599D95',
+    // borderBottomWidth: 1,
+    height: 50,
     paddingLeft: 10,
     flexDirection: 'row',
     alignItems: 'center',

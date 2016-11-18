@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Navigator, TabBarIOS } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Navigator,
+  TabBarIOS,
+} from 'react-native';
 
 import ChatRoom from './components/ChatRoom';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,7 +15,7 @@ import Splash from './components/neatsplash';
 
 import AuthService from './utilities/AuthService';
 
-import Login from './components/loginView';
+import Login from './components/Login';
 
 // Classes
 import ClassList from './components/classes/Classes';
@@ -18,7 +23,7 @@ import ClassForm from './components/classes/ClassForm';
 import ClassView from './components/classes/ClassView';
 
 // Assignment
-import AssignmentsDash from './components/assignments/UserAssignment';
+import Dashboard from './components/Dashboard';
 import AssignmentForm from './components/assignments/AssignmentForm';
 import AssignmentView from './components/assignments/AssignmentView';
 import TaskForm from './components/assignments/TaskForm';
@@ -44,31 +49,60 @@ class NeatMobileApp extends Component {
     this.setState({ isLoggedIn: true });
   }
 
-  configureScene(route, routeStack) {
-    if(route.type === 'Pop') {
-      return Navigator.SceneConfigs.FloatFromBottom
+  configureScene(route) {
+    if (route.type === 'Pop') {
+      return Navigator.SceneConfigs.FloatFromBottom;
     }
-    return Navigator.SceneConfigs.PushFromRight
+    return Navigator.SceneConfigs.PushFromRight;
+  }
+  navigatorRenderScene(route, navigator) {
+    // _navigator = navigator;
+    switch (route.id) {
+      case 'Login':
+        return (<Login navigator={navigator} title="Login" />);
+      case 'Register':
+        return (<Register navigator={navigator} title="Register" />);
+      case 'ResetPassword':
+        return (<ResetPassword navigator={navigator} title="ResetPassword" />);
+      case 'UpdatePassword':
+        return (<UpdatePassword navigator={navigator} title="UpdatePassword" />);
+      case 'Dashboard':
+        return (<Dashboard navigator={navigator} {...route.passProps} title="Dashboard" />);
+      case 'AssignmentForm':
+        return (<AssignmentForm navigator={navigator} {...route.passProps} title="AssignmentForm" />);
+      case 'AssignmentView':
+        return (<AssignmentView navigator={navigator} {...route.passProps} title="AssignmentView" />);
+      case 'ClassList':
+        return (<ClassList navigator={navigator} {...route.passProps} title="ClassList" />);
+      case 'ClassForm':
+        return (<ClassForm navigator={navigator} title="ClassForm" />);
+      case 'ClassView':
+        return (<ClassView navigator={navigator} {...route.passProps} title="ClassView" />);
+      case 'TaskForm':
+        return (<TaskForm navigator={navigator} {...route.passProps} title="TaskForm" />);
+      case 'ChatRoom':
+        return(<ChatRoom navigator = {navigator} {...route.passProps} title = 'ChatRoom'/>)
+    }
   }
   render() {
     if (this.state.isLoggedIn) {
       return (
         <Splash duration={3000} backgroundColor={styles.splashContainer}>
           <TabBarIOS
-            tintColor='black'
+            tintColor="black"
           // barTintColor='#3abeff'
           >
             <Icon.TabBarItemIOS
-              title='Assignments'
-              iconName='ios-paper-outline'
-              selectedIconName='ios-paper'
+              title="Assignments"
+              iconName="ios-paper-outline"
+              selectedIconName="ios-paper"
               selected={this.state.selectedTab === 'Assignments'}
               onPress={() => this.setState({ selectedTab: 'Assignments' })}
             >
               <Navigator
                 configureScene={this.configureScene}
                 initialRoute={{
-                  id: 'AssignmentsDash',
+                  id: 'Dashboard',
                   title: 'Dashboard',
                 }}
                 renderScene={this.navigatorRenderScene}
@@ -76,7 +110,7 @@ class NeatMobileApp extends Component {
               />
             </Icon.TabBarItemIOS>
             <Icon.TabBarItemIOS
-              title='Classes'
+              title="Classes"
               iconName="ios-school-outline"
               selectedIconName="ios-school"
               selected={this.state.selectedTab === 'Classes'}
@@ -115,50 +149,18 @@ class NeatMobileApp extends Component {
         </Splash>
       );
     }
-    else {
-      return (
-        <Splash duration={500} backgroundColor={styles.splashContainer}>
-          <View style={styles.container}>
+    return (
+      <Splash duration={500} backgroundColor={styles.splashContainer}>
+        <View style={styles.container}>
 
-            <Navigator
-              configureScene={this.configureScene}
-              initialRoute={{id: 'Login'}}
-              renderScene={this.navigatorRenderScene}
-            />
-          </View>
-        </Splash>
-      );
-    }
-  }
-
-  navigatorRenderScene(route, navigator) {
-    // _navigator = navigator;
-    switch (route.id) {
-      case 'Login':
-        return (<Login navigator={navigator} title='Login' />);
-      case 'Register':
-        return (<Register navigator={navigator} title='Register' />);
-      case 'ResetPassword':
-        return (<ResetPassword navigator={navigator} title='ResetPassword' />);
-      case 'UpdatePassword':
-        return (<UpdatePassword navigator={navigator} title='UpdatePassword' />);
-      case 'AssignmentsDash':
-        return (<AssignmentsDash navigator={navigator} {...route.passProps} title='AssignmentsDash'/>);
-      case 'AssignmentForm':
-        return (<AssignmentForm navigator={navigator} {...route.passProps} title='AssignmentForm'/>);
-      case 'AssignmentView':
-        return (<AssignmentView navigator={navigator} {...route.passProps} title='AssignmentView'/>);
-      case 'ClassList':
-        return (<ClassList navigator={navigator} {...route.passProps} title='ClassList'/>);
-      case 'ClassForm':
-        return (<ClassForm navigator={navigator} title='ClassForm'/>);
-      case 'ClassView':
-        return (<ClassView navigator={navigator} {...route.passProps} title='ClassView'/>);;
-      case 'TaskForm':
-          return(<TaskForm navigator = {navigator} {...route.passProps} title = 'TaskForm'/>)
-      case 'ChatRoom':
-          return(<ChatRoom navigator = {navigator} {...route.passProps} title = 'ChatRoom'/>) 
-    }
+          <Navigator
+            configureScene={this.configureScene}
+            initialRoute={{ id: 'Login' }}
+            renderScene={this.navigatorRenderScene}
+          />
+        </View>
+      </Splash>
+    );
   }
 }
 
@@ -166,7 +168,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-    // marginTop: 10
   },
   welcome: {
     fontSize: 20,

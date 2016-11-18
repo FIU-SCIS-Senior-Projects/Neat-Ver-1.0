@@ -50,25 +50,6 @@ const AuthService = {
       })
       .catch((err) => reject(err));
     });
-
-    // AsyncStorage.getItem(USERKEY, (err, val) => {
-    //   // console.log('inside getLoginToken userkey', USERKEY, 'err:', err, 'val:', val);
-    //   if(err) {
-    //     return cb(err);
-    //   }
-    //   if(!val) {
-    //     return cb();
-    //   }
-    //   var authInfo = {
-    //     method: 'POST',
-    //     header: {
-    //       'Content-Type': 'application/json',
-    //       'Authorization': 'Token ' + val,
-    //     },
-    //     token: val
-    //   }
-    //   cb(null, authInfo);
-    // });
   },
 
   logout(cb) {
@@ -201,7 +182,7 @@ const AuthService = {
       .catch((err) => cb(err));
   },
   getClasses(cb) {
-    this.doGet(`${CONFIG.server.host}/class/`)
+    this.doGet(`${CONFIG.server.host}/myClasses/`)
       .then((response) => response.json())
       .then((responseJson) => cb(responseJson))
       .catch((err) => cb(err));
@@ -241,7 +222,16 @@ const AuthService = {
     .then((responseData) => cb({ success: true }))
     .catch((err) => cb(err));
   },
+  joinAssignment(params, cb) {
+    this.doPost(`${CONFIG.server.host}/assignmentRoster/`, params)
+    .then(this.handleResponse)
+    .then((response) => response.json())
+    .then((responseData) => {
+      // console.log('==========>', responseData);
+      return cb({ success: true })
+    })
+    .catch((err) => cb(err));
+  },
 };
-
 
 export default AuthService;
