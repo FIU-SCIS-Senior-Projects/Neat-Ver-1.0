@@ -11,15 +11,14 @@ import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import styles from './styles';
+import Form from './Form';
 import AuthService from '../../utilities/AuthService';
 import GenericPicker from '../GenericPicker';
 import { colors } from '../styles';
 
-
 /*
    NOTE: you must create school before being able to add an assignment
 */
-const UIPICKER_HEIGHT = 216;
 
 class AssignmentForm extends Component {
   constructor(props) {
@@ -50,7 +49,6 @@ class AssignmentForm extends Component {
   componentWillReceiveProps() {
     this.fetchClasses();
   }
-
   // POSTS to the api
   onDonePressed() {
     if (this.state.assignPublic) {
@@ -109,13 +107,6 @@ class AssignmentForm extends Component {
       assignPublic: val.isPublic,
       assignUrl: val.url,
     });
-
-    if (val.className === 'Add New Class') {
-      this.props.navigator.push({
-        type: 'Pop',
-        id: 'ClassForm',
-      });
-    }
   }
 
   fetchClasses() {
@@ -125,49 +116,13 @@ class AssignmentForm extends Component {
       this.setState({ dataSource: classList });
     });
   }
-
   render() {
-    const animationConfig = {
-      duration: 200,
-    };
-    const animation = Animated.timing;
-
-    const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
-
     const manualForm = (!this.state.private) ?
-      <View>
-        <View
-          style={{ borderBottomWidth: 1,
-            borderColor: '#2194f3' }}
-        >
-          <TextInput
-            style={styles.input}
-            onChangeText={(val) => this.setState({ assignmentName: val })}
-            placeholder="Assignment Name"
-          />
-        </View>
-        <View>
-          <TouchableOpacity
-            onPress={() => {
-              animation(this.state.height, Object.assign({
-                toValue: (this.state.isCollapsed) ? UIPICKER_HEIGHT : 0,
-              }, animationConfig)).start();
-              this.setState({ isCollapsed: !this.state.isCollapsed });
-            }}
-          >
-            <Text>Due</Text>
-          </TouchableOpacity>
-
-          <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
-            <DatePickerIOS
-              date={this.state.dueDate}
-              onDateChange={this.onDateChange}
-              mode="date"
-              style={height}
-            />
-          </Animated.View>
-        </View>
-      </View> :
+      <Form
+        onDateChange={this.onDateChange}
+        onChangeText={(val) => this.setState({ assignmentName: val })}
+        dueDate={this.state.dueDate}
+      /> :
       <GenericPicker
         list={this.state.assignments}
         name={this.state.assignmentName}
@@ -202,7 +157,6 @@ class AssignmentForm extends Component {
           />
           {manualForm}
         </View>
-
       </View>
     );
   }

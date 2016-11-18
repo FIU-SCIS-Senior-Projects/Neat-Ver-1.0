@@ -1,6 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { Animated, View, TouchableOpacity, Text, Picker } from 'react-native';
-// import AuthService from '../utilities/AuthService';
 
 const UIPICKER_HEIGHT = 216;
 const PickerItem = Picker.Item;
@@ -40,7 +39,7 @@ class GenericPicker extends Component {
             this.setState({ isCollapsed: !this.state.isCollapsed });
           }}
         >
-          <Text style={{fontSize: 23, padding: 5}}>{this.props.name}</Text>
+          <Text style={{ fontSize: 23, padding: 5 }}>{this.props.name}</Text>
         </TouchableOpacity>
         <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
           <Picker
@@ -59,8 +58,8 @@ class GenericPicker extends Component {
 GenericPicker.propTypes = {
   onValueChange: React.PropTypes.func,
   pickerValue: React.PropTypes.string,
-  className: React.PropTypes.string,
-  classList: React.PropTypes.array,
+  name: React.PropTypes.string,
+  list: React.PropTypes.array,
 };
 
 module.exports = GenericPicker;
