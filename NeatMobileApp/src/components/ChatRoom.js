@@ -19,7 +19,7 @@ class ChatRoom extends Component {
           user: {
             _id: 2,
             name: 'Neat Help',
-            avatar: 'https://facebook.github.io/react/img/logo_og.png',
+            avatar: 'http://neatstudy.com/assets/img/neat_mini.png',
           },
         },
       ],

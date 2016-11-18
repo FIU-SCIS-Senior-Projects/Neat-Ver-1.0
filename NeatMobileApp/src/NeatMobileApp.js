@@ -81,7 +81,7 @@ class NeatMobileApp extends Component {
       case 'TaskForm':
         return (<TaskForm navigator={navigator} {...route.passProps} title="TaskForm" />);
       case 'ChatRoom':
-        return(<ChatRoom navigator = {navigator} {...route.passProps} title = 'ChatRoom'/>)
+        return (<ChatRoom navigator={navigator} {...route.passProps} title="ChatRoom" />);
     }
   }
   render() {
