@@ -5,7 +5,7 @@ import { Animated, View, TouchableOpacity, Text, Picker } from 'react-native';
 const UIPICKER_HEIGHT = 216;
 const PickerItem = Picker.Item;
 
-class GenericPicker extends Component {
+class AssignmentPicker extends Component {
 
   constructor(props) {
     super(props);
@@ -27,10 +27,10 @@ class GenericPicker extends Component {
     };
 
     const pickItems = this.props.list.map((listItem, i) => {
-      return <PickerItem key={i} value={JSON.stringify(listItem)} label={listItem.className} />;
+      return <PickerItem key={i} value={JSON.stringify(listItem)} label={listItem.assignmentName} />;
     });
     return (
-      <View>
+      <View >
         <TouchableOpacity
           style={{ borderBottomWidth: 1, borderColor: '#e6e600' }}
           onPress={() => {
@@ -55,4 +55,4 @@ class GenericPicker extends Component {
     );
   }// <PickerItem value={'{"className": "CREATE"}'} label="Add new class" />
 }
-module.exports = GenericPicker;
+module.exports = AssignmentPicker;

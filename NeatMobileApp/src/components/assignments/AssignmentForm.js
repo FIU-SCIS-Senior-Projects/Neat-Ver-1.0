@@ -5,7 +5,6 @@ import {
   TextInput,
   DatePickerIOS,
   TouchableOpacity,
-  Picker,
   Animated,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
@@ -14,13 +13,13 @@ import moment from 'moment';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
 import GenericPicker from '../GenericPicker';
+import AssignmentPicker from '../AssignmentPicker';
 
 /*
    TODO add tasks here maybe(?)
 
    NOTE: you must create school before being able to add an assignment
 */
-const PickerItem = Picker.Item;
 const UIPICKER_HEIGHT = 216;
 
 class AssignmentForm extends Component {
@@ -28,20 +27,20 @@ class AssignmentForm extends Component {
     super(props);
 
     this.state = {
-      reducedList: {},
       dataSource: [],
-      assignmentName: '',
-      dueDate: new Date(),
-      classFK: '', // props.classUrl,
-      showDatePicker: false,
-      showPicker: false,
-      errors: [],
-      classObj: {},
+      assignments: [],
+      assignmentName: 'Select Assignment',
+      assignPublic: true,
+      assignUrl: '',
+      assignmentValue: '',
       className: 'Select Class',
-      pickerValue: 'Select Class',
+      private: true,
+      dueDate: new Date(),
+      classFK: '',
+      classValue: '',
       isCollapsed: true,
-      PickerCollapsed: true,
       height: new Animated.Value(0),
+      errors: [],
     };
   }
 
@@ -55,63 +54,43 @@ class AssignmentForm extends Component {
 
   // POSTS to the api
   onDonePressed() {
-    AuthService.addAssignment({
-      assignmentName: this.state.assignmentName,
-      classFK: this.state.classFK,
-      due: moment(this.state.dueDate).format('YYYY-MM-DD'),
-    }, (results) => {
-      if (results.success) {
-        this.props.navigator.pop({ id: 'AssignmentsDash' });
-      }
-      // console.log(results);
-    });
-    //
-    //   let responseJson = await response.text();
-    //
-    //   //verify if our operation was a success or failure
-    //   if (response.status >= 200 && response.status < 300) {
-    //     console.log("response succes is:" + this.state.assignmentName);
-    //     this.props.navigator.pop({id: 'AssignmentsDash'});
-    //     console.log('DONE BUTTON WAS PRESSED')
-    //   } else {
-    //     console.log("response failure is:" + responseJson);
-    //     let errors = responseJson;
-    //     throw errors;
-    //   }
-    //
-    // } catch (errors) {
-    //
-    //   console.log("catch errors:" + errors);
-    //
-    //   let formErrors = JSON.parse(errors);
-    //
-    //   let errorsArray = [];
-    //
-    //   for (let key in formErrors) {
-    //     if (formErrors[key].length > 1) {
-    //       formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
-    //     } else {
-    //       errorsArray.push(`${key} ${formErrors[key]}`);
-    //     }
-    //   }
-    //   this.setState({ errors: errorsArray });
-    // }
+    if (this.state.assignPublic) {
+      AuthService.joinAssignment({
+        classFK: this.state.classFK,
+        assignment: this.state.assignUrl,
+      }, (results) => {
+        // console.log(results);
+        if (results.success) {
+          this.props.navigator.pop({ id: 'AssignmentsDash' });
+        }
+      });
+    } else {
+      AuthService.addAssignment({
+        assignmentName: this.state.assignmentName,
+        classFK: this.state.classFK,
+        due: moment(this.state.dueDate).format('YYYY-MM-DD'),
+      }, (results) => {
+        if (results.success) {
+          this.props.navigator.pop({ id: 'AssignmentsDash' });
+        }
+      });
+    }
   }
 
   onDateChange = (date) => {
     this.setState({ dueDate: date });
   };
 
-  onValueChange = (value) => {
+  onValueChangeClass = (value) => {
     const val = JSON.parse(value);
-
     this.setState({
-      pickerValue: value,
+      classValue: value,
       className: val.className,
       classFK: val.url,
       isCollapsed: true,
+      private: val.isPublic,
+      assignments: val.assignments,
     });
-    // console.log('value change ', val.className);
     if (val.className === 'CREATE') {
       this.props.navigator.push({
         type: 'Pop',
@@ -120,14 +99,23 @@ class AssignmentForm extends Component {
     }
   }
 
+  onValueChangeAssignment = (value) => {
+    const val = JSON.parse(value);
+    this.setState({
+      assignmentValue: value,
+      isCollapsed: true,
+      assignmentName: val.assignmentName,
+      dueDate: val.dueDate,
+      assignPublic: val.isPublic,
+      assignUrl: val.url,
+    });
+  }
+
   fetchClasses() {
     AuthService.getClasses((responseJson) => {
       const classList = responseJson;
-      const reduced = {};
-      classList.map((s) => {
-        reduced[s.classID] = s.className;
-      });
-      this.setState({ dataSource: classList, reducedList: reduced });
+      classList.push({ className: 'CREATE' });
+      this.setState({ dataSource: classList });
     });
   }
 
@@ -136,31 +124,49 @@ class AssignmentForm extends Component {
       duration: 200,
     };
     const animation = Animated.timing;
-    // const showDatePicker = this.state.showDatePicker
-    //   ? <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
-    //     <DatePickerIOS
-    //       date={this.state.dueDate}
-    //       onDateChange={this.onDateChange}
-    //       mode="date"
-    //     />
-    //   </Animated.View>
-    //   : <View />;
-    // const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
-    // const pickItems = this.state.dataSource.map((classObj, i) => {
-    //   return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className} />;
-    // });
-    //
-    // const showPicker = this.state.showPicker
-    //   ? <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
-    //     <Picker
-    //       selectedValue={this.state.pickerValue}
-    //       onValueChange={this.onValueChange}
-    //     >
-    //       {pickItems}
-    //       <PickerItem value={'{"className": "CREATE"}'} label="Add new class" />
-    //     </Picker>
-    //   </Animated.View> : <View />;
+
     const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
+
+    const manualForm = (!this.state.private) ?
+      <View>
+        <View
+          style={{ borderBottomWidth: 1,
+            borderColor: '#2194f3' }}
+        >
+          <TextInput
+            style={styles.input}
+            onChangeText={(val) => this.setState({ assignmentName: val })}
+            placeholder="Assignment Name"
+          />
+        </View>
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              animation(this.state.height, Object.assign({
+                toValue: (this.state.isCollapsed) ? UIPICKER_HEIGHT : 0,
+              }, animationConfig)).start();
+              this.setState({ isCollapsed: !this.state.isCollapsed });
+            }}
+          >
+            <Text>Due</Text>
+          </TouchableOpacity>
+
+          <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
+            <DatePickerIOS
+              date={this.state.dueDate}
+              onDateChange={this.onDateChange}
+              mode="date"
+              style={{ height }}
+            />
+          </Animated.View>
+        </View>
+      </View> :
+      <AssignmentPicker
+        list={this.state.assignments}
+        name={this.state.assignmentName}
+        pickerValue={this.state.assignmentValue}
+        onValueChange={this.onValueChangeAssignment}
+      />;
     return (
       <View style={[styles.container, { justifyContent: 'flex-start' }]}>
         <NavigationBar
@@ -181,44 +187,14 @@ class AssignmentForm extends Component {
           tintColor="#2194f3"
         />
         <View style={{ padding: 5 }} >
-          <View
-            style={{ borderBottomWidth: 1,
-              borderColor: '#2194f3' }}
-          >
-            <TextInput
-              style={styles.input}
-              onChangeText={(val) => this.setState({ assignmentName: val })}
-              placeholder="Assignment Name"
-            />
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                animation(this.state.height, Object.assign({
-                  toValue: (this.state.isCollapsed) ? UIPICKER_HEIGHT : 0,
-                }, animationConfig)).start();
-                this.setState({ isCollapsed: !this.state.isCollapsed });
-              }}
-            >
-              <Text>Due</Text>
-            </TouchableOpacity>
 
-            <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
-              <DatePickerIOS
-                date={this.state.dueDate}
-                onDateChange={this.onDateChange}
-                mode="date"
-                style={{ height }}
-              />
-            </Animated.View>
-          </View>
           <GenericPicker
-            classList={this.state.dataSource}
-            className={this.state.className}
-            pickerValue={this.state.pickerValue}
-            onValueChange={this.onValueChange}
+            list={this.state.dataSource}
+            name={this.state.className}
+            pickerValue={this.state.classValue}
+            onValueChange={this.onValueChangeClass}
           />
-
+          {manualForm}
         </View>
 
       </View>
