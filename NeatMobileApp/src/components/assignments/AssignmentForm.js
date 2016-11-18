@@ -29,7 +29,7 @@ class AssignmentForm extends Component {
       dataSource: [],
       assignments: [],
       assignmentName: 'Select Assignment',
-      assignPublic: true,
+      assignPublic: false,
       assignUrl: '',
       assignmentValue: '',
       className: 'Select Class',
@@ -64,7 +64,7 @@ class AssignmentForm extends Component {
       });
     } else {
       AuthService.addAssignment({
-        assignmentName: this.state.assignmentName,
+        name: this.state.assignmentName,
         classFK: this.state.classFK,
         due: moment(this.state.dueDate).format('YYYY-MM-DD'),
       }, (results) => {
@@ -81,6 +81,7 @@ class AssignmentForm extends Component {
 
   onValueChangeClass = (value) => {
     const val = JSON.parse(value);
+
     this.setState({
       classValue: value,
       className: val.name,
@@ -90,7 +91,7 @@ class AssignmentForm extends Component {
       assignments: val.assignments,
     });
 
-    if (val.className === 'Add New Class') {
+    if (val.name === 'Add New Class') {
       this.props.navigator.push({
         type: 'Pop',
         id: 'ClassForm',
@@ -108,12 +109,19 @@ class AssignmentForm extends Component {
       assignPublic: val.isPublic,
       assignUrl: val.url,
     });
+
+    if (val.className === 'Add New Class') {
+      this.props.navigator.push({
+        type: 'Pop',
+        id: 'ClassForm',
+      });
+    }
   }
 
   fetchClasses() {
     AuthService.getClasses((responseJson) => {
       const classList = responseJson;
-      classList.push({ className: 'Add New Class' });
+      classList.push({ name: 'Add New Class' });
       this.setState({ dataSource: classList });
     });
   }
@@ -155,7 +163,7 @@ class AssignmentForm extends Component {
               date={this.state.dueDate}
               onDateChange={this.onDateChange}
               mode="date"
-              style={{ height }}
+              style={height}
             />
           </Animated.View>
         </View>

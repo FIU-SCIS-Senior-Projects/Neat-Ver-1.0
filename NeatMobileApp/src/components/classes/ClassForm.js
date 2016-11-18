@@ -43,8 +43,8 @@ class ClassForm extends Component {
   // POSTS to the api
   async onDonePressed() {
     AuthService.addClass({
-      className: this.state.className,
-      classID: this.state.classID,
+      name: this.state.className,
+      identifier: this.state.classID,
       school: this.state.school,
     }, (results) => {
       if (results.success) {

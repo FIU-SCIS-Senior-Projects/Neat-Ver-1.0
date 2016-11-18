@@ -29,18 +29,8 @@ class AssignmentView extends Component {
   }
 
   componentDidMount() {
-      // AuthService.getLoginToken((err, authInfo) => {
-      //   this.setState({
-      //     authInfo,
-      //   });
-      //   // this.fetchTasks();
-      // });
+
     this.fetchTasks();
-      // if(this.props.rowData.tasks) {
-      //   this.setState({
-      //       dataSource: this.state.dataSource.cloneWithRows(this.props.rowData.tasks)
-      //   });
-      // }
   }
   componentWillReceiveProps() {
     this.fetchTasks();
