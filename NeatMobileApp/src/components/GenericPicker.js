@@ -27,7 +27,7 @@ class GenericPicker extends Component {
     };
 
     const pickItems = this.props.list.map((listItem, i) => {
-      return <PickerItem key={i} value={JSON.stringify(listItem)} label={listItem.className} />;
+      return <PickerItem key={i} value={JSON.stringify(listItem)} label={listItem.name} />;
     });
     return (
       <View>

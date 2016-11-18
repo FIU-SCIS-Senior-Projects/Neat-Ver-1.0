@@ -13,7 +13,6 @@ import moment from 'moment';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
 import GenericPicker from '../GenericPicker';
-import AssignmentPicker from '../AssignmentPicker';
 import { colors } from '../styles';
 
 
@@ -59,7 +58,6 @@ class AssignmentForm extends Component {
         classFK: this.state.classFK,
         assignment: this.state.assignUrl,
       }, (results) => {
-        // console.log(results);
         if (results.success) {
           this.props.navigator.pop({ id: 'AssignmentsDash' });
         }
@@ -85,7 +83,7 @@ class AssignmentForm extends Component {
     const val = JSON.parse(value);
     this.setState({
       classValue: value,
-      className: val.className,
+      className: val.name,
       classFK: val.url,
       isCollapsed: true,
       private: val.isPublic,
@@ -105,7 +103,7 @@ class AssignmentForm extends Component {
     this.setState({
       assignmentValue: value,
       isCollapsed: true,
-      assignmentName: val.assignmentName,
+      assignmentName: val.name,
       dueDate: val.dueDate,
       assignPublic: val.isPublic,
       assignUrl: val.url,
@@ -162,7 +160,7 @@ class AssignmentForm extends Component {
           </Animated.View>
         </View>
       </View> :
-      <AssignmentPicker
+      <GenericPicker
         list={this.state.assignments}
         name={this.state.assignmentName}
         pickerValue={this.state.assignmentValue}
