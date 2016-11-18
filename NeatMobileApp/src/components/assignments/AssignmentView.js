@@ -5,7 +5,7 @@ import {
   ScrollView,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { CheckBox } from 'react-native-elements';
 import moment from 'moment';
 import styles from './styles';
@@ -123,12 +123,12 @@ class AssignmentView extends Component {
             style: { fontSize: 20, fontWeight: '500' }
           }}
           leftButton={{
-            title: <FontAwesome name="chevron-left" size={20} />,
+            title: <Icon name="ios-arrow-back" size={30} />,
             handler: () => this.pressDashboard(),
             tintColor: colors.navBarText,
           }}
           rightButton={{
-            title: <FontAwesome name="plus" size={25} />,
+            title: <Icon name="ios-add" size={35} />,
             handler: () => this.onAddTask(),
             tintColor: colors.navBarText,
           }}

@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Navigator, TabBarIOS } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Navigator,
+  TabBarIOS,
+} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Register from './components/registration/register';
@@ -45,9 +50,9 @@ class NeatMobileApp extends Component {
 
   configureScene(route) {
     if (route.type === 'Pop') {
-      return Navigator.SceneConfigs.FloatFromBottom
+      return Navigator.SceneConfigs.FloatFromBottom;
     }
-    return Navigator.SceneConfigs.PushFromRight
+    return Navigator.SceneConfigs.PushFromRight;
   }
   navigatorRenderScene(route, navigator) {
     // _navigator = navigator;
@@ -81,13 +86,13 @@ class NeatMobileApp extends Component {
       return (
         <Splash duration={3000} backgroundColor={styles.splashContainer}>
           <TabBarIOS
-            tintColor='black'
+            tintColor="black"
           // barTintColor='#3abeff'
           >
             <Icon.TabBarItemIOS
-              title='Assignments'
-              iconName='ios-paper-outline'
-              selectedIconName='ios-paper'
+              title="Assignments"
+              iconName="ios-paper-outline"
+              selectedIconName="ios-paper"
               selected={this.state.selectedTab === 'Assignments'}
               onPress={() => this.setState({ selectedTab: 'Assignments' })}
             >

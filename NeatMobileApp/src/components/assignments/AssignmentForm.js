@@ -9,7 +9,7 @@ import {
   Animated,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
@@ -17,11 +17,8 @@ import GenericPicker from '../GenericPicker';
 import { colors } from '../styles';
 
 /*
-   TODO add tasks here maybe(?)
-
    NOTE: you must create school before being able to add an assignment
 */
-const PickerItem = Picker.Item;
 const UIPICKER_HEIGHT = 216;
 
 class AssignmentForm extends Component {
@@ -61,41 +58,10 @@ class AssignmentForm extends Component {
       due: moment(this.state.dueDate).format('YYYY-MM-DD'),
     }, (results) => {
       if (results.success) {
-        this.props.navigator.pop({ id: 'AssignmentsDash' });
+        this.props.navigator.pop({ id: 'Dashboard' });
       }
       // console.log(results);
     });
-    //
-    //   let responseJson = await response.text();
-    //
-    //   //verify if our operation was a success or failure
-    //   if (response.status >= 200 && response.status < 300) {
-    //     console.log("response succes is:" + this.state.assignmentName);
-    //     this.props.navigator.pop({id: 'AssignmentsDash'});
-    //     console.log('DONE BUTTON WAS PRESSED')
-    //   } else {
-    //     console.log("response failure is:" + responseJson);
-    //     let errors = responseJson;
-    //     throw errors;
-    //   }
-    //
-    // } catch (errors) {
-    //
-    //   console.log("catch errors:" + errors);
-    //
-    //   let formErrors = JSON.parse(errors);
-    //
-    //   let errorsArray = [];
-    //
-    //   for (let key in formErrors) {
-    //     if (formErrors[key].length > 1) {
-    //       formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
-    //     } else {
-    //       errorsArray.push(`${key} ${formErrors[key]}`);
-    //     }
-    //   }
-    //   this.setState({ errors: errorsArray });
-    // }
   }
 
   onDateChange = (date) => {
@@ -134,30 +100,6 @@ class AssignmentForm extends Component {
       duration: 200,
     };
     const animation = Animated.timing;
-    // const showDatePicker = this.state.showDatePicker
-    //   ? <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
-    //     <DatePickerIOS
-    //       date={this.state.dueDate}
-    //       onDateChange={this.onDateChange}
-    //       mode="date"
-    //     />
-    //   </Animated.View>
-    //   : <View />;
-    // const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
-    // const pickItems = this.state.dataSource.map((classObj, i) => {
-    //   return <PickerItem key={i} value={JSON.stringify(classObj)} label={classObj.className} />;
-    // });
-    //
-    // const showPicker = this.state.showPicker
-    //   ? <Animated.View style={{ height: this.state.height, overflow: 'hidden' }}>
-    //     <Picker
-    //       selectedValue={this.state.pickerValue}
-    //       onValueChange={this.onValueChange}
-    //     >
-    //       {pickItems}
-    //       <PickerItem value={'{"className": "CREATE"}'} label="Add new class" />
-    //     </Picker>
-    //   </Animated.View> : <View />;
     const height = (this.state.isCollapsed) ? 0 : UIPICKER_HEIGHT;
     return (
       <View style={[styles.container, { justifyContent: 'flex-start' }]}>
@@ -167,12 +109,12 @@ class AssignmentForm extends Component {
             tintColor: colors.navBarText,
           }}
           leftButton={{
-            title: <FontAwesome name="times" size={20} />,
+            title: <Icon name="ios-close" size={35} />,
             handler: () => this.props.navigator.pop(),
             tintColor: colors.navBarText,
           }}
           rightButton={{
-            title: <FontAwesome name="check" size={25} />,
+            title: <Icon name="ios-checkmark" size={35} />,
             handler: () => this.onDonePressed(),
             tintColor: colors.navBarText,
           }}
