@@ -9,6 +9,7 @@ import NavigationBar from 'react-native-navbar';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
 import CONFIG from '../../config';
+import { colors } from '../styles';
 
 /* TODO
 change school id to dynamic
@@ -64,19 +65,19 @@ class ClassForm extends Component {
         <NavigationBar
           title={{
             title: 'Add a New Class',
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           leftButton={{
             title: <FontAwesome name="times" size={20} />,
             handler: () => this.onBackPressed(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           rightButton={{
             title: <FontAwesome name="check" size={25} />,
             handler: () => this.onDonePressed(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
-          tintColor="#2194f3"
+          tintColor={colors.navBarColor}
         />
         <TextInput
           style={styles.input}

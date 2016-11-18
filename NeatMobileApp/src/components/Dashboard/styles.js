@@ -1,21 +1,3 @@
-// import { StyleSheet } from 'react-native';
-// import { colors } from '../../config/styles';
-//
-// export default StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: colors.background,
-//   },
-//   main: {
-//     fontSize: 20,
-//     textAlign: 'center',
-//     color: colors.headerText,
-//     fontWeight: '400',
-//     fontStyle: 'italic',
-//   },
-// });
 /* This are the styles for the Assignment view screen*/
 import { StyleSheet } from 'react-native';
 
@@ -26,6 +8,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
+    backgroundColor: 'white',
   },
   button: {
     flexDirection: 'row',
@@ -50,12 +33,13 @@ const styles = StyleSheet.create({
     fontWeight: '100',
   },
   List: {
-    borderColor: '#f5fcff',
-    borderBottomWidth: 1,
-    height: 70,
-    paddingLeft: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    // borderColor: '#f5fcff',
+    // borderBottomWidth: 1,
+    // height: 70,
+    // paddingLeft: 10,
+    flex: 1,
+    // flexDirection: 'row',
+    // alignItems: 'stretch',
     //marginBottom: ,
   },
   progress: {
@@ -67,8 +51,9 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     padding: 4,
-    borderWidth: 1,
-    borderColor: '#48bbec',
+    // borderWidth: 1,
+    // borderBottomWidth: 0,
+    // borderColor: '#2194f3',
     borderRadius: 0,
 
   },
@@ -81,8 +66,10 @@ const styles = StyleSheet.create({
     height: null,
   },
   heading: {
-    padding: 10,
+    padding: 30,
+    textAlign: 'center',
     fontSize: 36,
+    color: '#3b3b3b',
     fontWeight: '300',
     alignSelf: 'center',
   },
@@ -93,6 +80,11 @@ const styles = StyleSheet.create({
   },
   dueInLabel: {
     paddingLeft: 20,
+  },
+  inputContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    padding: 10,
   },
 });
 

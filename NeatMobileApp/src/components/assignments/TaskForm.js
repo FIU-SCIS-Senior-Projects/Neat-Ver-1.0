@@ -12,6 +12,7 @@ import moment from 'moment';
 import styles from './styles';
 
 import AuthService from '../../utilities/AuthService';
+import { colors } from '../styles';
 /*
    TODO add tasks here maybe(?)
 
@@ -111,19 +112,19 @@ class TaskForm extends Component {
         <NavigationBar
           title={{
             title: 'Add Task',
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           leftButton={{
             title: <FontAwesome name="times" size={20} />,
             handler: () => this.props.navigator.pop(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           rightButton={{
             title: <FontAwesome name="check" size={25} />,
             handler: () => this.onDonePressed(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
-          tintColor="#2194f3"
+          tintColor={colors.navBarColor}
         />
         <TextInput
           style={styles.input}

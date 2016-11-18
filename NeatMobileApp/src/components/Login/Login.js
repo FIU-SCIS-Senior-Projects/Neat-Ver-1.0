@@ -3,7 +3,7 @@ import t from 'tcomb-form-native';
 
 let Form = t.form.Form;
 
-let LoginFormInput = t.struct({
+let LoginInput = t.struct({
   username: t.String,
   password: t.String,
 });
@@ -23,11 +23,11 @@ let options = {
     },
   },
 };
-const LoginForm = (props) => {
+const Login = (props) => {
   return (
     <Form
       // ref="form"
-      type={LoginFormInput}
+      type={LoginInput}
       options={options}
       value={props.value}
       onChange={props.onChange}
@@ -35,4 +35,4 @@ const LoginForm = (props) => {
   );
 };
 
-module.exports = LoginForm;
+module.exports = Login;

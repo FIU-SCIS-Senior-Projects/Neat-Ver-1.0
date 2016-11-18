@@ -8,16 +8,16 @@ import {
   Animated,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import styles from './styles';
 import AuthService from '../../utilities/AuthService';
 import GenericPicker from '../GenericPicker';
 import AssignmentPicker from '../AssignmentPicker';
+import { colors } from '../styles';
+
 
 /*
-   TODO add tasks here maybe(?)
-
    NOTE: you must create school before being able to add an assignment
 */
 const UIPICKER_HEIGHT = 216;
@@ -91,7 +91,8 @@ class AssignmentForm extends Component {
       private: val.isPublic,
       assignments: val.assignments,
     });
-    if (val.className === 'CREATE') {
+
+    if (val.className === 'Add New Class') {
       this.props.navigator.push({
         type: 'Pop',
         id: 'ClassForm',
@@ -114,7 +115,7 @@ class AssignmentForm extends Component {
   fetchClasses() {
     AuthService.getClasses((responseJson) => {
       const classList = responseJson;
-      classList.push({ className: 'CREATE' });
+      classList.push({ className: 'Add New Class' });
       this.setState({ dataSource: classList });
     });
   }
@@ -172,22 +173,21 @@ class AssignmentForm extends Component {
         <NavigationBar
           title={{
             title: 'Add Assignment',
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           leftButton={{
-            title: <FontAwesome name="times" size={20} />,
+            title: <Icon name="ios-close" size={35} />,
             handler: () => this.props.navigator.pop(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
           rightButton={{
-            title: <FontAwesome name="check" size={25} />,
+            title: <Icon name="ios-checkmark" size={35} />,
             handler: () => this.onDonePressed(),
-            tintColor: '#F5FCFF',
+            tintColor: colors.navBarText,
           }}
-          tintColor="#2194f3"
+          tintColor={colors.navBarColor}
         />
         <View style={{ padding: 5 }} >
-
           <GenericPicker
             list={this.state.dataSource}
             name={this.state.className}

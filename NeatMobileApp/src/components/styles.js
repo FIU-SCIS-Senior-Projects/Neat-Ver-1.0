@@ -6,4 +6,8 @@ export const colors = {
   buttonText: '#FFFFFF',
   inputBackground: '#FFFFFF',
   inputDivider: '#E4E2E5',
+  navBarColor: '#F5FCFF',
+  navBarText: '#32C0B2',
+  // navBarColor: '#2194f3',
+  // navBarText: '#F5FCFF',
 };
