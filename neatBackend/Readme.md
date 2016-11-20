@@ -6,6 +6,10 @@ Django and Django REST Framework For Neat
 For an in depth documentation go to [http://localhost/docs][5] or the official docs at [http://52.87.176.128/docs][6]
 
 ##Changelog
+#####11/20/16
+
+* update initialData.sh
+
 #####11/17/16
 
 * changed modelName, modelID & modelYear to name, identifier & year respectively
@@ -34,7 +38,7 @@ For an in depth documentation go to [http://localhost/docs][5] or the official d
 
 ##Endpoint examples
 
-* Look at initialData.sh for exndpoint examples with httpie
+* Look at initialData.sh for endpoint examples with httpie
 
 #Usage
 
