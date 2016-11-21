@@ -45,8 +45,9 @@ class TaskForm extends Component {
 
   // POSTS to the api
   async onDonePressed() {
+    console.log(this.state.taskName);
     AuthService.addTask({
-      taskName: this.state.taskName,
+      name: this.state.taskName,
       // user: this.state.user,
       due: moment(this.state.dueDate).format('YYYY-MM-DD'),
       assignment: this.props.assignmentUrl,
@@ -59,41 +60,7 @@ class TaskForm extends Component {
           },
         });
       }
-      // console.log(results);
     });
-      //   //verify if our operation was a success or failure
-      //   if(response.status >= 200 && response.status < 300){
-      //       console.log("response succes is:" + responseJson);
-      //       this.props.navigator.pop({
-      //         id: 'AssignmentView',
-      //         passProps:{
-      //           assignmentUrl: this.state.assignmentUrl
-      //         }
-      //       });
-      //       console.log('DONE BUTTON WAS PRESSED')
-      //   }else{
-      //     console.log("response failure is:" + responseJson);
-      //     let errors = responseJson;
-      //     throw errors;
-      //   }
-      //
-      // } catch(errors) {
-      //
-      //   console.log("catch errors:" + errors);
-      //
-      //   let formErrors = JSON.parse(errors);
-      //
-      //   let errorsArray = [];
-      //
-      //   for(let key in formErrors){
-      //     if(formErrors[key].length > 1){
-      //       formErrors[key].map(error => errorsArray.push(`${key} ${error}`))
-      //     }else {
-      //       errorsArray.push(`${key} ${formErrors[key]}`)
-      //     }
-      //   }
-      //   this.setState({errors: errorsArray});
-      // }
   }
   onDateChange = (date) => {
     this.setState({ dueDate: date });

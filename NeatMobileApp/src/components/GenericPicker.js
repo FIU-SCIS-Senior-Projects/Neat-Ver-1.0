@@ -31,7 +31,7 @@ class GenericPicker extends Component {
     return (
       <View>
         <TouchableOpacity
-          style={{ borderBottomWidth: 1, borderColor: '#e6e600' }}
+          style={{ borderBottomWidth: 1, borderColor: '#39BD98' }}
           onPress={() => {
             animation(this.state.height, Object.assign({
               toValue: (this.state.isCollapsed) ? UIPICKER_HEIGHT : 0,
@@ -52,7 +52,7 @@ class GenericPicker extends Component {
         </Animated.View>
       </View>
     );
-  }// <PickerItem value={'{"className": "CREATE"}'} label="Add new class" />
+  }
 }
 
 GenericPicker.propTypes = {

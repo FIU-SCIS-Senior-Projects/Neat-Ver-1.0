@@ -29,7 +29,6 @@ class AssignmentView extends Component {
   }
 
   componentDidMount() {
-
     this.fetchTasks();
   }
   componentWillReceiveProps() {
@@ -48,7 +47,6 @@ class AssignmentView extends Component {
     AuthService.getTasks((responseJson) => {
       const selectedAssignment =
           responseJson.filter((assignment) => this.props.rowData.pk === assignment.pk)[0];
-      console.log('found assignment from filter ', selectedAssignment);
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(selectedAssignment.tasks),
       });
@@ -56,20 +54,14 @@ class AssignmentView extends Component {
   }
 
   pressDashboard() {
-        // let route = this.props.navigator.getCurrentRoutes().find((route) =>
-        // route.id === 'AssignmentsDash');
-    // console.log(this.props.navigator.getCurrentRoutes());
-        // this.props.navigator.popToRoute(route);
-      // this.props.navigator.resetTo(this.props.navigator.getCurrentRoutes()[0]);
     this.props.navigator.pop();
   }
   toogleSwitched(rowData) {
-        // console.log("rowData before is: " + JSON.stringify(rowData));
     rowData.isDone = !rowData.isDone;
     const newRowData = Object.assign({}, rowData);
+
     this.forceUpdate();
-    // console.log("rowData is: " + JSON.stringify(rowData));
-    // console.log('rowData from toggle', rowData);
+
     AuthService.updateTasks(rowData.url, newRowData, (responseData) => {
       console.log(`PUT success or err with response: ${JSON.stringify(responseData)}`);
     });
@@ -93,8 +85,8 @@ class AssignmentView extends Component {
         <CheckBox
           // right
           // iconRight
-          checkedTitle={rowData.taskName}
-          title={rowData.taskName + ' - ' + moment(rowData.dueDate).fromNow()}
+          checkedTitle={rowData.name}
+          title={`${rowData.name} - ${moment(rowData.dueDate).fromNow()}`}
           checked={rowData.isDone}
           onPress={() => this.toogleSwitched(rowData)}
           containerStyle={{ backgroundColor: 'white', paddingBottom: 5, borderRadius: 0, borderWidth: 0 }}
@@ -110,7 +102,7 @@ class AssignmentView extends Component {
           title={{
             title: this.props.rowData.assignmentName,
             tintColor: colors.navBarText,
-            style: { fontSize: 20, fontWeight: '500' }
+            style: { fontSize: 20, fontWeight: '500' },
           }}
           leftButton={{
             title: <Icon name="ios-arrow-back" size={30} />,

@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text,
   View,
-  TextInput,
-  DatePickerIOS,
-  TouchableOpacity,
   Animated,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
@@ -73,10 +69,6 @@ class AssignmentForm extends Component {
     }
   }
 
-  onDateChange = (date) => {
-    this.setState({ dueDate: date });
-  };
-
   onValueChangeClass = (value) => {
     const val = JSON.parse(value);
 
@@ -119,7 +111,7 @@ class AssignmentForm extends Component {
   render() {
     const manualForm = (!this.state.private) ?
       <Form
-        onDateChange={this.onDateChange}
+        onDateChange={(date) => this.setState({ dueDate: date })}
         onChangeText={(val) => this.setState({ assignmentName: val })}
         dueDate={this.state.dueDate}
       /> :
@@ -161,14 +153,6 @@ class AssignmentForm extends Component {
     );
   }
 }
-
-const Errors = (props) => {
-  return (
-    <View>
-      {props.errors.map((error, i) => <Text key={i} style={styles.error}>{error}</Text>)}
-    </View>
-  );
-};
 
 AssignmentForm.propTypes = {
   navigator: React.PropTypes.object,

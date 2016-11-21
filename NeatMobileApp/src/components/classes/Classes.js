@@ -57,7 +57,7 @@ class Classes extends Component {
       id: 'ClassView',
       passProps: {
         classUrl: rowData.url,
-        className: rowData.className,
+        className: rowData.name,
       },
     });
   }
@@ -87,7 +87,7 @@ class Classes extends Component {
         underlayColor="#ddd"
       >
         <View style={styles.List}>
-          <Text style={styles.rowLabel}>{rowData.className}</Text>
+          <Text style={styles.rowLabel}>{rowData.name}</Text>
         </View>
       </TouchableHighlight>
     );
