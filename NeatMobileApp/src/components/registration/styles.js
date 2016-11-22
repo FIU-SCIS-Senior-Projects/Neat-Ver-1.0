@@ -70,7 +70,12 @@ const styles = StyleSheet.create({
         },
         whiteFont: {
           color: '#FFF'
-        }
+        },
+        error: {
+          alignSelf: 'center',
+          color: 'red',
+          paddingTop: 10,
+        },
   });
 
   module.exports = styles;
