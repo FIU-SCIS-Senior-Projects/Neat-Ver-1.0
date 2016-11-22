@@ -12,15 +12,15 @@ import { AppRegistry,StyleSheet,Text,View,TouchableHighlight,
 import Icon from '../../../node_modules/react-native-vector-icons/FontAwesome';
 import Logo from './../../assets/img/Logo_Neat.png';
 //const userIcon = (<Icon name="fa-user" size={25} color ={'#900'}/>)
+import AuthService from '../../utilities/AuthService';
 
-var authService = require('../../utilities/AuthService');
 
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
 
 var UpdatePasswordForm = t.struct({
   code         : t.String,
-  newPassword     : t.String,
+  newPassword  : t.String,
   email        : t.String,
 });
 
@@ -66,7 +66,7 @@ onUpdatePasswordPressed(){
   this.setState({showProgess: true});
   var value = this.refs.form.getValue();
 
-  authService.changePassword({
+  AuthService.changePassword({
       //value
       newPassword: this.state.value.newPassword,
       code: this.state.value.code,
@@ -96,6 +96,21 @@ onUpdatePasswordPressed(){
 
 
   render() {
+      let errorCtrl = <View />;
+      console.log('state info: ', this.state.success, this.state.badCredentials, this.state.unknownError, this.state.value);
+
+      if (!this.state.success && this.state.badCredentials) {
+        errorCtrl = (<Text style={styles.error}>
+            Please verify your information and try again!
+        </Text>);
+      }
+
+      if (!this.state.success && this.state.unknownError) {
+        errorCtrl = (<Text style={styles.error}>
+            We experienced an unexpected issue, try again!
+        </Text>)
+      }
+
     return (
       <View style={styles.container}>
         <Image source={Logo} style={styles.logo}/>
@@ -117,6 +132,7 @@ onUpdatePasswordPressed(){
             Update
           </Text>
         </TouchableHighlight>
+        {errorCtrl}
       </View>
     );
   }
@@ -130,98 +146,5 @@ const Errors = (props) => {
     </View>
   );
 }
-/*
-const styles = StyleSheet.create({
-  container: {
-      backgroundColor: '#FFF',
-      padding: 35,
-      flex: 1,
-    },
-    logo: {
-      alignSelf: 'center',
-      width: 175,
-      height: 175,
-    },
-    heading: {
-      fontSize: 65,
-      fontWeight: '300',
-      alignSelf: 'center',
-    },
-    button: {
-      height: 50,
-      backgroundColor: '#FFF',
-      borderColor: '#599D95',
-      alignSelf: 'center',
-      width: 275,
-      marginTop: 10,
-      marginBottom: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 20,
-      borderWidth: 2
-    },
-    textButton:{
-      color: 'white'
-    },
-    buttonText:{
-      fontSize: 16,
-      color: 'grey',
-      alignSelf: 'center',
-      fontWeight: '100'
-    },
-    input:{
-      height: 50,
-      marginTop: 20,
-      padding: 4,
-      fontSize: 18,
-      borderWidth: 1,
-      borderColor: '#48bbec',
-      borderRadius: 0,
-      color: '#48BBEC',
-  },
-    inputs: {
-        flexDirection: 'column',
-        alignItems: 'stretch'
-    },
-    inputIcon: {
-        marginLeft: 15,
-        width: 21,
-        height: 21
-    },
-    inputContainer: {
-        padding: 10,
-        alignItems: 'stretch',
-    },
-    input: {
-        position: 'absolute',
-        left: 61,
-        top: 12,
-        right: 0,
-        height: 20,
-        fontSize: 16,
-        paddingLeft: 10
-    },
-    registerForgotContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingLeft: 20,
-      paddingRight: 20,
-    },
-    registerContainer: {
-      alignItems: 'flex-start',
-      padding: 15,
-    },
-    forgotContainer: {
-      alignItems: 'flex-end',
-      padding: 15,
-    },
-    greyFont: {
-      color: '#D8D8D8'
-    },
-    whiteFont: {
-      color: '#FFF'
-    }
-})
-*/
+
 export default UpdatePassword;

@@ -18,7 +18,8 @@ import { AppRegistry,
 import Logo from './../../assets/img/Logo_Neat.png';
 //var CONFIG = require('./../../config.js');
 var styles = require('./styles');
-var authService = require('../../utilities/AuthService');
+//var authService = require('../../utilities/AuthService');
+import AuthService from '../../utilities/AuthService';
 var Header = require('./../Header');
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
@@ -71,7 +72,7 @@ class Register extends Component {
       password_confirmation: "",
       errors: [],
       showProgress: false,
-      success: false,
+      //success: false,
     }
   }
 
@@ -82,7 +83,7 @@ onRegisterPressed(){
 
  const value = this.refs.form.getValue();
 
-  authService.register({
+  AuthService.register({
       password:  this.state.value.password,
       firstname: this.state.value.firstname,
       lastname:  this.state.value.lastname,
@@ -90,10 +91,26 @@ onRegisterPressed(){
       groups:    this.state.value.groups
   }, (results)=> {
 
-      this.setState(Object.assign({
+     /* this.setState(Object.assign({
           showProgress: false
-      }, results));
+      }, results));*/
 
+
+      if(results.success){
+          this.props.navigator.pop({id: 'Registration'});
+          //console.log('This is the result: ' + results.success);
+          console.log('you have register in');
+        /*this.setState({
+          value : {},
+          success: false,
+          badCredentials: false,
+          unknownError: false
+      })*/
+      }else {
+        console.log('error during registration: ', results);
+      }
+
+/*
       if(results.success){
           console.log('This is the result: ' + results.success);
         this.props.navigator.push({
@@ -109,10 +126,25 @@ onRegisterPressed(){
       }else {
         console.log('error during registration: ', results);
       }
+      */
   });
 }//End onRegisterPressed
 
   render() {
+      let errorCtrl = <View />;
+      console.log('state info: ', this.state.success, this.state.badCredentials, this.state.unknownError, this.state.value);
+
+      if (!this.state.success && this.state.badCredentials) {
+        errorCtrl = (<Text style={styles.error}>
+          Please verify your information and try again!
+        </Text>);
+      }
+
+      if (!this.state.success && this.state.unknownError) {
+        errorCtrl = (<Text style={styles.error}>
+          We experienced an unexpected issue, try again!
+        </Text>)
+      }
     return (
       <View style={styles.container}>
         <Header
@@ -133,6 +165,7 @@ onRegisterPressed(){
             Register
           </Text>
         </TouchableHighlight>
+        {errorCtrl}
       </View>
     );
   }

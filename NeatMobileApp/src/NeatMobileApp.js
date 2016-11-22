@@ -61,11 +61,11 @@ class NeatMobileApp extends Component {
       case 'Login':
         return (<Login navigator={navigator} title="Login" />);
       case 'Register':
-        return (<Register navigator={navigator} title="Register" />);
+        return (<Register navigator={navigator} {...route.passProps} title="Register" />);
       case 'ResetPassword':
-        return (<ResetPassword navigator={navigator} title="ResetPassword" />);
+        return (<ResetPassword navigator={navigator} {...route.passProps} title="ResetPassword" />);
       case 'UpdatePassword':
-        return (<UpdatePassword navigator={navigator} title="UpdatePassword" />);
+        return (<UpdatePassword navigator={navigator} {...route.passProps} title="UpdatePassword" />);
       case 'Dashboard':
         return (<Dashboard navigator={navigator} {...route.passProps} title="Dashboard" />);
       case 'AssignmentForm':

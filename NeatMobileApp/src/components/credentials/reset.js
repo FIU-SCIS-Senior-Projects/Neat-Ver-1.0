@@ -6,9 +6,10 @@ import { AppRegistry,StyleSheet,Text,View,TouchableHighlight,
  import styles from './styles';
 import Icon from '../../../node_modules/react-native-vector-icons/FontAwesome';
 import Logo from './../../assets/img/Logo_Neat.png';
+import AuthService from '../../utilities/AuthService';
 //const userIcon = (<Icon name="fa-user" size={25} color ={'#900'}/>)
 
-var authService = require('../../utilities/AuthService');
+//var authService = require('../../utilities/AuthService');
 var Header = require('./../Header');
 var t = require('tcomb-form-native');
 var Form = t.form.Form;
@@ -48,7 +49,7 @@ onRequestPressed(){
   this.setState({showProgress: true});
   var value = this.refs.form.getValue();
 
-  authService.requestCode({
+  AuthService.requestCode({
       email: this.state.value.email,
 
     }, (results)=> {
@@ -89,6 +90,21 @@ validateCode(){
 */
 
   render() {
+      let errorCtrl = <View />;
+      console.log('state info: ', this.state.success, this.state.badCredentials, this.state.unknownError, this.state.value);
+
+      if (!this.state.success && this.state.badCredentials) {
+        errorCtrl = (<Text style={styles.error}>
+          That email appears to be incorrect, try again!
+        </Text>);
+      }
+
+      if (!this.state.success && this.state.unknownError) {
+        errorCtrl = (<Text style={styles.error}>
+          We experienced an unexpected issue
+        </Text>)
+      }
+
     return (
       <View style={styles.container}>
         <Image source={Logo} style={styles.logo}/>
@@ -110,6 +126,7 @@ validateCode(){
             Request
           </Text>
         </TouchableHighlight>
+        {errorCtrl}
       </View>
     );
   }

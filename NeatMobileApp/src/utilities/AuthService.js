@@ -101,7 +101,39 @@ const AuthService = {
     });
   },
 
-
+  register(creds, cb) {
+    //console.log('creds from register AuthService', creds);
+    this.doPost(`${CONFIG.server.host}/user/`, {
+        email     : creds.email,
+        first_name: creds.firstname,
+        last_name : creds.lastname,
+        password  : creds.password,
+        groups    : []
+      })
+      //.then(this.handleResponse)
+      .then((response) =>response.json())
+      .then((results)=> {return cb({ success: true })})
+      .catch((err) => cb(err));
+  },//end of register
+  requestCode(creds, cb) {
+      this.doPost(`${CONFIG.server.host}/send/passwordCode/` + creds.email +'/', {
+        email     : creds.email,
+      })
+      .then(this.handleResponse)
+      .then((response) =>response.json())
+      .then((results)=> {return cb({ success: true })})
+      .catch((err) => cb(err));
+  },//end of requestCode
+  changePassword(creds, cb) {
+      this.doPost(`${CONFIG.server.host}/changePassword/` + creds.code + '/',{
+        email     : creds.email,
+        password  : creds.newPassword,
+      })
+      .then(this.handleResponse)
+      .then((response) =>response.json())
+      .then((results)=> {return cb({ success: true })})
+      .catch((err) => cb(err));
+  },//end of changePassword
   login(creds, cb) {
     console.log('creds from login AuthService', creds);
     fetch(`${CONFIG.server.host}/login/`, {
@@ -127,6 +159,13 @@ const AuthService = {
       });
     })
     .catch((err) => cb(err));
+  },
+  getAssignmentProgress(cb, assignmentID){
+    //this.doGet(`${CONFIG.server.host}/collab/assig/` + assignmentID + '/')
+    this.doGet(`${CONFIG.server.host}/collab/assig/1/`)
+    .then((response)=> response.json())
+    .then((responseJson) => cd(responseJson))
+    .catch((err)=>cb(err));
   },
   getAssignments(cb) {
     this.doGet(`${CONFIG.server.host}/dashboard/`)
