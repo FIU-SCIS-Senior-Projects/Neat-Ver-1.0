@@ -35,11 +35,11 @@ def date_error_string(value):
 
 class School(models.Model):
     #fields
-    schoolName = models.CharField(max_length=255)
-    schoolID = models.CharField(max_length=255) # TODO: What does a school ID actually look like? Is it unique even across school districts?
+    name = models.CharField(max_length=255)
+    identifier = models.CharField(max_length=255) # TODO: What does a school ID actually look like? Is it unique even across school districts?
 
     class Meta:
-        unique_together = ('schoolName', 'schoolID',)
+        unique_together = ('name', 'identifier',)
 
         #add, change, delete already exist by default
         permissions = (
@@ -47,7 +47,7 @@ class School(models.Model):
         )
 
     def __str__(self):
-        return self.schoolName
+        return self.name
 
 
 class SchoolRoster(models.Model):
@@ -56,7 +56,7 @@ class SchoolRoster(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schools')
 
     #fields
-    schoolYear = models.PositiveSmallIntegerField(default = timezone.now().year) # TODO: how do we want to define school year?
+    year = models.PositiveSmallIntegerField(default = timezone.now().year)
     
     class Meta:
         unique_together = ('school', 'user',)
@@ -71,20 +71,20 @@ class SchoolRoster(models.Model):
             raise ValidationError("School Roster year set too early. Changed to this year")
 
     def __str__(self):
-        return str(self.school) + " year " + str(self.schoolYear)
+        return str(self.school) + " year " + str(self.year)
 
-
+#TODO: Add session field, alter unique constraint
 class Class(models.Model):
     #FK
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
 
     #fields
-    className = models.CharField(max_length=255)
-    classID = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    identifier = models.CharField(max_length=255)
     isPublic = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('school', 'classID',)
+        unique_together = ('school', 'identifier', 'name',)
 
         #add, change, delete already exist by default
         permissions = (
@@ -92,7 +92,7 @@ class Class(models.Model):
         )
 
     def __str__(self):
-        return self.className + " at " + str(self.school)
+        return self.name + " at " + str(self.school)
 
 
 class ClassRoster(models.Model):
@@ -114,14 +114,14 @@ class Assignment(models.Model):
     classFK = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='assignments')
 
     #fields
-    assignmentName = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     dueDate = models.DateTimeField()
     startDate = models.DateTimeField(default=timezone.now)
     isPublic = models.BooleanField(default=False)
     
     #permissions
     class Meta:
-        unique_together = ('classFK', 'assignmentName',)
+        unique_together = ('classFK', 'name',)
 
         #add, change, delete already exist by default
         permissions = (
@@ -140,7 +140,7 @@ class Assignment(models.Model):
             raise ValidationError(errors)
 
     def __str__(self):
-        return self.assignmentName
+        return self.name
 
 class AssignmentRoster(models.Model):
     #FK
@@ -160,7 +160,7 @@ class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
 
     #fields
-    taskName = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     isDone = models.BooleanField(default=False)
     isApproved = models.BooleanField(default=False)
     hoursPlanned = models.PositiveSmallIntegerField(null=True)
@@ -184,7 +184,7 @@ class Task(models.Model):
     
     class Meta:
 
-        unique_together = ('assignment', 'user', 'taskName')
+        unique_together = ('assignment', 'user', 'name')
 
         #add, change, delete already exist by default
         permissions = (
@@ -209,7 +209,7 @@ class Task(models.Model):
             raise ValidationError(errors)
 
     def __str__(self):
-        return self.taskName
+        return self.name
 
 class Profile(models.Model):
     #FK

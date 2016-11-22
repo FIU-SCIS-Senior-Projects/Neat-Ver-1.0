@@ -18,7 +18,7 @@ class SchoolSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = School
-        fields = ('url', 'pk', 'schoolName', 'schoolID',)
+        fields = ('url', 'pk', 'name', 'identifier',)
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -110,7 +110,7 @@ class SchoolRosterSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = SchoolRoster
-        fields = ('url', 'pk', 'schoolYear', 'school', 'user')
+        fields = ('url', 'pk', 'year', 'school', 'user')
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -125,7 +125,7 @@ class ClassSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Class
-        fields = ('url', 'pk', 'className', 'classID', 'school', 'isPublic')
+        fields = ('url', 'pk', 'name', 'identifier', 'school', 'isPublic')
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -174,7 +174,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('url', 'pk', 'assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'isApproved', 'dueDate', 'difficulty', 'due')
+        fields = ('url', 'pk', 'assignment', 'user', 'name', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'isApproved', 'dueDate', 'difficulty', 'due')
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -206,7 +206,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
             )
             instance.dueDate = dueDate
         instance.assignment = validated_data.get('assignment', instance.assignment)
-        instance.taskName = validated_data.get('taskName', instance.taskName)
+        instance.name = validated_data.get('name', instance.name)
         instance.isDone = validated_data.get('isDone', instance.isDone)
         instance.hoursPlanned = validated_data.get('hoursPlanned', instance.hoursPlanned)
         instance.hoursCompleted = validated_data.get('hoursCompleted', instance.hoursCompleted)
@@ -234,7 +234,7 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Assignment
-        fields = ('url', 'pk', 'assignmentName', 'startDate', 'due' ,'dueDate', 'classFK', 'isPublic')
+        fields = ('url', 'pk', 'name', 'startDate', 'due' ,'dueDate', 'classFK', 'isPublic')
 
     def create(self, validated_data):
         usr = self.context['request'].user
@@ -267,7 +267,7 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
             tzinfo=pytz.UTC
             )
             instance.dueDate = dueDate
-        instance.assignmentName = validated_data.get('assignmentName', instance.assignmentName)
+        instance.name = validated_data.get('name', instance.name)
         instance.classFK = validated_data.get('classFK', instance.classFK)
         instance.isPublic = validated_data.get('isPublic', instance.isPublic)
         instance.save()
@@ -286,12 +286,27 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
         else:
             return value
 
+class MyClassesSerializer(serializers.HyperlinkedModelSerializer):
+    assignments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Class
+        fields = '__all__'
+
+    def get_assignments(self, obj):
+        if obj.isPublic == True:
+            assignments =  obj.assignments
+            serializer = AssignmentSerializer(instance=assignments, many=True, context={'request': self.context['request']})
+            return serializer.data
+        else:
+            return []
+
 class DashboardSerializer(serializers.HyperlinkedModelSerializer):
     tasks = serializers.SerializerMethodField()
 
     class Meta:
         model = Assignment
-        fields = ('url', 'pk', 'assignmentName', 'startDate', 'dueDate', 'classFK', 'isPublic', 'tasks')
+        fields = ('url', 'pk', 'name', 'startDate', 'dueDate', 'classFK', 'isPublic', 'tasks')
     
     #Get only tasks that belong to the user & given assignment
     def get_tasks(self, obj):

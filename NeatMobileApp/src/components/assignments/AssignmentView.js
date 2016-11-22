@@ -1,181 +1,137 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
-  AppRegistry,
-  Text,
   View,
-  StyleSheet,
-  TouchableHighlight,
-  Navigator,
-  TextInput,
-  DatePickerIOS,
-  TouchableOpacity,
   ListView,
   ScrollView,
-  Switch,
 } from 'react-native';
-
+import NavigationBar from 'react-native-navbar';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { CheckBox } from 'react-native-elements';
+import moment from 'moment';
 import styles from './styles';
-
-var Assignments = require('./UserAssignment');
-var authService = require('./../../utilities/AuthService');
-    CONFIG = require('../../config.js');
+import AuthService from '../../utilities/AuthService';
+import { colors } from '../styles';
 
 
-class AssignmentView extends Component{
+class AssignmentView extends Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props)
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+    });
+    this.state = {
+      dataSource: ds,
+      assignmentUrl: props.rowData.url,
+      toggleState: true,
+      trueSwitchIsOn: true,
+    };
+  }
 
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
+  componentDidMount() {
+    this.fetchTasks();
+  }
+  componentWillReceiveProps() {
+    this.fetchTasks();
+  }
+  onAddTask() {
+    this.props.navigator.push({
+      id: 'TaskForm',
+      type: 'Pop',
+      passProps: {
+        assignmentUrl: this.props.rowData.url,
+      },
+    });
+  }
+  fetchTasks() {
+    AuthService.getTasks((responseJson) => {
+      const selectedAssignment =
+          responseJson.filter((assignment) => this.props.rowData.pk === assignment.pk)[0];
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(selectedAssignment.tasks),
+      });
+    });
+  }
 
-        this.state={
-            dataSource: ds,
-            assignmentUrl: props.assignmentUrl,
-            toggleState: true,
-            trueSwitchIsOn: true,
-        };
-    }
+  pressDashboard() {
+    this.props.navigator.pop();
+  }
+  toogleSwitched(rowData) {
+    rowData.isDone = !rowData.isDone;
+    const newRowData = Object.assign({}, rowData);
 
-    componentDidMount(){
-        this.fetchTasks();
-    }
-    componentWillReceiveProps(){
-        this.fetchTasks();
-    }
-    fetchTasks(){
-        return fetch(CONFIG.server.host + '/task/')
-              .then((response) => response.json())
-              .then((responseJson) => {
-                var taskList = responseJson;
+    this.forceUpdate();
 
-                var display = [];
-                var j = 0
+    AuthService.updateTasks(rowData.url, newRowData, (responseData) => {
+      console.log(`PUT success or err with response: ${JSON.stringify(responseData)}`);
+    });
+  }
 
-                for(var i = 0; i < taskList.length; i++){
-                    if(taskList[i].user ===  CONFIG.server.host + '/user/1/' && taskList[i].assignment === this.state.assignmentUrl){
-                        display[j] = taskList[i];
-                        j++;
-                    }
-                }
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(display)
-                })
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-    }
+  _renderSeparator(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    return (
+      <View
+        key={`${sectionID}-${rowID}`}
+        style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+      />
+    );
+  }
 
-    onAddTask(){
-        this.props.navigator.push({
-            id: 'TaskForm',
-            passProps:{
-                assignmentUrl: this.state.assignmentUrl
-            }
-        });
-    }
+  renderRow(rowData) {
+    return (
+      <View>
+        <CheckBox
+          // right
+          // iconRight
+          checkedTitle={rowData.name}
+          title={`${rowData.name} - ${moment(rowData.dueDate).fromNow()}`}
+          checked={rowData.isDone}
+          onPress={() => this.toogleSwitched(rowData)}
+          containerStyle={{ backgroundColor: 'white', paddingBottom: 5, borderRadius: 0, borderWidth: 0 }}
+        />
+      </View>
+    );
+  }
 
-    pressDashboard(){
-        let route = this.props.navigator.getCurrentRoutes().find((route) => route.id === 'AssignmentsDash');
-        this.props.navigator.popToRoute(route);
-    }
-    toogleSwitched(rowData){
-        console.log("rowData before is: " + JSON.stringify(rowData));
-        rowData.isDone = !rowData.isDone;
-        this.forceUpdate();
-        console.log("rowData is: " + JSON.stringify(rowData));
-
-        fetch(rowData.url, {
-              method: "PUT",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                assignment: rowData.assignment,
-                user: rowData.user,
-                taskName: rowData.taskName,
-                isDone: rowData.isDone,
-                hoursPlanned: rowData.hoursPlanned,
-                hoursCompleted: rowData.hoursCompleted,
-                startDate: rowData.startDate,
-                endDate: rowData.endDate,
-              })
-        })
-        .then((response) => response.json())
-        .then((responseData) => console.log("PUT success with response: " + JSON.stringify(responseData)))
-        .catch((errpr) => console.error(error));
-
-    }
-
-    pressRankings(){
-          this.props.navigator.push({
-             id: 'AssignmentRank'
-         });
-    }
-
-    async putToogleData(rowData){
-    }
-
-    onLogoutPressed(){
-        authService.logout(err => console.log(err));
-        this.props.navigator.pop();
-        console.log('Logout button pressed');
-      }
-
-    renderRow(rowData){
-        console.log("Before return render, rowData: " + JSON.stringify(rowData));
-        return(
-               <View style={styles.List}>
-                    <Switch
-                        onValueChange={() => {this.toogleSwitched(rowData); console.log("clicked on voluechange")}}
-                        style={{paddingLeft: 80, marginBottom: 5}}
-                        value={rowData.isDone} />
-               <Text>{rowData.taskName}</Text>
-            </View>
-        );
-    }
-
-    render(){
-
-        return(
-
-            <ScrollView>
-            <ListView
-              dataSource={this.state.dataSource}
-              renderRow={this.renderRow.bind(this)}
-              enableEmptySections= {true}
-            />
-
-            <TouchableHighlight style={styles.button}
-                onPress={this.onAddTask.bind(this)}
-            >
-                <Text style={styles.buttonText}>
-                        Add Task
-                </Text>
-            </TouchableHighlight>
-
-            <TouchableHighlight style={styles.button}
-                onPress={this.onLogoutPressed.bind(this)}
-            >
-                <Text style={styles.buttonText}>
-                        logout
-                </Text>
-            </TouchableHighlight>
-
-            <TouchableHighlight style={styles.button}
-                onPress={this.pressDashboard.bind(this)}
-            >
-                <Text style={styles.buttonText}>
-                        Assignment Dashboard
-                </Text>
-            </TouchableHighlight>
-            </ScrollView>
-
-        );
-    }
+  render() {
+    return (
+      <View style={styles.container}>
+        <NavigationBar
+          title={{
+            title: this.props.rowData.assignmentName,
+            tintColor: colors.navBarText,
+            style: { fontSize: 20, fontWeight: '500' },
+          }}
+          leftButton={{
+            title: <Icon name="ios-arrow-back" size={30} />,
+            handler: () => this.pressDashboard(),
+            tintColor: colors.navBarText,
+          }}
+          rightButton={{
+            title: <Icon name="ios-add" size={35} />,
+            handler: () => this.onAddTask(),
+            tintColor: colors.navBarText,
+          }}
+          tintColor={colors.navBarColor}
+        />
+        <ScrollView>
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow.bind(this)}
+            enableEmptySections
+            renderSeparator={this._renderSeparator}
+          />
+        </ScrollView>
+      </View>
+    );
+  }
 }
+
+AssignmentView.propTypes = {
+  navigator: React.PropTypes.object,
+  rowData: React.PropTypes.object,
+};
 
 module.exports = AssignmentView;

@@ -21,7 +21,7 @@ class neatsplash extends Component{
       this.setState({
         done: true
       });
-    },this.props.duration || 1000)
+    }, 3000)
   }
   /*The application finished loadding*/
   componentDidMount(){

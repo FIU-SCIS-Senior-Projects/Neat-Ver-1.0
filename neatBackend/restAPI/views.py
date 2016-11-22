@@ -236,6 +236,14 @@ def getSmartStatus(current, expected):
         else:
             return result[4]
 
+#get classes users belongs to, and if class is public, get assignments
+@api_view(['get'])
+def MyClassesView(request):
+    queryset = (Class.objects.filter(roster__user=request.user)).order_by('pk')
+    serializer = MyClassesSerializer(queryset, many=True, context={'request': request})
+    data = serializer.data
+    return Response(data)
+
 #Get user dashboard info, given token
 #Also calculate additional task information & smart status
 @api_view(['get'])
@@ -271,14 +279,14 @@ class UserViewSet(viewsets.ModelViewSet):
 class SchoolViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsCreatorCanEdit,)
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('schoolName', 'schoolID')
+    filter_fields = ('name', 'identifier')
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
 
 class SchoolRosterViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsCreatorCanView,)
     filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
-    filter_fields = ('school', 'user', 'schoolYear')
+    filter_fields = ('school', 'user', 'year')
     queryset = SchoolRoster.objects.all()
     serializer_class = SchoolRosterSerializer
 
@@ -293,7 +301,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class ClassViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsCreatorCanEdit,)
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('className', 'classID', 'school', 'roster')
+    filter_fields = ('name', 'identifier', 'school', 'isPublic')
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
 
@@ -315,14 +323,14 @@ class AssignmentRosterViewSet(viewsets.ModelViewSet):
 class AssignmentViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsCreatorCanEdit,)
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('assignmentName', 'startDate', 'dueDate', 'classFK', 'isPublic')
+    filter_fields = ('name', 'startDate', 'dueDate', 'classFK', 'isPublic')
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
 
 class TaskViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsCreatorCanView,)
     filter_backends = (filters.DjangoObjectPermissionsFilter,filters.DjangoFilterBackend,)
-    filter_fields = ('assignment', 'user', 'taskName', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'isApproved', 'dueDate', 'difficulty')
+    filter_fields = ('assignment', 'user', 'name', 'isDone', 'hoursPlanned', 'hoursCompleted', 'startDate', 'endDate', 'isApproved', 'dueDate', 'difficulty')
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 

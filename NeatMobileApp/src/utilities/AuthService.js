@@ -1,91 +1,105 @@
 import { AsyncStorage } from 'react-native';
-var _ = require('lodash'),
-    buffer = require('buffer'),
-    CONFIG = require('../config.js');
+import _ from 'lodash';
+import CONFIG from '../config';
 
 
 const authKey = 'auth';
-const userKey = 'user';
+const USERKEY = 'user';
 
-class AuthService {
+const AuthService = {
 
   getAuthInfo(cb) {
-    AsyncStorage.multiGet([authKey, userKey], (err, val) => {
-      if(err) {
+    AsyncStorage.multiGet([authKey, USERKEY], (err, val) => {
+      if (err) {
         return cb(err);
       }
-      if(!val) {
+      if (!val) {
         return cb();
       }
-      var zippedObj = _.fromPairs(val);
-      console.log('zippedObj ' + JSON.stringify(zippedObj));
-      if(!zippedObj[authKey]) {
+      const zippedObj = _.fromPairs(val);
+      // console.log(`zippedObj ${JSON.stringify(zippedObj)}`);
+      if (!zippedObj[authKey]) {
         return cb();
       }
-      var authInfo = {
+      const authInfo = {
         method: 'POST',
         header: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
           // Authorization: 'Basic ' + zippedObj[authKey]
         },
-        token: JSON.parse(zippedObj[userKey])
-      }
+        token: JSON.parse(zippedObj[USERKEY]),
+      };
       return cb(null, authInfo);
     });
-  }
+  },
 
-  getLoginToken(cb) {
-    AsyncStorage.getItem(userKey, (err, val) => {
-      console.log('inside getLoginToken userkey', userKey, 'err:', err, 'val:', val);
-      if(err) {
-        return cb(err);
-      }
-      if(!val) {
-        return cb();
-      }
-      var authInfo = {
-        method: 'POST',
-        header: {
-          'Content-Type': 'application/json'
-        },
-        token: val
-      }
-      return cb(null, authInfo);
+  getLoginToken() {
+    const prom = AsyncStorage.getItem(USERKEY);
+    return new Promise((resolve, reject) => {
+      prom.then((token) => {
+        // console.log('===============>', token);
+        const authInfo = {
+          method: 'POST',
+          header: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${token}`,
+          },
+          token,
+        };
+        resolve(authInfo);
+      })
+      .catch((err) => reject(err));
     });
-  }
+  },
 
-  logout(cb){
-    AsyncStorage.removeItem(userKey, (err) => {
-      if(err) {
+  logout(cb) {
+    AsyncStorage.removeItem(USERKEY, (err) => {
+      if (err) {
         return cb(err);
       }
       return null;
-    })
-  }
+    });
+  },
 
   handleResponse(response) {
     // console.log('status: ', response);
-    if(response.status >= 200 && response.status < 300){
-        return response;
+    if (response.status >= 200 && response.status < 300) {
+      return response;
+    } else {
+      throw {
+        badCredentials: response.status === 400,
+        unknownError: response.status !== 400,
+        success: false,
+      };
     }
-    else throw {
-        badCredentials : response.status == 400,
-        unknownError   : response.status != 400
-    }
-  }
+  },
 
-  doPost(url, params) {
-    console.log('url', url, 'params', params);
-    return fetch(url, {
-      method  : 'POST',
-      headers : { 'Content-Type' : 'application/json' },
-      body    : JSON.stringify(params)
+  doPost(url, params, type = 'POST') {
+    return new Promise((res, rej) => {
+      return this.getLoginToken()
+        .then((authInfo) => res(authInfo))
+        .catch((err) => rej(err));
+    }).then((authInfo) => {
+      return fetch(url, {
+        method: type,
+        headers: authInfo.header,
+        body: JSON.stringify(params),
+      });
     });
-  }
+  },
 
   doGet(url) {
-    return fetch(url, {method  : 'GET'})
-  }
+    return new Promise((res, rej) => {
+      return this.getLoginToken()
+        .then((authInfo) => res(authInfo))
+        .catch((err) => rej(err));
+    }).then((authInfo) => {
+      return fetch(url, {
+        method: 'GET',
+        headers: authInfo.header,
+      });
+    });
+  },
 
   register(creds, cb) {
       //console.log('creds from register AuthService', creds);
@@ -143,25 +157,95 @@ changePassword(creds, cb) {
     //var b           = new buffer.Buffer(creds.username + ':' + creds.password);
     //var encodedAuth = b.toString('base64');
     console.log('creds from login AuthService', creds);
-
-    this.doPost(CONFIG.server.host + '/login/',{
-        "username": creds.username,
-        "password": creds.password,
-      })
-    .then(this.handleResponse)
-    .then(response => response.json())
-    .then((results)=> {
-      console.log('after handleResponse');
-      AsyncStorage.setItem(userKey, JSON.stringify(results.token), (err)=> {
-          if(err){
-              throw err;
-          }
-          console.log('i got in');
-          return cb({success: true});
-      })
+    fetch(`${CONFIG.server.host}/login/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: creds.username,
+        password: creds.password,
+      }),
     })
-    .catch(err => cb(err));
-  }
-}
+    .then(this.handleResponse)
+    .then((response) => response.json())
+    .then((results) => {
+      console.log('after handleResponse');
+      AsyncStorage.setItem(USERKEY, results.token, (err) => {
+        if (err) {
+          throw err;
+        }
+        console.log('i got in');
+        return cb({ success: true });
+      });
+    })
+    .catch((err) => cb(err));
+  },
+  getAssignments(cb) {
+    this.doGet(`${CONFIG.server.host}/dashboard/`)
+    .then((response) => response.json())
+    .then((responseJson) => cb(responseJson))
+    .catch((err) => cb(err));
+  },
+  getTasks(cb) {
+    this.doGet(`${CONFIG.server.host}/dashboard/`)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        cb(responseJson);
+      })
+      .catch((err) => cb(err));
+  },
+  getClasses(cb) {
+    this.doGet(`${CONFIG.server.host}/myClasses/`)
+      .then((response) => response.json())
+      .then((responseJson) => cb(responseJson))
+      .catch((err) => cb(err));
+  },
+  getAssignmentsForClass(cb) {
+    this.doGet(`${CONFIG.server.host}/assignment/`)
+    .then((response) => response.json())
+    .then((responseJson) => {
+      cb(responseJson);
+    })
+    .catch((err) => cb(err));
+  },
+  updateTasks(url, params, cb) {
+    this.doPost(url, params, 'PUT')
+    .then((response) => response.json())
+    .then((responseData) => cb(responseData))
+    .catch((err) => cb(err));
+  },
+  addAssignment(params, cb) {
+    this.doPost(`${CONFIG.server.host}/assignment/`, params)
+    .then(this.handleResponse)
+    .then((response) => response.json())
+    .then((responseData) => cb({ success: true }))
+    .catch((err) => cb(err));
+  },
+  addTask(params, cb) {
+    this.doPost(`${CONFIG.server.host}/task/`, params)
+    .then(this.handleResponse)
+    .then((response) => response.json())
+    .then((responseData) => cb({ success: true }))
+    .catch((err) => cb(err));
+  },
+  addClass(params, cb) {
+    this.doPost(`${CONFIG.server.host}/class/`, params)
+    .then(this.handleResponse)
+    .then((response) => response.json())
+    .then((responseData) => cb({ success: true }))
+    .catch((err) => cb(err));
+  },
+  joinAssignment(params, cb) {
+    this.doPost(`${CONFIG.server.host}/assignmentRoster/`, params)
+    .then(this.handleResponse)
+    .then((response) => response.json())
+    .then((responseData) => {
+      // console.log('==========>', responseData);
+      return cb({ success: true })
+    })
+    .catch((err) => cb(err));
+  },
+};
 
-module.exports = new AuthService();
+export default AuthService;

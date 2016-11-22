@@ -33,6 +33,9 @@ local.properties
 #
 node_modules/
 npm-debug.log
+.vscode/
+tsconfig.json
+../neatBackend/restAPI/migrations/
 
 # BUCK
 buck-out/
