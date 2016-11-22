@@ -101,61 +101,8 @@ const AuthService = {
     });
   },
 
-  register(creds, cb) {
-      //console.log('creds from register AuthService', creds);
 
-      this.doPost(CONFIG.server.host + '/user/', {
-        email     : creds.email,
-        first_name: creds.firstname,
-        last_name : creds.lastname,
-        password  : creds.password,
-        groups  : []
-      })
-      .then(this.handleResponse)
-      .then(response =>response.json())
-      .then((results)=> {
-          console.log('User Registration success');
-          cb({success: true});
-      })
-      .catch(err     => cb(err));
-  }//end of register
-
-  getAssignmentProgress(assignmentID){
-    var url = CONFIG.server.host + '/collab/assig/' + assignmentID + '/';
-    return fetch(url).then((res)=> res.json());
-  }
-
-  requestCode(creds, cb) {
-      this.doPost(CONFIG.server.host + '/send/passwordCode/' + creds.email +'/', {
-        email     : creds.email,
-      })
-      .then(this.handleResponse)
-      .then(response =>response.json())
-      .then((results)=> {
-        console.log("Request success");
-        cb({success: true});
-      })
-      .catch(err     => cb(err));
-}//end of requestCode
-
-changePassword(creds, cb) {
-    this.doPost(CONFIG.server.host + '/changePassword/' + creds.code + '/', {
-      email     : creds.email,
-      password  : creds.newPassword,
-    })
-    .then(this.handleResponse)
-    .then(response =>response.json())
-    .then((results)=> {
-      console.log("Password update success");
-      cb({success: true});
-    })
-    .catch(err     => cb(err));
-}//end of requestCode
-
-
-  login(creds, cb){
-    //var b           = new buffer.Buffer(creds.username + ':' + creds.password);
-    //var encodedAuth = b.toString('base64');
+  login(creds, cb) {
     console.log('creds from login AuthService', creds);
     fetch(`${CONFIG.server.host}/login/`, {
       method: 'POST',
