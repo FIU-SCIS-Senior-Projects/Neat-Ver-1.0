@@ -110,7 +110,7 @@ const AuthService = {
         password  : creds.password,
         groups    : []
       })
-      //.then(this.handleResponse)
+      .then(this.handleResponse)
       .then((response) =>response.json())
       .then((results)=> {return cb({ success: true })})
       .catch((err) => cb(err));
