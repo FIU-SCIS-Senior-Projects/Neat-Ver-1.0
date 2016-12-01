@@ -19,6 +19,20 @@ if such a decision arises.
 # TODO : since we may not want to delete any/some entries when a user opts out we may want to add a field to check if user opted out instead of cascading deletes.
 # TODO : redo validations in this file, switched to datetime
 
+"""
+def is_before_today(value):
+    if value == datetime.date.today():
+        return False
+    elif value < datetime.date.today():
+        return True
+    else:  # value greater than and not equal to
+        return False
+
+
+def date_error_string(value):
+        return "Inputted date of {!s} cannot be before today's date of {!s}".format(value, datetime.date.today())
+"""
+
 class School(models.Model):
     #fields
     name = models.CharField(max_length=255)
@@ -50,7 +64,12 @@ class SchoolRoster(models.Model):
         permissions = (
             ('view_schoolroster', 'View school roster'),
         )
-
+"""
+    def clean(self):
+        if self.schoolYear < 2016:  # start year of the app
+            self.schoolYear = timezone.now().year
+            raise ValidationError("School Roster year set too early. Changed to this year")
+"""
     def __str__(self):
         return str(self.school) + " year " + str(self.year)
 
@@ -108,7 +127,18 @@ class Assignment(models.Model):
         permissions = (
             ('view_assignment', 'View assignments'),
         )
-
+"""
+    def clean(self):
+        errors = {}
+        if is_before_today(self.dueDate):
+            errors['dueDate'] = ValidationError(date_error_string(self.dueDate))
+            self.dueDate = None  # If not a valid date, sets to None
+        if is_before_today(self.startDate):
+            errors['startDate'] = ValidationError(date_error_string(self.startDate))
+            self.startDate = None  # If not a valid date, sets to None
+        if errors:
+            raise ValidationError(errors)
+""" 
     def __str__(self):
         return self.name
 
@@ -160,6 +190,25 @@ class Task(models.Model):
         permissions = (
             ('view_task', 'View tasks'),
         )
+
+"""
+    def clean(self):
+        errors = {}
+        if is_before_today(self.endDate):
+            errors['endDate'] = ValidationError(date_error_string(self.endDate))
+            self.endDate = None  # If not a valid date, sets to None
+        if is_before_today(self.startDate):
+            errors['startDate'] = ValidationError(date_error_string(self.startDate))
+            self.startDate = None  # If not a valid date, sets to None
+        if self.hoursPlanned is not None and self.hoursPlanned <= 0:
+            errors['hoursPlanned'] = ValidationError("hoursPlanned cannot be non-positive. Set to 1")
+            self.hoursPlanned = 1
+        if self.hoursCompleted is not None and self.hoursCompleted <= 0:
+            errors['hoursCompleted'] = ValidationError("hoursCompleted cannot be non-positive. Set to 1")
+            self.hoursCompleted = 1
+        if errors:
+            raise ValidationError(errors)
+"""
 
     def __str__(self):
         return self.name
