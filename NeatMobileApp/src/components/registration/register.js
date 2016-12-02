@@ -68,6 +68,7 @@ class Register extends Component {
       groups: [],
       email: "",
       password_confirmation: "",
+      passwordAgain:"",
       errors: [],
       showProgress: false,
       success: false,
@@ -111,7 +112,13 @@ onRegisterPressed(){
           Please verify your information and try again!
         </Text>);
       }
-
+      if (this.state.password != this.state.passwordAgain) {
+          console.log("password: " + this.state.password);
+          console.log("other password: " + this.state.password_confirmation);
+        errorCtrl = (<Text style={styles.error}>
+          Both passwords must match, please try again!
+        </Text>);
+      }
       if (!this.state.success && this.state.unknownError) {
         errorCtrl = (<Text style={styles.error}>
           We experienced an unexpected issue, try again!
