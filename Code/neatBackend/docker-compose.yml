@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+
+  server:
+    restart: always
+    build: ./nginx
+    links:
+      - backend
+    volumes_from:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+
+  backend:
+    restart: always
+    build: .
+    env_file: ENV.txt
+    links:
+      - db
+    volumes:
+      - staticfiles:/static
+
+  db:
+    restart: always
+    build: ./mysql
+    environment:
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: neatdb
+      MYSQL_ROOT_PASSWORD: admin
+    volumes:
+      - mysql:/var/lib/mysql
+
+volumes:
+  mysql:
+    driver: local
+
+  staticfiles:
+    driver: local
