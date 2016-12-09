@@ -103,6 +103,7 @@ const AuthService = {
 
   register(creds, cb) {
     //console.log('creds from register AuthService', creds);
+    if(creds.password == creds.passwordAgain){
     this.doPost(`${CONFIG.server.host}/user/`, {
         email     : creds.email,
         first_name: creds.firstname,
@@ -114,6 +115,9 @@ const AuthService = {
       .then((response) =>response.json())
       .then((results)=> {return cb({ success: true })})
       .catch((err) => cb(err));
+  }else{
+      return cb({password_confirmation: false})
+  }
   },//end of register
   requestCode(creds, cb) {
       this.doPost(`${CONFIG.server.host}/send/passwordCode/` + creds.email +'/', {

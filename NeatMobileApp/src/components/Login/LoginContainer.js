@@ -38,7 +38,7 @@ class LoginContainer extends Component {
       }, results));
       if (results.success) {
         this.props.navigator.push({
-          id: 'AssignmentsDash',
+          id: 'Dashboard',
         });
         this.setState({
           value: {},
