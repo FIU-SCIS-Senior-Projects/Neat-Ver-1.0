@@ -67,7 +67,7 @@ class Register extends Component {
       lastname: "",
       groups: [],
       email: "",
-      password_confirmation: "",
+      password_confirmation: true,
       passwordAgain:"",
       errors: [],
       showProgress: false,
@@ -84,12 +84,15 @@ onRegisterPressed(){
 
   AuthService.register({
       password:  this.state.value.password,
+      passwordAgain: this.state.value.passwordAgain,
       firstname: this.state.value.firstname,
       lastname:  this.state.value.lastname,
       email:     this.state.value.email,
       groups:    this.state.value.groups
   }, (results)=> {
+
      this.setState(Object.assign({showProgress: false}, results));
+
       if(results.success){
         console.log('you have register in');
         this.setState({
@@ -104,17 +107,15 @@ onRegisterPressed(){
 
   render() {
       let errorCtrl = <View />;
-      /*console.log('state info: ', this.state.success, this.state.badCredentials,
-      this.state.unknownError, this.state.value);*/
+     // console.log('state info: ', this.state.value.success, this.state.value.badCredentials,
+      //this.state.value.unknownError, this.state.value.password_confirmation, this.state.value);
 
       if (!this.state.success && this.state.badCredentials) {
         errorCtrl = (<Text style={styles.error}>
           Please verify your information and try again!
         </Text>);
       }
-      if (this.state.password != this.state.passwordAgain) {
-          console.log("password: " + this.state.password);
-          console.log("other password: " + this.state.password_confirmation);
+      if (!this.state.success && !this.state.password_confirmation) {
         errorCtrl = (<Text style={styles.error}>
           Both passwords must match, please try again!
         </Text>);
